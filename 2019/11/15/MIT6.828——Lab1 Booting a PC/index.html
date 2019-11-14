@@ -51,16 +51,22 @@
   };
 </script>
 
-  <meta name="description" content="only a geek">
-<meta property="og:type" content="website">
-<meta property="og:title" content="邵靳天的小站">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;MQ&#x2F;index.html">
+  <meta name="description" content="Preface：之前已经做了一部分MIT-6.828了，后来要考托福就搁置了，现在重新捡起来。顺便把所有的博客迁移到我的域名www.shaojintian.cn下 Sources:xv6 book &amp;amp;&amp;amp; xv6 source codesExercise1:  看懂x86 的32bit汇编,参见xv6 book附录A  Exercise2:  Use GDB’ssi(Step Ins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6.828——Lab1 Booting a PC">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;15&#x2F;MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC&#x2F;index.html">
 <meta property="og:site_name" content="邵靳天的小站">
-<meta property="og:description" content="only a geek">
+<meta property="og:description" content="Preface：之前已经做了一部分MIT-6.828了，后来要考托福就搁置了，现在重新捡起来。顺便把所有的博客迁移到我的域名www.shaojintian.cn下 Sources:xv6 book &amp;amp;&amp;amp; xv6 source codesExercise1:  看懂x86 的32bit汇编,参见xv6 book附录A  Exercise2:  Use GDB’ssi(Step Ins">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191017140951937.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;201910171434175.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191017143350903.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191017144600260.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-14T21:04:54.339Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191017140951937.png">
 
-<link rel="canonical" href="http://yoursite.com/tags/MQ/">
+<link rel="canonical" href="http://yoursite.com/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/">
 
 
 <script id="page-configurations">
@@ -68,13 +74,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Tag: MQ | 邵靳天的小站</title>
+  <title>MIT6.828——Lab1 Booting a PC | 邵靳天的小站</title>
   
 
 
@@ -169,50 +175,119 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">MQ
-          <small>Tag</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT6.828——Lab1 Booting a PC
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-15 05:04:54" itemprop="dateCreated datePublished" datetime="2019-11-15T05:04:54+08:00">2019-11-15</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
+        <p>Preface：之前已经做了一部分MIT-6.828了，后来要考托福就搁置了，现在重新捡起来。<br>顺便把所有的博客迁移到我的域名<a href="http://www.shaojintian.cn下" target="_blank" rel="noopener">www.shaojintian.cn下</a></p>
+<p>Sources:xv6 book &amp;&amp; xv6 source codes<br>Exercise1:</p>
+<blockquote>
+<p>看懂x86 的32bit汇编,参见xv6 book附录A</p>
+</blockquote>
+<p>Exercise2:</p>
+<blockquote>
+<p>Use GDB’ssi(Step Instruction) command to trace into the ROM BIOS               for a few more instructions, and try to guess what it might be doing. </p>
+</blockquote>
+<p>答案：依照提示使用GDB si</p>
+<p>Exercise 3. </p>
+<blockquote>
+<p>阅读bootloader的源码，回答问题<br>1：At what point does the processor start executing 32-bit code? What exactly causes the switch from 16- to 32-bit mode?</p>
+</blockquote>
+<p>答案：<br><img src="https://img-blog.csdnimg.cn/20191017140951937.png" alt="在这里插入图片描述"><br>ljmp  to 0x7c32   从i8086-&gt;i386（16bit-&gt;32bit)</p>
+<blockquote>
+<p>2：What is the last instruction of the boot loader executed, and what is the first instruction of the kernel it just loaded?</p>
+</blockquote>
+<p>答案：<br>last instruction:<br>查阅xv6 book, boot loader call bootmain()  to call kernel and run kernel<br>所以去boot.asm 找bootmain的位置<br>然后去找此汇编中bootmain（）最后一条语句为<br>((void (*)(void)) (ELFHDR-&gt;e_entry))();<br>找到此语句汇编的指向为 </p>
+<blockquote>
+<p>call *0x10018</p>
+</blockquote>
+<p>kernel 第一个instruction：</p>
+<p>从boot.asm找到最后一条指令的SI为0x7d6b<br>打上断点</p>
+<p><img src="https://img-blog.csdnimg.cn/201910171434175.png" alt="~/obj/boot/boot.asm"><br><img src="https://img-blog.csdnimg.cn/20191017143350903.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>movw $0x1234, 0x472</p>
+</blockquote>
+<p>反汇编<br>objdump -d obj/kern/kernel 验证了这个结果</p>
+<blockquote>
+<p>3：Where is the first instruction of the kernel?</p>
+</blockquote>
+<p>答案：<br>    0x10000c</p>
+<blockquote>
+<p>4：How does the boot loader decide how many sectors it must read in order to fetch the entire kernel from disk? Where does it find this information?</p>
+</blockquote>
+<p>答案：<br>    xv6 book chapter2  说明kernel是ELF文件<br>    kernel的大小包含在ELF的文件program  header中<br>    <img src="https://img-blog.csdnimg.cn/20191017144600260.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>Exercise 4</strong><br>Download the code for pointers.c, run it, and make sure you understand where all of the printed values come from.</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-11-15T01:02:00+08:00"
-              content="2019-11-15">
-          11-15
-        </time>
-      </div>
+      <footer class="post-footer">
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2019/11/15/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/" itemprop="url">
-            <span itemprop="name">RocketMQ 源码分析[一]：Producer</span>
-          </a>
-      </h2>
+        
 
-    </header>
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/15/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/" rel="next" title="RocketMQ 源码分析[一]：Producer">
+                  <i class="fa fa-chevron-left"></i> RocketMQ 源码分析[一]：Producer
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/15/HDU%205901%20%E8%B6%85%E5%A4%A7%E7%B4%A0%E6%95%B0%E5%BF%AB%E5%88%A4/" rel="prev" title="HDU 5901 超大素数快判">
+                  HDU 5901 超大素数快判 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
