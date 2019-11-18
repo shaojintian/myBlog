@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="相关文章：       数据挖掘领域十大经典算法之—C4.5算法（超详细附代码）   数据挖掘领域十大经典算法之—K-Means算法（超详细附代码）   数据挖掘领域十大经典算法之—SVM算法（超详细附代码）   数据挖掘领域十大经典算法之—Apriori算法   数据挖掘领域十大经典算法之—EM算法   数据挖掘领域十大经典算法之—PageRank算法   数据挖掘领域十大经典算法之—K-邻">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adaboost提升方法">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;18&#x2F;Adaboost%E6%8F%90%E5%8D%87%E6%96%B9%E6%B3%95&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="相关文章：       数据挖掘领域十大经典算法之—C4.5算法（超详细附代码）   数据挖掘领域十大经典算法之—K-Means算法（超详细附代码）   数据挖掘领域十大经典算法之—SVM算法（超详细附代码）   数据挖掘领域十大经典算法之—Apriori算法   数据挖掘领域十大经典算法之—EM算法   数据挖掘领域十大经典算法之—PageRank算法   数据挖掘领域十大经典算法之—K-邻">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603094805020">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603095026458">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603095211334">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603095517983">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603095819805">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603100059256">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603100503698">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603100710683">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603101055700">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603101347421">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603101635860">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603102223581">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603101757939">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603102035112">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603102537539">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603102332865">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fuqiuai&#x2F;lihang_algorithms&#x2F;master&#x2F;imgs&#x2F;Adaboost_sklearn_result_2.png">
+<meta property="og:updated_time" content="2019-11-18T13:07:01.702Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20160603094805020">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/18/Adaboost%E6%8F%90%E5%8D%87%E6%96%B9%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Adaboost提升方法 | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Adaboost%E6%8F%90%E5%8D%87%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Adaboost提升方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:07:01" itemprop="dateCreated datePublished" datetime="2019-11-18T21:07:01+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>相关文章：</strong></p>
+
+  <ul>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79456971" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—C4.5算法（超详细附代码）</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79458331" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—K-Means算法（超详细附代码）</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79483057" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—SVM算法（超详细附代码）</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79484998" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—Apriori算法</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79484421" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—EM算法</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79484929" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—PageRank算法</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79458648" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—K-邻近算法/kNN（超详细附代码）</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79458943" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—朴素贝叶斯算法（超详细附代码）</a></strong></li>
+  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79469412" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—CART算法（超详细附代码）</a></strong></li>
+  </ul>
+</blockquote>
+
+<h3 id="简介"><a name="t0"></a>简介</h3>
+
+<p>Adaboost算法是一种提升方法，将多个弱分类器，组合成强分类器。 <br>
+AdaBoost，是英文”Adaptive Boosting“（自适应增强）的缩写，由Yoav Freund和Robert Schapire在1995年提出。 <br>
+它的自适应在于：前一个弱分类器分错的样本的权值（样本对应的权值）会得到加强，权值更新后的样本再次被用来训练下一个新的弱分类器。在每轮训练中，用总体（样本总体）训练新的弱分类器，产生新的样本权值、该弱分类器的话语权，一直迭代直到达到预定的错误率或达到指定的最大迭代次数。 <br>
+总体——样本——个体三者间的关系需要搞清除 <br>
+总体N。样本：｛ni｝i从1到M。个体：如n1=（1,2），样本n1中有两个个体。</p>
+
+<h3 id="算法原理"><a name="t1"></a><a target="_blank"></a>算法原理</h3>
+
+<p>（1）初始化训练数据（每个样本）的权值分布：如果有N个样本，则每一个训练的样本点最开始时都被赋予相同的权重：1/N。 <br>
+（2）训练弱分类器。具体训练过程中，如果某个样本已经被准确地分类，那么在构造下一个训练集中，它的权重就被降低；相反，如果某个样本点没有被准确地分类，那么它的权重就得到提高。同时，得到弱分类器对应的话语权。然后，更新权值后的样本集被用于训练下一个分类器，整个训练过程如此迭代地进行下去。 <br>
+（3）将各个训练得到的弱分类器组合成强分类器。各个弱分类器的训练过程结束后，分类误差率小的弱分类器的话语权较大，其在最终的分类函数中起着较大的决定作用，而分类误差率大的弱分类器的话语权较小，其在最终的分类函数中起着较小的决定作用。换言之，误差率低的弱分类器在最终分类器中占的比例较大，反之较小。</p>
+
+<h3 id="算法流程"><a name="t2"></a><a target="_blank"></a>算法流程</h3>
+
+<p><strong>第一步：</strong> <br>
+    初始化训练数据（每个样本）的权值分布。每一个训练样本，初始化时赋予同样的权值w=1/N。N为样本总数。 <br>
+<img src="https://img-blog.csdn.net/20160603094805020" alt="这里写图片描述" title=""> <br>
+D1表示，第一次迭代每个样本的权值。w11表示，第1次迭代时的第一个样本的权值。 <br>
+N为样本总数。 <br>
+<strong>第二步：进行多次迭代，m=1，2….M。m表示迭代次数。</strong> <br>
+    a)使用具有权值分布Dm（m=1,2,3…N)的训练样本集进行学习，得到弱的分类器。 <br>
+    <img src="https://img-blog.csdn.net/20160603095026458" alt="这里写图片描述" title=""> <br>
+    该式子表示，第m次迭代时的弱分类器，将样本x要么分类成-1，要么分类成1.<strong>那么根据什么准则得到弱分类器？</strong> <br>
+    准则：该弱分类器的误差函数最小，也就是分错的样本对应的 权值之和，最小。 <br>
+    <img src="https://img-blog.csdn.net/20160603095211334" alt="这里写图片描述" title=""> <br>
+    b)计算弱分类器Gm（x）的话语权，话语权am表示Gm（x）在最终分类器中的重要程度。其中em，为上步中的εm（误差函数的值） <br>
+    <img src="https://img-blog.csdn.net/20160603095517983" alt="这里写图片描述" title=""> <br>
+    该式是随em减小而增大。即误差率小的分类器，在最终分类器的 重要程度大。 <br>
+    c）更新训练样本集的权值分布。用于下一轮迭代。其中，被误分的样本的权值会增大，被正确分的权值减小。 <br>
+    <img src="https://img-blog.csdn.net/20160603095819805" alt="这里写图片描述" title=""> <br>
+    Dm+1是用于下次迭代时样本的权值，Wm+1,i是下一次迭代时，第i个样本的权值。 <br>
+    其中，yi代表第i个样本对应的类别（1或-1），Gm（xi）表示弱分类器对样本xi的分类（1或-1）。若果分对，yi*Gm（xi）的值为1，反之为-1。其中Zm是归一化因子，使得所有样本对应的权值之和为1. <br>
+    <img src="https://img-blog.csdn.net/20160603100059256" alt="这里写图片描述" title=""> <br>
+    该公式并不难，仔细看看、想想。 <br>
+<strong>第三步</strong>迭代完成后，组合弱分类器。 <br>
+首先，<img src="https://img-blog.csdn.net/20160603100503698" alt="这里写图片描述" title=""> <br>
+然后，加个sign函数，该函数用于求数值的正负。数值大于0，为1。小于0，为-1.等于0，为0.得到最终的强分类器G（x） <br>
+<img src="https://img-blog.csdn.net/20160603100710683" alt="这里写图片描述" title=""></p>
+
+<p><strong>*额外</strong>（关于权值、话语权、弱分类器准则的公式，想深入了解的可以看看。使用的话，知道上面的内容已经足够） <br>
+利用前向分布加法模型（简单说，就是把一起求n个问题，转化为每次求1个问题，再其基础上，求下一个问题，如此迭代n次），adaboost算法可以看成，求式子的最小。tn时样本n对应的正确分类，fm是前m个分类器的结合（这里乘了1/2，因为博主看的文章的am是1/2*log(~~)，这个无所谓，无非是多个1/2少个1/2。 <br>
+<img src="https://img-blog.csdn.net/20160603101055700" alt="这里写图片描述" title=""> <br>
+<img src="https://img-blog.csdn.net/20160603101347421" alt="这里写图片描述" title=""> <br>
+然后，假设前m-1个相关的参数已经确定。通过化简E这个式子，我们可以得到： <br>
+<img src="https://img-blog.csdn.net/20160603101635860" alt="这里写图片描述" title=""> <br>
+其中，是一个常量。 <br>
+<img src="https://img-blog.csdn.net/20160603102223581" alt="这里写图片描述" title=""> <br>
+然后， <br>
+<img src="https://img-blog.csdn.net/20160603101757939" alt="这里写图片描述" title=""> <br>
+其中，Tm是分类正确的样本的权值，Mm是分类错误的样本的权值。式子不算难，自己多看几遍就能理解了。 <br>
+到现在，可以看出，最小化E，其实就是最小化 <br>
+<img src="https://img-blog.csdn.net/20160603102035112" alt="这里写图片描述" title=""> <br>
+这个式子是什么？看看前面，这个就是找弱分类器时的准则！ <br>
+然后得到了弱分类器ym后，我们可以进推导出am和样本的权值。这里给出am的推导过程（手写的，字很烂）其中，ε是<img src="https://img-blog.csdn.net/20160603102537539" alt="这里写图片描述" title=""> <br>
+该图中，最右边的是“+exp（-am/2)*1”，写得太乱（—_—) <br>
+<img src="https://img-blog.csdn.net/20160603102332865" alt="这里写图片描述" title=""> <br>
+最后求出来的am没有1/2,这个无所谓。因为这里定义fm是多乘了个1/2。</p>
+
+
+
+<h3 id="优点"><a name="t3"></a>优点</h3>
+
+<p>（1）精度很高的分类器 <br>
+（2）提供的是框架，可以使用各种方法构建弱分类器 <br>
+（3）简单，不需要做特征筛选 <br>
+（4）不用担心过度拟合</p>
+
+
+
+<h3 id="实际应用"><a name="t4"></a>实际应用</h3>
+
+<p>（1）用于二分类或多分类 <br>
+（2）特征选择 <br>
+（3）分类人物的baseline</p>
+
+
+
+<h3 id="代码"><a name="t5"></a>代码</h3>
+
+<p>代码已在<a href="https://github.com/fuqiuai/lihang_algorithms/blob/master/AdaBoost/AdaBoost_sklearn.py" rel="nofollow" target="_blank">github</a>上实现</p>
+
+
+
+
+<h3 id="运行结果"><a name="t6"></a>运行结果</h3>
+
+<p><img src="https://raw.githubusercontent.com/fuqiuai/lihang_algorithms/master/imgs/Adaboost_sklearn_result_2.png" alt="这里写图片描述" title=""></p>            </div>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/18/0-1bag/" rel="next" title="0-1bag">
+                  <i class="fa fa-chevron-left"></i> 0-1bag
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/18/%E7%AE%97%E6%B3%95%E5%92%8C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB%E5%92%8C%E6%80%BB%E7%BB%93/" rel="prev" title="算法和数据结构的分类和总结">
+                  算法和数据结构的分类和总结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法原理"><span class="nav-number">2.</span> <span class="nav-text">算法原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法流程"><span class="nav-number">3.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">4.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际应用"><span class="nav-number">5.</span> <span class="nav-text">实际应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">6.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行结果"><span class="nav-number">7.</span> <span class="nav-text">运行结果</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">?ICP?19022833?</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
