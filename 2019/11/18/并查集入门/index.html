@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="写在前面：话说江湖上散落着各式各样的大侠，有上千个之多。他们没有什么正当职业，整天背着剑在外面走来走去，碰到和自己不是一路人的，就免不了要打一架。但大侠们有一个优点就是讲义气，绝对不打自己的朋友。而且他们信奉“朋友的朋友就是我的朋友”，只要是能通过朋友关系串联起来的，不管拐了多少个弯，都认为是自己人。 这样一来，江湖上就形成了一个一个的群落，通过两两之间的朋友关系串联起来。而不在同一个群落的人，无">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并查集入门">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;18&#x2F;%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="写在前面：话说江湖上散落着各式各样的大侠，有上千个之多。他们没有什么正当职业，整天背着剑在外面走来走去，碰到和自己不是一路人的，就免不了要打一架。但大侠们有一个优点就是讲义气，绝对不打自己的朋友。而且他们信奉“朋友的朋友就是我的朋友”，只要是能通过朋友关系串联起来的，不管拐了多少个弯，都认为是自己人。 这样一来，江湖上就形成了一个一个的群落，通过两两之间的朋友关系串联起来。而不在同一个群落的人，无">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-18T15:13:49.207Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/18/%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>并查集入门 | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          并查集入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-18 23:05:07 / 修改时间：23:13:49" itemprop="dateCreated datePublished" datetime="2019-11-18T23:05:07+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>写在前面</strong>：<br><br/>话说江湖上散落着各式各样的大侠，有上千个之多。他们没有什么正当职业，整天背着剑在外面走来走去，碰到和自己不是一路人的，就免不了要打一架。但大侠们有一个优点就是讲义气，绝对不打自己的朋友。而且他们信奉“朋友的朋友就是我的朋友”，只要是能通过朋友关系串联起来的，不管拐了多少个弯，都认为是自己人。</p>
+<p>这样一来，江湖上就形成了一个一个的群落，通过两两之间的朋友关系串联起来。而不在同一个群落的人，无论如何都无法通过朋友关系连起来，于是就可以放心往死了打。但是两个原本互不相识的人，如何判断是否属于一个朋友圈呢？</p>
+<p>我们可以在每个朋友圈内推举出一个比较有名望的人，作为该圈子的代表人物，这样，每个圈子就可以这样命名“齐达内朋友之队”“罗纳尔多朋友之队”……两人只要互相对一下自己的队长是不是同一个人，就可以确定敌友关系了。 但是还有问题啊，大侠们只知道自己直接的朋友是谁，很多人压根就不认识队长，要判断自己的队长是谁，只能漫无目的的通过朋友的朋友关系问下去：“你是不是队长？你是不是队长？” 这样一来，队长面子上挂不住了，而且效率太低，还有可能陷入无限循环中。</p>
+<p>于是队长下令，重新组队。队内所有人实行分等级制度，形成树状结构，我队长就是根节点，下面分别是二级队员、三级队员。每个人只要记住自己的上级是谁就行了。遇到判断敌友的时候，只要一层层向上问，直到最高层，就可以在短时间内确定队长是谁了。由于我们关心的只是两个人之间是否连通，至于他们是如何连通的，以及每个圈子内部的结构是怎样的，甚至队长是谁，并不重要。所以我们可以放任队长随意重新组队，只要不搞错敌友关系就好了。于是，门派产生了。</p>
+<p>并查集<br>并查集（Union-find Sets）是一种非常精巧而实用的数据结构，它主要用于处理一些不相交集合的合并问题。一些常见的用途有求连通子图、求最小生成树的 Kruskal 算法和求最近公共祖先（Least Common Ancestors, LCA）等。</p>
+<p>使用并查集时，首先会存在一组不相交的动态集合，一般都会使用一个整数表示集合中的一个元素。</p>
+<p>每个集合可能包含一个或多个元素，并选出集合中的某个元素作为代表，称为集合的代表元。</p>
+<p>每个集合中具体包含了哪些元素是不关心的，具体选择哪个元素作为代表一般也是不关心的。我们关心的是，对于给定的元素，可以很快的找到这个元素所在的集合（的代表），以及合并两个元素所在的集合，而且这些操作的时间复杂度都是常数级的。</p>
+<p>并查集的实现原理也比较简单，就是使用树来表示集合，树的每个节点就表示集合中的一个元素，树根对应的元素就是该集合的代表元，如图 1 所示。</p>
+<p>图1 并查集的树型表示<br>图中有两棵树，分别对应两个集合，其中第一个集合为 ，代表元素是 ；第二个集合为 ，代表元素是 。</p>
+<p>并查集的基本操作有三个：</p>
+<p>makeSet(s)：建立一个新的并查集，其中包含 s 个单元素集合。【初始化】</p>
+<p>unionSet(x, y)：把元素 x 和元素 y 所在的集合合并，要求 x 和 y 所在的集合不相交，如果相交则不合并。【合并】</p>
+<p>find(x)：找到元素 x 所在的集合的代表，该操作也可以用于判断两个元素是否位于同一个集合，只要将它们各自的代表比较一下就可以了。【查找】</p>
+<p>这也就是为什么叫并查集的原因，顾名思义，就是为了进行查和并操作。</p>
+<p>【初始化】<br>树的节点表示集合中的元素，指针表示指向父节点的指针，根节点的指针指向自己，表示其没有父节点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">图<span class="number">2</span> 构造、初始化并查集</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 105</span></span><br><span class="line"><span class="keyword">int</span> parent[N];<span class="comment">// 树型结构的根节点</span></span><br><span class="line"><span class="keyword">int</span> r[N];<span class="comment">// 树的秩 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">//初始化</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span>     <span class="comment">//对n个结点初始化</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        parent[i] = i;     <span class="comment">// 每个结点的上级都是自己</span></span><br><span class="line">        r[i] = <span class="number">0</span>;    <span class="comment">// 每个结点构成的树的秩为0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">【查找】</span><br><span class="line">沿着每个结点的父节点不断向上查找，最终就可以找到该树的根结点，即该集合的代表元素。</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span> <span class="comment">// 查找结点x的根结点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x] == x) <span class="comment">// 递归出口：x的上级为x本身，即x为根结点</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="keyword">return</span> x;      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> find_parent(parent[x]);<span class="comment">// 递归查找</span></span><br><span class="line">&#125;</span><br><span class="line">通过下面的图，我们发现，普通的查找过程相对较麻烦，例如寻找d结点的根节点，我们需要通过才能最终找到。</span><br><span class="line"></span><br><span class="line">但是，如果我们使用路径压缩算法，那么只需要查找一次，就能确定d结点的结点，即。</span><br><span class="line">图<span class="number">3</span> 路径压缩（优化一）</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【递归版本】</span></span><br><span class="line"><span class="comment">// 改进查找算法：完成路径压缩，将x的上级直接变为根结点，那么树的高度就会大大降低</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span> <span class="comment">// 查找结点x的根结点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x] == x) <span class="comment">// 递归出口：x的上级为x本身，即x为根结点</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="keyword">return</span> x;      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> parent[x] = find_parent(parent[x]);<span class="comment">// 递归查找，此代码相当于先找到根结点rootx，然后pre[x]=rootx</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//【路径压缩的另一种写法】</span></span><br><span class="line"><span class="comment">//【个人更偏向于这种写法】 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x]!=x)parent[x]=find_parent(parent[x]);</span><br><span class="line">    <span class="keyword">return</span> parent[x];</span><br><span class="line">&#125; </span><br><span class="line">【合并】</span><br><span class="line">并查集的合并也非常简单，就是将一个集合的树根指向另一个集合的树根。</span><br><span class="line"></span><br><span class="line">图<span class="number">4</span> 并查集的合并</span><br><span class="line"><span class="comment">//【并】</span></span><br><span class="line"><span class="comment">// 朴素合并 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root_x, root_y;</span><br><span class="line">    root_x = find_parent(x);</span><br><span class="line">    root_y = find_parent(y);</span><br><span class="line">    <span class="keyword">if</span>(root_x!=root_y)parent[root_y]=root_x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以采用一种优化方法——按秩合并，注意初始化的时候需要将全部置0。<br>图5 按秩合并（优化二）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【并】</span></span><br><span class="line"><span class="comment">// 按秩合并 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root_x, root_y;</span><br><span class="line">    root_x = find_parent(x);</span><br><span class="line">    root_y = find_parent(y);</span><br><span class="line">    <span class="comment">// 属于同一个集合 </span></span><br><span class="line">    <span class="keyword">if</span>(root_x == root_y)<span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 属于不同集合 </span></span><br><span class="line">    <span class="comment">//令 y的根结点的上级为 root_x</span></span><br><span class="line">    <span class="keyword">if</span>(r[root_x] &gt; r[root_y])parent[root_y] = root_x;         </span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 秩相等，合并之后秩需要加 1 </span></span><br><span class="line">        <span class="keyword">if</span>(r[root_x] == r[root_y])r[root_y]++;</span><br><span class="line">        parent[root_x] = root_y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>并查集的分析与用法：<br>时空复杂度：<br>时间复杂度：<br>同时使用路径压缩、按秩（rank）合并优化的程序每个操作的平均时间仅为，其中是的反函数，是急速增加的阿克曼函数。因为是其反函数，故在十分巨大时还是小于 5。因此，平均运行时间是一个极小的常数。实际上，这是渐近最优算法：Fredman 和 Saks 在 1989 年解释了的平均时间内可以获得任何并查集。</p>
+<p>空间复杂度：<br>（n为元素个数）<br>按秩合并会多一个保存秩的辅助空间，即。</p>
+<p>——《维基百科：并查集》</p>
+<p>用途：<br>判断是否是同一类：<br>这个很简单，给定要判定的两个节点，find_parent()一下就可以了</p>
+<p>判断有多少个类/是否连通：<br>这个就基本上要遍历一下所有的节点，然后再把它们的父亲节点加入到set集合里，然后再统计一下个数即可。</p>
+<p>最小生成树：Kruskal算法</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/18/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%85%A5%E9%97%A8/" rel="next" title="树状数组入门">
+                  <i class="fa fa-chevron-left"></i> 树状数组入门
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">?ICP?19022833?</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

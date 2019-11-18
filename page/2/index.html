@@ -174,6 +174,70 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9A%848%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9A%848%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">回溯法的8皇后问题</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:06:19" itemprop="dateCreated datePublished" datetime="2019-11-18T21:06:19+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> backtrack;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Queens_demo</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">8</span>];<span class="comment">// 全局或成员变量, 下标表示行, 值表示 queen 存储在哪一列</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">cal8queens</span><span class="params">(<span class="keyword">int</span> row)</span> </span>&#123; <span class="comment">// 调用方式：cal8queens(0);</span></span><br><span class="line">	  <span class="keyword">if</span> (row == <span class="number">8</span>) &#123; <span class="comment">// 8 个棋子都放置好了，打印结果</span></span><br><span class="line">	    printQueens(result);</span><br><span class="line">	    <span class="keyword">return</span>; <span class="comment">// 8 行棋子都放好了，已经没法再往下递归了，所以就 return</span></span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> column = <span class="number">0</span>; column &lt; <span class="number">8</span>; ++column) &#123; <span class="comment">// 每一行都有 8 中放法</span></span><br><span class="line">	    <span class="keyword">if</span> (isOk(row, column)) &#123; <span class="comment">// 有些放法不满足要求</span></span><br><span class="line">	      result[row] = column; <span class="comment">// 第 row 行的棋子放到了 column 列</span></span><br><span class="line">	      cal8queens(row+<span class="number">1</span>); <span class="comment">// 考察下一行</span></span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="keyword">boolean</span> <span class="title">isOk</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> column)</span> </span>&#123;<span class="comment">// 判断 row 行 column 列放置是否合适</span></span><br><span class="line">	  <span class="keyword">int</span> leftup = column - <span class="number">1</span>, rightup = column + <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> i = row-<span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123; <span class="comment">// 逐行往上考察每一行</span></span><br><span class="line">	    <span class="keyword">if</span> (result[i] == column) <span class="keyword">return</span> <span class="keyword">false</span>; <span class="comment">// 第 i 行的 column 列有棋子吗？</span></span><br><span class="line">	    <span class="keyword">if</span> (leftup &gt;= <span class="number">0</span>) &#123; <span class="comment">// 考察左上对角线：第 i 行 leftup 列有棋子吗？</span></span><br><span class="line">	      <span class="keyword">if</span> (result[i] == leftup) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="keyword">if</span> (rightup &lt; <span class="number">8</span>) &#123; <span class="comment">// 考察右上对角线：第 i 行 rightup 列有棋子吗？</span></span><br><span class="line">	      <span class="keyword">if</span> (result[i] == rightup) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    --leftup; ++rightup;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printQueens</span><span class="params">(<span class="keyword">int</span>[] result)</span> </span>&#123; <span class="comment">// 打印出一个二维矩阵</span></span><br><span class="line">		System.out.println(<span class="string">"result:"</span>);</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> row = <span class="number">0</span>; row &lt; <span class="number">8</span>; ++row) &#123;</span><br><span class="line">	    <span class="keyword">for</span> (<span class="keyword">int</span> column = <span class="number">0</span>; column &lt; <span class="number">8</span>; ++column) &#123;</span><br><span class="line">	      <span class="keyword">if</span> (result[row] == column) System.out.print(<span class="string">"Q "</span>);</span><br><span class="line">	      <span class="keyword">else</span> System.out.print(<span class="string">"* "</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	    System.out.println();</span><br><span class="line">	  &#125;</span><br><span class="line">	  System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		cal8queens(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>每次递归返回都会返回到上一层。</p>
+<p>如果递归不到下一层，就会在当前层继续向后查询。</p>
+<p>只有能填完整后也就是<br><img src="https://img-blog.csdnimg.cn/20190514173324347.png" alt="在这里插入图片描述"><br>就会输出一次结果。</p>
+<p>然后继续根据状态空间树做DFS知道输出所有结果</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -817,64 +881,6 @@ cmd2.Stdout = &amp;outbuf2</code></pre><p>表明了cmd1的输出作为cmd2的输
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/C++%E5%A4%9A%E6%80%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/C++%E5%A4%9A%E6%80%81/" class="post-title-link" itemprop="url">C++多态</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:04:57" itemprop="dateCreated datePublished" datetime="2019-11-18T21:04:57+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>C++多态意味着调用成员函数时，会根据被调用函数的对象类型选择执行不同的函数<br>1：静态多态（编译时多态）：<br>基类实现多个派生类，派生类可以重载基类的函数<br>2：动态多态（运行时多态）：<br>用虚函数实现<br>虚函数是有virtual关键字的函数，若基类的函数是虚函数，则告诉编译器不要静态链接到该函数，根据指针指向的对象类型调用相应的函数。<br>在程序执行的任意时间点，根据所调用的对象类型来选择选择调用的函数。<br>实现多个类，但用相同的名称，根据指向的对象类型来选择调用的函数<br>纯虚函数(在基类中定义，不实现)<br>virtual int  functionName () = 0;</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -923,7 +929,7 @@ cmd2.Stdout = &amp;outbuf2</code></pre><p>表明了cmd1的输出作为cmd2的输
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

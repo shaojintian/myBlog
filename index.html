@@ -174,6 +174,90 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">并查集入门</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-18 23:05:07 / 修改时间：23:13:49" itemprop="dateCreated datePublished" datetime="2019-11-18T23:05:07+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>写在前面</strong>：<br><br/>话说江湖上散落着各式各样的大侠，有上千个之多。他们没有什么正当职业，整天背着剑在外面走来走去，碰到和自己不是一路人的，就免不了要打一架。但大侠们有一个优点就是讲义气，绝对不打自己的朋友。而且他们信奉“朋友的朋友就是我的朋友”，只要是能通过朋友关系串联起来的，不管拐了多少个弯，都认为是自己人。</p>
+<p>这样一来，江湖上就形成了一个一个的群落，通过两两之间的朋友关系串联起来。而不在同一个群落的人，无论如何都无法通过朋友关系连起来，于是就可以放心往死了打。但是两个原本互不相识的人，如何判断是否属于一个朋友圈呢？</p>
+<p>我们可以在每个朋友圈内推举出一个比较有名望的人，作为该圈子的代表人物，这样，每个圈子就可以这样命名“齐达内朋友之队”“罗纳尔多朋友之队”……两人只要互相对一下自己的队长是不是同一个人，就可以确定敌友关系了。 但是还有问题啊，大侠们只知道自己直接的朋友是谁，很多人压根就不认识队长，要判断自己的队长是谁，只能漫无目的的通过朋友的朋友关系问下去：“你是不是队长？你是不是队长？” 这样一来，队长面子上挂不住了，而且效率太低，还有可能陷入无限循环中。</p>
+<p>于是队长下令，重新组队。队内所有人实行分等级制度，形成树状结构，我队长就是根节点，下面分别是二级队员、三级队员。每个人只要记住自己的上级是谁就行了。遇到判断敌友的时候，只要一层层向上问，直到最高层，就可以在短时间内确定队长是谁了。由于我们关心的只是两个人之间是否连通，至于他们是如何连通的，以及每个圈子内部的结构是怎样的，甚至队长是谁，并不重要。所以我们可以放任队长随意重新组队，只要不搞错敌友关系就好了。于是，门派产生了。</p>
+<p>并查集<br>并查集（Union-find Sets）是一种非常精巧而实用的数据结构，它主要用于处理一些不相交集合的合并问题。一些常见的用途有求连通子图、求最小生成树的 Kruskal 算法和求最近公共祖先（Least Common Ancestors, LCA）等。</p>
+<p>使用并查集时，首先会存在一组不相交的动态集合，一般都会使用一个整数表示集合中的一个元素。</p>
+<p>每个集合可能包含一个或多个元素，并选出集合中的某个元素作为代表，称为集合的代表元。</p>
+<p>每个集合中具体包含了哪些元素是不关心的，具体选择哪个元素作为代表一般也是不关心的。我们关心的是，对于给定的元素，可以很快的找到这个元素所在的集合（的代表），以及合并两个元素所在的集合，而且这些操作的时间复杂度都是常数级的。</p>
+<p>并查集的实现原理也比较简单，就是使用树来表示集合，树的每个节点就表示集合中的一个元素，树根对应的元素就是该集合的代表元，如图 1 所示。</p>
+<p>图1 并查集的树型表示<br>图中有两棵树，分别对应两个集合，其中第一个集合为 ，代表元素是 ；第二个集合为 ，代表元素是 。</p>
+<p>并查集的基本操作有三个：</p>
+<p>makeSet(s)：建立一个新的并查集，其中包含 s 个单元素集合。【初始化】</p>
+<p>unionSet(x, y)：把元素 x 和元素 y 所在的集合合并，要求 x 和 y 所在的集合不相交，如果相交则不合并。【合并】</p>
+<p>find(x)：找到元素 x 所在的集合的代表，该操作也可以用于判断两个元素是否位于同一个集合，只要将它们各自的代表比较一下就可以了。【查找】</p>
+<p>这也就是为什么叫并查集的原因，顾名思义，就是为了进行查和并操作。</p>
+<p>【初始化】<br>树的节点表示集合中的元素，指针表示指向父节点的指针，根节点的指针指向自己，表示其没有父节点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">图<span class="number">2</span> 构造、初始化并查集</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 105</span></span><br><span class="line"><span class="keyword">int</span> parent[N];<span class="comment">// 树型结构的根节点</span></span><br><span class="line"><span class="keyword">int</span> r[N];<span class="comment">// 树的秩 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">//初始化</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span>     <span class="comment">//对n个结点初始化</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        parent[i] = i;     <span class="comment">// 每个结点的上级都是自己</span></span><br><span class="line">        r[i] = <span class="number">0</span>;    <span class="comment">// 每个结点构成的树的秩为0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">【查找】</span><br><span class="line">沿着每个结点的父节点不断向上查找，最终就可以找到该树的根结点，即该集合的代表元素。</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span> <span class="comment">// 查找结点x的根结点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x] == x) <span class="comment">// 递归出口：x的上级为x本身，即x为根结点</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="keyword">return</span> x;      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> find_parent(parent[x]);<span class="comment">// 递归查找</span></span><br><span class="line">&#125;</span><br><span class="line">通过下面的图，我们发现，普通的查找过程相对较麻烦，例如寻找d结点的根节点，我们需要通过才能最终找到。</span><br><span class="line"></span><br><span class="line">但是，如果我们使用路径压缩算法，那么只需要查找一次，就能确定d结点的结点，即。</span><br><span class="line">图<span class="number">3</span> 路径压缩（优化一）</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【递归版本】</span></span><br><span class="line"><span class="comment">// 改进查找算法：完成路径压缩，将x的上级直接变为根结点，那么树的高度就会大大降低</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span> <span class="comment">// 查找结点x的根结点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x] == x) <span class="comment">// 递归出口：x的上级为x本身，即x为根结点</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="keyword">return</span> x;      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> parent[x] = find_parent(parent[x]);<span class="comment">// 递归查找，此代码相当于先找到根结点rootx，然后pre[x]=rootx</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//【路径压缩的另一种写法】</span></span><br><span class="line"><span class="comment">//【个人更偏向于这种写法】 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x]!=x)parent[x]=find_parent(parent[x]);</span><br><span class="line">    <span class="keyword">return</span> parent[x];</span><br><span class="line">&#125; </span><br><span class="line">【合并】</span><br><span class="line">并查集的合并也非常简单，就是将一个集合的树根指向另一个集合的树根。</span><br><span class="line"></span><br><span class="line">图<span class="number">4</span> 并查集的合并</span><br><span class="line"><span class="comment">//【并】</span></span><br><span class="line"><span class="comment">// 朴素合并 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root_x, root_y;</span><br><span class="line">    root_x = find_parent(x);</span><br><span class="line">    root_y = find_parent(y);</span><br><span class="line">    <span class="keyword">if</span>(root_x!=root_y)parent[root_y]=root_x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以采用一种优化方法——按秩合并，注意初始化的时候需要将全部置0。<br>图5 按秩合并（优化二）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【并】</span></span><br><span class="line"><span class="comment">// 按秩合并 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root_x, root_y;</span><br><span class="line">    root_x = find_parent(x);</span><br><span class="line">    root_y = find_parent(y);</span><br><span class="line">    <span class="comment">// 属于同一个集合 </span></span><br><span class="line">    <span class="keyword">if</span>(root_x == root_y)<span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 属于不同集合 </span></span><br><span class="line">    <span class="comment">//令 y的根结点的上级为 root_x</span></span><br><span class="line">    <span class="keyword">if</span>(r[root_x] &gt; r[root_y])parent[root_y] = root_x;         </span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 秩相等，合并之后秩需要加 1 </span></span><br><span class="line">        <span class="keyword">if</span>(r[root_x] == r[root_y])r[root_y]++;</span><br><span class="line">        parent[root_x] = root_y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>并查集的分析与用法：<br>时空复杂度：<br>时间复杂度：<br>同时使用路径压缩、按秩（rank）合并优化的程序每个操作的平均时间仅为，其中是的反函数，是急速增加的阿克曼函数。因为是其反函数，故在十分巨大时还是小于 5。因此，平均运行时间是一个极小的常数。实际上，这是渐近最优算法：Fredman 和 Saks 在 1989 年解释了的平均时间内可以获得任何并查集。</p>
+<p>空间复杂度：<br>（n为元素个数）<br>按秩合并会多一个保存秩的辅助空间，即。</p>
+<p>——《维基百科：并查集》</p>
+<p>用途：<br>判断是否是同一类：<br>这个很简单，给定要判定的两个节点，find_parent()一下就可以了</p>
+<p>判断有多少个类/是否连通：<br>这个就基本上要遍历一下所有的节点，然后再把它们的父亲节点加入到set集合里，然后再统计一下个数即可。</p>
+<p>最小生成树：Kruskal算法</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -867,7 +951,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2019-11-18 21:35:00 / 修改时间：22:50:00" itemprop="dateCreated datePublished" datetime="2019-11-18T21:35:00+08:00">2019-11-18</time>
+              <time title="创建时间：2019-11-18 21:35:00 / 修改时间：23:09:07" itemprop="dateCreated datePublished" datetime="2019-11-18T21:35:00+08:00">2019-11-18</time>
             </span>
 
           
@@ -948,12 +1032,14 @@
 </ul>
 </li>
 </ul>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="队列，栈"><a href="#队列，栈" class="headerlink" title="队列，栈"></a>队列，栈</h3><h3 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h3><h3 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h3><h3 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h3><pre><code>1.简而言之就是用数组来模拟树形结构，避免建树的开销。
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="队列，栈"><a href="#队列，栈" class="headerlink" title="队列，栈"></a>队列，栈</h3><h3 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h3><h3 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h3><pre><code>常见于不相交集合的查询和合并问题</code></pre><p>具体见<a href="1">union-find入门</a></p>
+<h3 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h3><pre><code>1.简而言之就是用数组来模拟树形结构，避免建树的开销。
 2.主要用于解决区间查询/更新/求和，和线段树的功能基本一致
 与线段树比较：树状数组更简单，但是功能有限，没有线段树全能</code></pre><h3 id="字典树"><a href="#字典树" class="headerlink" title="字典树"></a>字典树</h3><h3 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h3><pre><code>主要用来解决区间查询/修改/更新/求和</code></pre><p>具体见<a href="https://shaojintian.cn/2019/11/18/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%A5%E9%97%A8-%E4%BE%8B%E9%A2%98/" target="_blank" rel="noopener">线段树入门</a></p>
-<h3 id="后缀树组"><a href="#后缀树组" class="headerlink" title="后缀树组"></a>后缀树组</h3><pre><code>主要解决字符串匹配问题</code></pre><br/>
+<h3 id="后缀树组"><a href="#后缀树组" class="headerlink" title="后缀树组"></a>后缀树组</h3><pre><code>主要解决字符串匹配问题</code></pre><p>具体见<a href="1">后缀树组</a></p>
+<br/>
 
-<h2 id="算法相关的topics"><a href="#算法相关的topics" class="headerlink" title="算法相关的topics"></a>算法相关的topics</h2><h3 id="求最优解"><a href="#求最优解" class="headerlink" title="求最优解"></a>求最优解</h3><h4 id="dp"><a href="#dp" class="headerlink" title="dp"></a>dp</h4><pre><code>状态转移方程</code></pre><h4 id="贪心"><a href="#贪心" class="headerlink" title="贪心"></a>贪心</h4><pre><code>贪心选择性质</code></pre><h5 id="区间贪心"><a href="#区间贪心" class="headerlink" title="区间贪心"></a>区间贪心</h5><h3 id="求遍历解"><a href="#求遍历解" class="headerlink" title="求遍历解"></a>求遍历解</h3><h4 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h4><h4 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h4><h4 id="回溯"><a href="#回溯" class="headerlink" title="回溯"></a>回溯</h4><h3 id="分治"><a href="#分治" class="headerlink" title="分治"></a>分治</h3><h4 id="数列分治"><a href="#数列分治" class="headerlink" title="数列分治"></a>数列分治</h4><h3 id="图论"><a href="#图论" class="headerlink" title="图论"></a>图论</h3><h4 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h4><h4 id="单源最短路径"><a href="#单源最短路径" class="headerlink" title="单源最短路径"></a>单源最短路径</h4><h3 id="数论"><a href="#数论" class="headerlink" title="数论"></a>数论</h3><h4 id="辗转相除法"><a href="#辗转相除法" class="headerlink" title="辗转相除法"></a>辗转相除法</h4><h4 id="素数"><a href="#素数" class="headerlink" title="素数"></a>素数</h4><h4 id="快速幂"><a href="#快速幂" class="headerlink" title="快速幂"></a>快速幂</h4><h3 id="网络流"><a href="#网络流" class="headerlink" title="网络流"></a>网络流</h3><h4 id="最大流与最小割"><a href="#最大流与最小割" class="headerlink" title="最大流与最小割"></a>最大流与最小割</h4><h3 id="计算几何"><a href="#计算几何" class="headerlink" title="计算几何"></a>计算几何</h3><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><h4 id="字符串匹配"><a href="#字符串匹配" class="headerlink" title="字符串匹配"></a>字符串匹配</h4><h2 id="other-tricks"><a href="#other-tricks" class="headerlink" title="other_tricks"></a>other_tricks</h2><h3 id="字符串匹配-1"><a href="#字符串匹配-1" class="headerlink" title="字符串匹配"></a>字符串匹配</h3><h3 id="字符串匹配-2"><a href="#字符串匹配-2" class="headerlink" title="字符串匹配"></a>字符串匹配</h3><h3 id="弹性碰撞"><a href="#弹性碰撞" class="headerlink" title="弹性碰撞"></a>弹性碰撞</h3>
+<h2 id="算法相关的topics"><a href="#算法相关的topics" class="headerlink" title="算法相关的topics"></a>算法相关的topics</h2><h3 id="求最优解"><a href="#求最优解" class="headerlink" title="求最优解"></a>求最优解</h3><h4 id="dp"><a href="#dp" class="headerlink" title="dp"></a>dp</h4><pre><code>状态转移方程</code></pre><h4 id="贪心"><a href="#贪心" class="headerlink" title="贪心"></a>贪心</h4><pre><code>贪心选择性质</code></pre><h5 id="区间贪心"><a href="#区间贪心" class="headerlink" title="区间贪心"></a>区间贪心</h5><h3 id="求遍历解"><a href="#求遍历解" class="headerlink" title="求遍历解"></a>求遍历解</h3><h4 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h4><h4 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h4><h4 id="回溯"><a href="#回溯" class="headerlink" title="回溯"></a>回溯</h4><h3 id="分治"><a href="#分治" class="headerlink" title="分治"></a>分治</h3><h4 id="数列分治"><a href="#数列分治" class="headerlink" title="数列分治"></a>数列分治</h4><h3 id="图论"><a href="#图论" class="headerlink" title="图论"></a>图论</h3><h4 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h4><h4 id="单源最短路径"><a href="#单源最短路径" class="headerlink" title="单源最短路径"></a>单源最短路径</h4><h3 id="数论"><a href="#数论" class="headerlink" title="数论"></a>数论</h3><h4 id="辗转相除法"><a href="#辗转相除法" class="headerlink" title="辗转相除法"></a>辗转相除法</h4><h4 id="素数"><a href="#素数" class="headerlink" title="素数"></a>素数</h4><h4 id="快速幂"><a href="#快速幂" class="headerlink" title="快速幂"></a>快速幂</h4><h3 id="网络流"><a href="#网络流" class="headerlink" title="网络流"></a>网络流</h3><h4 id="最大流与最小割"><a href="#最大流与最小割" class="headerlink" title="最大流与最小割"></a>最大流与最小割</h4><h3 id="计算几何"><a href="#计算几何" class="headerlink" title="计算几何"></a>计算几何</h3><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><h4 id="字符串匹配"><a href="#字符串匹配" class="headerlink" title="字符串匹配"></a>字符串匹配</h4><h2 id="other-tricks"><a href="#other-tricks" class="headerlink" title="other_tricks"></a>other_tricks</h2><h3 id="尺取法"><a href="#尺取法" class="headerlink" title="尺取法"></a>尺取法</h3><h3 id="弹性碰撞"><a href="#弹性碰撞" class="headerlink" title="弹性碰撞"></a>弹性碰撞</h3>
       
     </div>
 
@@ -1484,70 +1570,6 @@ N为样本总数。 <br>
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9A%848%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9A%848%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">回溯法的8皇后问题</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:06:19" itemprop="dateCreated datePublished" datetime="2019-11-18T21:06:19+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> backtrack;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Queens_demo</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">8</span>];<span class="comment">// 全局或成员变量, 下标表示行, 值表示 queen 存储在哪一列</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">cal8queens</span><span class="params">(<span class="keyword">int</span> row)</span> </span>&#123; <span class="comment">// 调用方式：cal8queens(0);</span></span><br><span class="line">	  <span class="keyword">if</span> (row == <span class="number">8</span>) &#123; <span class="comment">// 8 个棋子都放置好了，打印结果</span></span><br><span class="line">	    printQueens(result);</span><br><span class="line">	    <span class="keyword">return</span>; <span class="comment">// 8 行棋子都放好了，已经没法再往下递归了，所以就 return</span></span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> column = <span class="number">0</span>; column &lt; <span class="number">8</span>; ++column) &#123; <span class="comment">// 每一行都有 8 中放法</span></span><br><span class="line">	    <span class="keyword">if</span> (isOk(row, column)) &#123; <span class="comment">// 有些放法不满足要求</span></span><br><span class="line">	      result[row] = column; <span class="comment">// 第 row 行的棋子放到了 column 列</span></span><br><span class="line">	      cal8queens(row+<span class="number">1</span>); <span class="comment">// 考察下一行</span></span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="keyword">boolean</span> <span class="title">isOk</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> column)</span> </span>&#123;<span class="comment">// 判断 row 行 column 列放置是否合适</span></span><br><span class="line">	  <span class="keyword">int</span> leftup = column - <span class="number">1</span>, rightup = column + <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> i = row-<span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123; <span class="comment">// 逐行往上考察每一行</span></span><br><span class="line">	    <span class="keyword">if</span> (result[i] == column) <span class="keyword">return</span> <span class="keyword">false</span>; <span class="comment">// 第 i 行的 column 列有棋子吗？</span></span><br><span class="line">	    <span class="keyword">if</span> (leftup &gt;= <span class="number">0</span>) &#123; <span class="comment">// 考察左上对角线：第 i 行 leftup 列有棋子吗？</span></span><br><span class="line">	      <span class="keyword">if</span> (result[i] == leftup) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="keyword">if</span> (rightup &lt; <span class="number">8</span>) &#123; <span class="comment">// 考察右上对角线：第 i 行 rightup 列有棋子吗？</span></span><br><span class="line">	      <span class="keyword">if</span> (result[i] == rightup) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    --leftup; ++rightup;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printQueens</span><span class="params">(<span class="keyword">int</span>[] result)</span> </span>&#123; <span class="comment">// 打印出一个二维矩阵</span></span><br><span class="line">		System.out.println(<span class="string">"result:"</span>);</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> row = <span class="number">0</span>; row &lt; <span class="number">8</span>; ++row) &#123;</span><br><span class="line">	    <span class="keyword">for</span> (<span class="keyword">int</span> column = <span class="number">0</span>; column &lt; <span class="number">8</span>; ++column) &#123;</span><br><span class="line">	      <span class="keyword">if</span> (result[row] == column) System.out.print(<span class="string">"Q "</span>);</span><br><span class="line">	      <span class="keyword">else</span> System.out.print(<span class="string">"* "</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	    System.out.println();</span><br><span class="line">	  &#125;</span><br><span class="line">	  System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		cal8queens(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>每次递归返回都会返回到上一层。</p>
-<p>如果递归不到下一层，就会在当前层继续向后查询。</p>
-<p>只有能填完整后也就是<br><img src="https://img-blog.csdnimg.cn/20190514173324347.png" alt="在这里插入图片描述"><br>就会输出一次结果。</p>
-<p>然后继续根据状态空间树做DFS知道输出所有结果</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1596,7 +1618,7 @@ N为样本总数。 <br>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
