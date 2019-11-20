@@ -51,17 +51,17 @@
   };
 </script>
 
-  <meta name="description" content="KNN Classifierfrom sklearn.neighbors import KNeighborsClassifier clf = KNeighborsClassifier()clf.fit(train_x, train_y)  Logistic Regression Classifierfrom sklearn.linear_model import LogisticRegressio">
-<meta property="og:type" content="article">
-<meta property="og:title" content="sklearn 常用 分类器皿">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;19&#x2F;sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF&#x2F;index.html">
+  <meta name="description" content="only a geek">
+<meta property="og:type" content="website">
+<meta property="og:title" content="search">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;index.html">
 <meta property="og:site_name" content="邵靳天的小站">
-<meta property="og:description" content="KNN Classifierfrom sklearn.neighbors import KNeighborsClassifier clf = KNeighborsClassifier()clf.fit(train_x, train_y)  Logistic Regression Classifierfrom sklearn.linear_model import LogisticRegressio">
+<meta property="og:description" content="only a geek">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-19T01:30:25.299Z">
+<meta property="og:updated_time" content="2019-11-20T13:09:38.713Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/19/sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF/">
+<link rel="canonical" href="http://yoursite.com/tags/">
 
 
 <script id="page-configurations">
@@ -69,13 +69,14 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: true,
-    isPage: false,
+    isPost: false,
+    isPage: true,
     isArchive: false
   };
 </script>
 
-  <title>sklearn 常用 分类器皿 | 邵靳天的小站</title>
+  <title>search | 邵靳天的小站
+  </title>
   
 
 
@@ -191,117 +192,44 @@
       <div class="main-inner">
         <div class="content-wrap">
           
+  
+  
 
           <div class="content">
             
 
   <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
+    
+    
+    
+    <div class="post-block" lang="zh-Hans">
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          sklearn 常用 分类器皿
-        </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+<h1 class="post-title" itemprop="name headline">search
+</h1>
 
-              <time title="创建时间：2019-11-19 09:30:25" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:25+08:00">2019-11-19</time>
-            </span>
+<div class="post-meta">
+  
 
-          
+</div>
 
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+</header>
 
       
-        <h3 id="KNN-Classifier"><a href="#KNN-Classifier" class="headerlink" title="KNN Classifier"></a>KNN Classifier</h3><p>from sklearn.neighbors import KNeighborsClassifier</p>
-<p>clf = KNeighborsClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Logistic-Regression-Classifier"><a href="#Logistic-Regression-Classifier" class="headerlink" title="Logistic Regression Classifier"></a>Logistic Regression Classifier</h3><p>from sklearn.linear_model import LogisticRegression</p>
-<p>clf = LogisticRegression(penalty=’l2’)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Random-Forest-Classifier"><a href="#Random-Forest-Classifier" class="headerlink" title="Random Forest Classifier"></a>Random Forest Classifier</h3><p>from sklearn.ensemble import RandomForestClassifier</p>
-<p>clf = RandomForestClassifier(n_estimators=8)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Decision-Tree-Classifier"><a href="#Decision-Tree-Classifier" class="headerlink" title="Decision Tree Classifier"></a>Decision Tree Classifier</h3><p>from sklearn import tree</p>
-<p>clf = tree.DecisionTreeClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="GBDT-Gradient-Boosting-Decision-Tree-Classifier"><a href="#GBDT-Gradient-Boosting-Decision-Tree-Classifier" class="headerlink" title="GBDT(Gradient Boosting Decision Tree) Classifier"></a>GBDT(Gradient Boosting Decision Tree) Classifier</h3><p>from sklearn.ensemble import GradientBoostingClassifier</p>
-<p>clf = GradientBoostingClassifier(n_estimators=200)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<p>###AdaBoost Classifier<br>from sklearn.ensemble import  AdaBoostClassifier</p>
-<p>clf = AdaBoostClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="GaussianNB"><a href="#GaussianNB" class="headerlink" title="GaussianNB"></a>GaussianNB</h3><p>from sklearn.naive_bayes import GaussianNB</p>
-<p>clf = GaussianNB()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Linear-Discriminant-Analysis"><a href="#Linear-Discriminant-Analysis" class="headerlink" title="Linear Discriminant Analysis"></a>Linear Discriminant Analysis</h3><p>from sklearn.discriminant_analysis import LinearDiscriminantAnalysis</p>
-<p>clf = LinearDiscriminantAnalysis()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Quadratic-Discriminant-Analysis"><a href="#Quadratic-Discriminant-Analysis" class="headerlink" title="Quadratic Discriminant Analysis"></a>Quadratic Discriminant Analysis</h3><p>from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis</p>
-<p>clf = QuadraticDiscriminantAnalysis()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="SVM-Classifier"><a href="#SVM-Classifier" class="headerlink" title="SVM Classifier"></a>SVM Classifier</h3><p>from sklearn.svm import SVC</p>
-<p>clf = SVC(kernel=’rbf’, probability=True)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Multinomial-Naive-Bayes-Classifier"><a href="#Multinomial-Naive-Bayes-Classifier" class="headerlink" title="Multinomial Naive Bayes Classifier"></a>Multinomial Naive Bayes Classifier</h3><p>from sklearn.naive_bayes import MultinomialNB</p>
-<p>clf = MultinomialNB(alpha=0.01)<br>clf.fit(train_x, train_y)</p>
-
+      
+      
+      <div class="post-body">
+          
+      </div>
+      
+      
+      
     </div>
+    
 
     
     
     
-
-      <footer class="post-footer">
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-next post-nav-item">
-                <a href="/2019/11/19/Leetcode%206%20Z%E5%9E%8B%E5%8F%98%E6%8D%A2/" rel="next" title="Leetcode 6 Z型变换">
-                  <i class="fa fa-chevron-left"></i> Leetcode 6 Z型变换
-                </a>
-            </div>
-
-            <span class="post-nav-divider"></span>
-
-            <div class="post-nav-prev post-nav-item">
-                <a href="/2019/11/19/macOS%20%E8%BF%9C%E7%A8%8BSSH%E8%BF%9E%E6%8E%A5%20%20Linux/" rel="prev" title="macOS 远程SSH连接  Linux">
-                  macOS 远程SSH连接  Linux <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
   </div>
 
 
@@ -331,7 +259,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN-Classifier"><span class="nav-number">1.</span> <span class="nav-text">KNN Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logistic-Regression-Classifier"><span class="nav-number">2.</span> <span class="nav-text">Logistic Regression Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Random-Forest-Classifier"><span class="nav-number">3.</span> <span class="nav-text">Random Forest Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Decision-Tree-Classifier"><span class="nav-number">4.</span> <span class="nav-text">Decision Tree Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GBDT-Gradient-Boosting-Decision-Tree-Classifier"><span class="nav-number">5.</span> <span class="nav-text">GBDT(Gradient Boosting Decision Tree) Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GaussianNB"><span class="nav-number">6.</span> <span class="nav-text">GaussianNB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linear-Discriminant-Analysis"><span class="nav-number">7.</span> <span class="nav-text">Linear Discriminant Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quadratic-Discriminant-Analysis"><span class="nav-number">8.</span> <span class="nav-text">Quadratic Discriminant Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM-Classifier"><span class="nav-number">9.</span> <span class="nav-text">SVM Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multinomial-Naive-Bayes-Classifier"><span class="nav-number">10.</span> <span class="nav-text">Multinomial Naive Bayes Classifier</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
