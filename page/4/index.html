@@ -40,8 +40,8 @@
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
-    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: '',
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     translation: {
       copy_button: '复制',
@@ -170,14 +170,34 @@
     <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
 
   </li>
-        <li class="menu-item menu-item-search">
-
-    <a href="/search/" rel="section"><i class="fa fa-fw fa-search"></i>搜索</a>
-
-  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 
 </nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
 </div>
     </header>
 
@@ -197,6 +217,134 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2011%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Leetcode%2011%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/" class="post-title-link" itemprop="url">Leetcode 11盛水最多的容器</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:19" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:19+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190407025819200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>解法一：暴力法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; height)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> max=<span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>; i&lt; height.size()<span class="number">-1</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            </span><br><span class="line">           <span class="keyword">for</span>(<span class="keyword">int</span> j = i+<span class="number">1</span> ;j&lt;height.size();++j)</span><br><span class="line">           &#123;</span><br><span class="line">               <span class="keyword">int</span> minOfTwo=height[i]&lt;height[j] ? height[i] : height[j];</span><br><span class="line">               </span><br><span class="line">               <span class="keyword">int</span> tem=minOfTwo * (j-i);</span><br><span class="line">               <span class="keyword">if</span>(max&lt;tem) max = tem;</span><br><span class="line">               </span><br><span class="line">           &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20190407032113963.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>2：解法2—-贪心</p>
+<p>双指针移动—–&gt;左右双指针，减少的距离换更长的长度</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; height)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>,i=<span class="number">0</span>,j=height.size()<span class="number">-1</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(i&lt;j)</span><br><span class="line">        &#123;   <span class="keyword">int</span> tmp = min(height[i],height[j]) * (j-i);</span><br><span class="line">            ans = max(ans,tmp);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>( height[i] &lt; height[j])</span><br><span class="line">                i++;</span><br><span class="line">            <span class="keyword">else</span> j--;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20190407033652832.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2012%20int%20-_%20Rome/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Leetcode%2012%20int%20-_%20Rome/" class="post-title-link" itemprop="url">Leetcode 12 int -_ Rome</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:18" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:18+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190407033756773.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">intToRoman</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">       <span class="built_in">string</span> str = <span class="string">""</span>;</span><br><span class="line">       <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; number&#123;<span class="number">1000</span>,<span class="number">900</span>,<span class="number">500</span>,<span class="number">400</span>,<span class="number">100</span>,<span class="number">90</span>,<span class="number">50</span>,<span class="number">40</span>,<span class="number">10</span>,<span class="number">9</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">1</span>&#125;;</span><br><span class="line">       <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; rome&#123;<span class="string">"M"</span>,<span class="string">"CM"</span>,<span class="string">"D"</span>,<span class="string">"CD"</span>,<span class="string">"C"</span>,<span class="string">"XC"</span>,<span class="string">"L"</span>,<span class="string">"XL"</span>,<span class="string">"X"</span>,<span class="string">"IX"</span>,<span class="string">"V"</span>,<span class="string">"IV"</span>,<span class="string">"I"</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;number.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span>(num &gt;= number[i] )&#123;</span><br><span class="line">                num-=number[i];</span><br><span class="line">                str+=rome[i];</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(num == <span class="number">0</span>)<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> str;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>1:I<br>2:II<br>3:III<br>4:IV<br>5:V<br>6:VI<br>7:VII<br>8:VIII<br>9:IX<br>10:X<br>so: 5 种 I，IV，V，IX，X<br>各种位数均如上<br>从大到小遍历，如果大于某个数，就对它进行循环递减，Rome字符串递加。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190407041927386.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -802,193 +950,6 @@ SSH，还有一个额外的好处就是传输的数据是经过压缩的，所�
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Attention%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Attention%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%AE%80%E4%BB%8B/" class="post-title-link" itemprop="url">Attention注意力机制简介</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:07" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:07+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2><a name="t0"></a>一、注意力机制回顾</h2>
-
-<p>简单来说，注意力本质上就是一个经过softmax层输出的向量。</p>
-
-<p>在早期机器翻译应用中，神经网络结构一般如下图，是一个RNN的Encoder-Decoder模型。左边是Encoder，代表输入的sentence。右边代表Decoder，是根据输入sentence对应的翻译。Encoder会通过RNN将最后一个step的隐藏状态向量c作为输出，Deocder利用向量c进行翻译。这样做有一个缺点，翻译时过分依赖于这个将整个sentence压缩成固定输入的向量。输入的sentence有可能包含上百个单词，这么做不可避免会造成信息的丢失，翻译结果也无法准确了。</p>
-
-<p style="text-align:center;"><img alt="" class="has" height="328" src="https://img-blog.csdn.net/20181011165935693?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="716"></p>
-
-<p>注意力机制的引入就是为了解决此问题，注意力机制使得机器翻译中利用原始的sentence信息，减少信息损失。在解码层，生成每个时刻的y，都会利用到x1,x2,x3....，而不再仅仅利用最后时刻的隐藏状态向量。同时注意力机制还能使翻译器zoom in or out（使用局部或全局信息）。</p>
-
-<p>注意力机制听起来很高大上、很神秘，其实它的整个实现只需要一些参数和简单的数学运算。那么注意力机制到底是如何实现的呢？</p>
-
-<p style="text-align:center;"><img alt="" class="has" src="https://img-blog.csdnimg.cn/20190215104836321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=,size_16,color_FFFFFF,t_70"></p>
-
-<p>在基本的Encoder-Decoder模型中，注意力机制在Encoder和Decoder加入了上下文向量context vector，如上图所示，左边蓝色的代表Encoder，红色的代表Decoder。对于Decoder中每个要生成的y，都会生成一个上下文向量。这个上下文向量是由每个输入的words的信息加权求和得到的，其中权重向量就是注意力向量，它代表在此刻生成y时输入的单词的重要程度。最后将上下文向量和此刻的y的信息进行融合作为输出。</p>
-
-<p>构建上下文向量过程也很简单，首先对于一个固定的target word，我们把这个target state跟所有的Encoder的state进行比较，这样对每个state得到了一个score;然后使用softmax对这些score进行归一化，这样就得到了基于target state的条件概率分布。最后，对source的state进行加权求和，得到上下文向量，将上下文向量与target state融合作为最终的输出。</p>
-
-<p>具体流程的数学表达如下：</p>
-
-<p style="text-align:center;"><img alt="" class="has" height="156" src="https://img-blog.csdnimg.cn/2019021510501288.JPG" width="579"></p>
-
-<p>为了理解这个看起来有些复杂的数学公式，我们需要记住三点：</p>
-
-<ol><li>在解码时，对于每个输出的word都需要计算上下文向量。所以，我们会得到一个<img alt="n\ast m" class="mathcode" src="https://private.codecogs.com/gif.latex?n%5Cast%20m">的2D矩阵，&nbsp;<img alt="n" class="mathcode" src="https://private.codecogs.com/gif.latex?n">代表source word数量，<img alt="m" class="mathcode" src="https://private.codecogs.com/gif.latex?m">代表target word数量</li>
-    <li>我们可以通过context vector,target word,attention function&nbsp;<img alt="f" class="mathcode" src="https://private.codecogs.com/gif.latex?f">计算attention vevtor</li>
-    <li>attention mechanism是可以训练的。</li>
-</ol><h2><a name="t1"></a>二、BahdanauAttention与LuongAttention</h2>
-
-<h3><a name="t2"></a>2.1&nbsp;BahdanauAttention</h3>
-
-<p>BahdanauAttention是Bahdanau在论文<a href="https://arxiv.org/pdf/1409.0473.pdf" rel="nofollow" target="_blank">NEURAL MACHINE TRANSLATION BY JOINTLY LEARNING TO ALIGN AND TRANSLATE</a>中提出的，整体Attention结构如下图：</p>
-
-<p style="text-align:center;"><img alt="" class="has" height="492" src="https://img-blog.csdn.net/20180926170405403?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="292"></p>
-
-<p>1）第<img alt="i" class="mathcode" src="https://private.codecogs.com/gif.latex?i">个target word上下文向量<img alt="c_i{}" class="mathcode" src="https://private.codecogs.com/gif.latex?c_i%7B%7D">会根据每个source word的隐向量<img alt="h_j{}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_j%7B%7D">加权求和得到：</p>
-
-<p><img alt="" class="has" height="77" src="https://img-blog.csdn.net/2018092617125253?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="149"></p>
-
-<p>2）对于每个&nbsp;<img alt="h_j{}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_j%7B%7D">的<img alt="a_{ij}" class="mathcode" src="https://private.codecogs.com/gif.latex?a_%7Bij%7D">计算如下</p>
-
-<p><img alt="" class="has" height="106" src="https://img-blog.csdn.net/20180926171933731?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="293"></p>
-
-<p>其中</p>
-
-<p><img alt="" class="has" height="57" src="https://img-blog.csdn.net/20180926172008662?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="217"></p>
-
-<p><img alt="e_{ij}" class="mathcode" src="https://private.codecogs.com/gif.latex?e_%7Bij%7D">是对齐模型，代表位置<img alt="j" class="mathcode" src="https://private.codecogs.com/gif.latex?j">的输入和位置<img alt="i" class="mathcode" src="https://private.codecogs.com/gif.latex?i">的输出匹配程度的分数，这个分数基于RNN的 i-1 位置的隐含状态<img alt="s_{i-1}" class="mathcode" src="https://private.codecogs.com/gif.latex?s_%7Bi-1%7D">和 j 位置的<img alt="h_{j}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_%7Bj%7D">计算得到。</p>
-
-<h3><a name="t3"></a>2.2&nbsp;LuongAttention</h3>
-
-<p>LuongAttention是Luong在论文<a href="https://arxiv.org/pdf/1508.04025.pdf" rel="nofollow" target="_blank">Effective Approaches to Attention-based Neural Machine Translation</a>中提出的。整体结构如下</p>
-
-<p style="text-align:center;"><img alt="" class="has" height="386" src="https://img-blog.csdn.net/20180926173621689?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="428"></p>
-
-<p>&nbsp;与BahdanauAttention整体结构类似，LuongAttention对原结构进行了一些调整，其中Attention向量计算方法如下</p>
-
-<p><img alt="" class="has" height="117" src="https://img-blog.csdn.net/20180926174909188?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="333"></p>
-
-<p>&nbsp;其中与BahdanauAttention机制有以下几点改进：</p>
-
-<ol><li>BahdanauAttention对Encoder和Decoder的双向的RNN的state拼接起来作为输出，LuongAttention仅使用最上层的RNN输出</li>
-    <li>BahdanauAttention的计算流程为 ht−1 → at → ct → ht，它使用前一个位置t-1的state计算t时刻的ht。LuongAttention计算流程为&nbsp; ht → at → ct → h˜t 使用t位置的state当前位置的ht</li>
-    <li>BahdanauAttention只在concat对齐函数上进行了实验，LuongAttention在多种对齐函数进行了实验，下图为LuongAttention设计的三种对齐函数</li>
-</ol><p style="text-align:center;"><img alt="" class="has" height="137" src="https://img-blog.csdn.net/20180926191629666?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="475"></p>
-
-<h3><a name="t4"></a>2.3 总结&nbsp;</h3>
-
-<p>BahdanauAttention与LuongAttention两种注意力机制大体结构类似，都是基于第一节中的attention框架设计，主要的不同点就是在对齐函数上，在计算第 <img alt="i" class="mathcode" src="https://private.codecogs.com/gif.latex?i">个位置的score，前者是需要使用&nbsp;<img alt="s_{i-1}" class="mathcode" src="https://private.codecogs.com/gif.latex?s_%7Bi-1%7D">和<img alt="h_{j}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_%7Bj%7D">&nbsp;来进行计算，后者使用<img alt="s_{i}" class="mathcode" src="https://private.codecogs.com/gif.latex?s_%7Bi%7D">和<img alt="h_{j}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_%7Bj%7D">计算，这么来看还是后者直观上更合理些，逻辑上也更顺滑。两种机制在不同任务上的性能貌似差距也不是很大，具体的细节还待进一步做实验比较。</p>            </div>
-                      </div>
-    </article>
-</div>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" class="post-title-link" itemprop="url">SVM支持向量机</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:06" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:06+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190411154846966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190411154939723.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190411154955767.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1037,7 +998,7 @@ SSH，还有一个额外的好处就是传输的数据是经过压缩的，所�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1123,6 +1084,8 @@ SSH，还有一个额外的好处就是传输的数据是经过压缩的，所�
 
 
 
+
+  <script src="/js/local-search.js"></script>
 
 
 
