@@ -52,17 +52,19 @@
   };
 </script>
 
-  <meta name="description" content="常见系统命令1：echo  打印字符串或变量2：date 显示日期3：reboot 重启4：poweroff 关机5：wget [网址]   下载网络文件6：ps aux 查看进程状态7：top 查看进程活动与系统负载8:  pidof 查看进程PID值9：kill [PID] 强制终止进程10：killall [服务名] 关闭服务所有进程11:  ifconfig 网络状态与网卡信息12:una">
+  <meta name="description" content="详细代码点此链接介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。 应用场景： 优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux命令（1）常用">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;19&#x2F;Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8&#x2F;index.html">
+<meta property="og:title" content="设计模式3-策略模式">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F&#x2F;index.html">
 <meta property="og:site_name" content="邵靳天的小站">
-<meta property="og:description" content="常见系统命令1：echo  打印字符串或变量2：date 显示日期3：reboot 重启4：poweroff 关机5：wget [网址]   下载网络文件6：ps aux 查看进程状态7：top 查看进程活动与系统负载8:  pidof 查看进程PID值9：kill [PID] 强制终止进程10：killall [服务名] 关闭服务所有进程11:  ifconfig 网络状态与网卡信息12:una">
+<meta property="og:description" content="详细代码点此链接介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。 应用场景： 优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-19T01:30:33.633Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;strategy.png">
+<meta property="og:updated_time" content="2019-11-22T12:15:40.969Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;strategy.png">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/">
+<link rel="canonical" href="http://yoursite.com/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">
 
 
 <script id="page-configurations">
@@ -76,7 +78,7 @@
   };
 </script>
 
-  <title>Linux命令（1）常用 | 邵靳天的小站</title>
+  <title>设计模式3-策略模式 | 邵靳天的小站</title>
   
 
 
@@ -222,7 +224,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -235,7 +237,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux命令（1）常用
+          设计模式3-策略模式
         </h1>
 
         <div class="post-meta">
@@ -244,8 +246,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-11-19 09:30:33" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:33+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-22 20:12:02 / 修改时间：20:15:40" itemprop="dateCreated datePublished" datetime="2019-11-22T20:12:02+08:00">2019-11-22</time>
             </span>
 
           
@@ -259,10 +262,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>常见系统命令<br>1：echo  打印字符串或变量<br>2：date 显示日期<br>3：reboot 重启<br>4：poweroff 关机<br>5：wget [网址]   下载网络文件<br>6：ps aux 查看进程状态<br>7：top 查看进程活动与系统负载<br>8:  pidof 查看进程PID值<br>9：kill [PID] 强制终止进程<br>10：killall [服务名] 关闭服务所有进程<br>11:  ifconfig 网络状态与网卡信息<br>12:uname -a  查看系统内核<br>13:uptime 查看系统负载</p>
-<p>工作目录切换命令：<br>1：pwd 显示当前工作目录<br>2：cd 切换目录<br>3：ls 当前目录文件信息</p>
-<p>文本编辑：<br>1：cat  [文件名]  查看小文件<br>2：more  [文件名] 查看大文件<br>3：tr  [a-z] [A-Z]    转换文本所有小写为大写<br>4：wc -l [文件名]  显示文件有多少行 ，[-c]显示字节数<br>5：stat [文件名] 显示文件当前储存信息</p>
-<p>文件目录管理命令：<br>1：touch [文件名]  创建空白文件<br>2：mkdir  [名称]  空白文件夹<br>3：cp  [源文件] [目标文件]  拷贝文件<br>4：mv  [源文件] [目标文件] 重命名或者拷贝文件，但删除源文件<br>5：rm -f  [文件]  删除文件<br>6:     file [文件]  查看文件类型<br>7:  tar -czvf [压缩包名] [文件目录] 压缩目录下文件<br>8：tar -xzvf [压缩包名] -C [目录] 解压文件到指定目录<br>9：grep [信息] [文件名]   列举出当前文件出现要检索信息的整行<br>10: find  [目录]  -name [关键词]   搜索目录下关键词所有的文件</p>
+        <p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
+<p>应用场景：</p>
+<p>优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。<br><br>劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。<br></p>
+<p><img src="/images/strategy.png" alt="upload successful"></p>
 
     </div>
 
@@ -276,17 +279,14 @@
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2019/11/19/Leetcode%201%20%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" rel="next" title="Leetcode 1 两数之和">
-                  <i class="fa fa-chevron-left"></i> Leetcode 1 两数之和
+                <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式1-单例模式">
+                  <i class="fa fa-chevron-left"></i> 设计模式1-单例模式
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019/11/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式之单例模式">
-                  设计模式之单例模式 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
       </footer>

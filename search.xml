@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>设计模式3-策略模式</title>
+    <url>/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
+<p>应用场景：</p>
+<p>优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。<br><br>劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。<br></p>
+<p><img src="/images/strategy.png" alt="upload successful"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>设计模式1-单例模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[]]></content>
