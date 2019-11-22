@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>RocketMQ 源码分析[四]：NameServer</title>
+    <url>/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E5%9B%9B-%EF%BC%9ANameServer/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>RocketMQ 源码分析[0]：综述</title>
+    <url>/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-0-%EF%BC%9A%E7%BB%BC%E8%BF%B0/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>MQ</category>
+      </categories>
+      <tags>
+        <tag>RocketMQ</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RocketMQ 源码分析[三]：Consumer</title>
+    <url>/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%89-%EF%BC%9AConsumer/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>RocketMQ 源码分析[二]：Broker</title>
+    <url>/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%BA%8C-%EF%BC%9ABroker/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>MessageQueue-go 自制MQ的轮子</title>
+    <url>/2019/11/23/MessageQueue-go-%E8%87%AA%E5%88%B6MQ%E7%9A%84%E8%BD%AE%E5%AD%90/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>MQ</category>
+      </categories>
+      <tags>
+        <tag>自制MQ</tag>
+        <tag>MQ-go</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RocketMQ 源码分析[一]：Producer</title>
+    <url>/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/</url>
+    <content><![CDATA[<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#参考">参考</a></li>
+<li><a href="#开篇">开篇</a><ul>
+<li><a href="#从单元测试出发">从单元测试出发</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>经过几天时间，我想清楚目前我还是不走人工智能方面了。一是因为时间不够了，二是感觉做AI至少得读个博士，自己懒得待在学校，但现在不太想做研究，还是做工程方面的探索吧。</p>
+<p>思前想后，之前从事了后台的实习,对ToC的业务开发完全没兴趣，对研发一些框架或者ToB的业务比较感兴趣，所以技术栈就往基础设施，中间件，架构，分布式，微服务紧靠。之前做完了MIT6.824的Raft部分，对分布式一致性协议有了一些了解，分布式逐渐成为自己的兴趣点。</p>
+<p>现在打算做一些中间件的研究和开发，希望剖析一些开源的MQ，然后自己做开源的MQ项目，参加一些infras的比赛。之后kafka，zookeeper(分布式，微服务组件)相继会一一剖析：）</p>
+<p>这就是这个RocketMQ剖析开篇的原因。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>极客时间是个好东西:)<br/><br><a href="https://time.geekbang.org/column/intro/100032301" target="_blank" rel="noopener">极客时间-消息队列高手课</a></p>
+<h2 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h2><h2 id="从单元测试出发"><a href="#从单元测试出发" class="headerlink" title="从单元测试出发"></a>从单元测试出发</h2>]]></content>
+      <categories>
+        <category>MQ</category>
+      </categories>
+      <tags>
+        <tag>RocketMQ</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式3-策略模式</title>
     <url>/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
@@ -2704,30 +2766,6 @@ cmd2.Stdout = &amp;outbuf2</code></pre><p>表明了cmd1的输出作为cmd2的输
 <p>《Go并发编程实战（第2版）》<br><a href="https://item.jd.com/12063141.html" target="_blank" rel="noopener">https://item.jd.com/12063141.html</a></p>
 <p>《Go语言核心36讲》<br><a href="https://time.geekbang.org/column/intro/112" target="_blank" rel="noopener">https://time.geekbang.org/column/intro/112</a></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>RocketMQ 源码分析[一]：Producer</title>
-    <url>/2019/11/15/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/</url>
-    <content><![CDATA[<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
-<li><a href="#前言">前言</a></li>
-<li><a href="#参考">参考</a></li>
-<li><a href="#开篇">开篇</a><ul>
-<li><a href="#从单元测试出发">从单元测试出发</a></li>
-</ul>
-</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>经过几天时间，我想清楚目前我还是不走人工智能方面了。一是因为时间不够了，二是感觉做AI至少得读个博士，自己懒得待在学校，但现在不太想做研究，还是做工程方面的探索吧。</p>
-<p>思前想后，之前从事了后台的实习,对ToC的业务开发完全没兴趣，对研发一些框架或者ToB的业务比较感兴趣，所以技术栈就往基础设施，中间件，架构，分布式，微服务紧靠。之前做完了MIT6.824的Raft部分，对分布式一致性协议有了一些了解，分布式逐渐成为自己的兴趣点。</p>
-<p>现在打算做一些中间件的研究和开发，希望剖析一些开源的MQ，然后自己做开源的MQ项目，参加一些infras的比赛。之后kafka，zookeeper(分布式，微服务组件)相继会一一剖析：）</p>
-<p>这就是这个RocketMQ剖析开篇的原因。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>极客时间是个好东西:)<br/><br><a href="https://time.geekbang.org/column/intro/100032301" target="_blank" rel="noopener">极客时间-消息队列高手课</a></p>
-<h2 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h2><h2 id="从单元测试出发"><a href="#从单元测试出发" class="headerlink" title="从单元测试出发"></a>从单元测试出发</h2>]]></content>
-      <categories>
-        <category>middleware</category>
-      </categories>
-      <tags>
-        <tag>MQ</tag>
-      </tags>
   </entry>
   <entry>
     <title>poj题目分类</title>

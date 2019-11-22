@@ -221,6 +221,369 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%8F%8D%E8%BD%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%8F%8D%E8%BD%AC/" class="post-title-link" itemprop="url">单向链表反转</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:39" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:39+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>非递归：<br>算法核心是：后一个节点指向前一个节点，循环实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> algorithms_4th;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Linked_list</span> </span>&#123;</span><br><span class="line">	Node first=<span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> v;</span><br><span class="line">		Node next=<span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="function"><span class="keyword">public</span>  <span class="title">Node</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.v=v;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">InsertNode</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (node!=<span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span>(first==<span class="keyword">null</span>) &#123;first=node;<span class="keyword">return</span>;&#125;</span><br><span class="line">			Node nodeTem=first;</span><br><span class="line">			<span class="keyword">while</span>(nodeTem.next!=<span class="keyword">null</span>) &#123;</span><br><span class="line">				nodeTem=nodeTem.next;</span><br><span class="line">			&#125;</span><br><span class="line">			nodeTem.next=node;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ReverseList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(first==<span class="keyword">null</span>)<span class="keyword">return</span>;</span><br><span class="line">		Node cur_node=first;</span><br><span class="line">		Node tem;</span><br><span class="line">		Node pre_node=<span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">while</span>(cur_node!=<span class="keyword">null</span>) &#123;</span><br><span class="line">			tem=cur_node.next;<span class="comment">//store current.next</span></span><br><span class="line">			</span><br><span class="line">			cur_node.next=pre_node;<span class="comment">//back forward</span></span><br><span class="line">			</span><br><span class="line">			pre_node=cur_node;<span class="comment">//next recycle precondition</span></span><br><span class="line">			cur_node=tem;</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		first=pre_node;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		Linked_list list= <span class="keyword">new</span> Linked_list();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			list.InsertNode(<span class="keyword">new</span> Node(i*<span class="number">2</span>));</span><br><span class="line">		&#125;</span><br><span class="line">		Node node=list.first;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.print(node.v+ <span class="string">" "</span>);</span><br><span class="line">			node=node.next;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		list.ReverseList();</span><br><span class="line">		node=list.first;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.print(node.v+ <span class="string">" "</span>);</span><br><span class="line">			node=node.next;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E9%9A%8F%E7%AC%94%EF%BC%9ADeeCamp2019%E5%86%AC%E4%BB%A4%E8%90%A5%E9%9D%A2%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E9%9A%8F%E7%AC%94%EF%BC%9ADeeCamp2019%E5%86%AC%E4%BB%A4%E8%90%A5%E9%9D%A2%E8%AF%95/" class="post-title-link" itemprop="url">随笔：DeeCamp2019冬令营面试</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:38" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:38+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1：对机器人怎么看：<br>机器人实用主义：创造价值工作，优化，替代大量重复劳动力。<br>缺点：没有感情，无法创新<br>现有技术缺失，很难发展人形全能AI。没必要做全能AI<br>全能全知的AI没有必要，要充分利用人的优势：可计划，创新，社交。<br>2：一句好说为什么录用你！<br>自我驱动能力强，接受新知识能力快，并对AI，ML有浓厚的兴趣，执行力强。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%20homework1.6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%20homework1.6/" class="post-title-link" itemprop="url">编译原理 homework1.6</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:37" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:37+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.6.1 :w = 13, x = 11, y = 13, z = 11.</p>
+<p>1.6.2:w = 9, x = 7, y = 13, z = 11.</p>
+<p>1.6.3:    Block B1:<br>    declarations:  -&gt;   scope<br>        w                B1-B3-B4<br>        x                B1-B2-B4<br>        y                B1-B5<br>        z                B1-B2-B5</p>
+<p>Block B2:<br>    declarations:  -&gt;   scope<br>        x                B2-B3<br>        z                B2</p>
+<p>Block B3:<br>    declarations:  -&gt;   scope<br>        w                B3<br>        x                B3</p>
+<p>Block B4:<br>    declarations:  -&gt;   scope<br>        w                B4<br>        x                B4</p>
+<p>Block B5:<br>    declarations:  -&gt;   scope<br>        y                B5<br>        z                B5</p>
+<p>1.6.4:</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/JVM-Garbage%20Collection%20Mechanism/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/JVM-Garbage%20Collection%20Mechanism/" class="post-title-link" itemprop="url">JVM-Garbage Collection Mechanism</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:36" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:36+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式之单例模式</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:34" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:34+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>单例模式：<br>确保每一个类只有一个实例</p>
+<p>优点：唯一受控访问<br>缺点：难以扩展</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span>  <span class="keyword">static</span> Singleton instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">	</span><br><span class="line">	 <span class="function"><span class="keyword">private</span>  <span class="keyword">synchronized</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> instance;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/" class="post-title-link" itemprop="url">Linux命令（1）常用</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:33" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:33+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>常见系统命令<br>1：echo  打印字符串或变量<br>2：date 显示日期<br>3：reboot 重启<br>4：poweroff 关机<br>5：wget [网址]   下载网络文件<br>6：ps aux 查看进程状态<br>7：top 查看进程活动与系统负载<br>8:  pidof 查看进程PID值<br>9：kill [PID] 强制终止进程<br>10：killall [服务名] 关闭服务所有进程<br>11:  ifconfig 网络状态与网卡信息<br>12:uname -a  查看系统内核<br>13:uptime 查看系统负载</p>
+<p>工作目录切换命令：<br>1：pwd 显示当前工作目录<br>2：cd 切换目录<br>3：ls 当前目录文件信息</p>
+<p>文本编辑：<br>1：cat  [文件名]  查看小文件<br>2：more  [文件名] 查看大文件<br>3：tr  [a-z] [A-Z]    转换文本所有小写为大写<br>4：wc -l [文件名]  显示文件有多少行 ，[-c]显示字节数<br>5：stat [文件名] 显示文件当前储存信息</p>
+<p>文件目录管理命令：<br>1：touch [文件名]  创建空白文件<br>2：mkdir  [名称]  空白文件夹<br>3：cp  [源文件] [目标文件]  拷贝文件<br>4：mv  [源文件] [目标文件] 重命名或者拷贝文件，但删除源文件<br>5：rm -f  [文件]  删除文件<br>6:     file [文件]  查看文件类型<br>7:  tar -czvf [压缩包名] [文件目录] 压缩目录下文件<br>8：tar -xzvf [压缩包名] -C [目录] 解压文件到指定目录<br>9：grep [信息] [文件名]   列举出当前文件出现要检索信息的整行<br>10: find  [目录]  -name [关键词]   搜索目录下关键词所有的文件</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%201%20%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -461,411 +824,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%205%E6%9C%80%E5%A4%A7%E5%9B%9E%E6%96%87%E5%AD%97%E4%B8%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%205%E6%9C%80%E5%A4%A7%E5%9B%9E%E6%96%87%E5%AD%97%E4%B8%B2/" class="post-title-link" itemprop="url">Leetcode 5最大回文字串</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:27" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:27+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190404032343593.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">longestPalindrome</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=s.size();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(s.size() &lt;<span class="number">2</span> ) <span class="keyword">return</span> s;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> left=<span class="number">0</span>,right=<span class="number">0</span>,max_length=<span class="number">1</span>,start=<span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>; i &lt; n;)</span><br><span class="line">        &#123;</span><br><span class="line">          left = i,right =i;</span><br><span class="line">            </span><br><span class="line">          <span class="keyword">while</span>(right&lt;n<span class="number">-1</span> &amp;&amp; s[right]==s[right+<span class="number">1</span>]) </span><br><span class="line">              ++right;</span><br><span class="line">        </span><br><span class="line">          i=right+<span class="number">1</span>;</span><br><span class="line">         </span><br><span class="line">            </span><br><span class="line">          <span class="comment">//从中心扩展</span></span><br><span class="line">          <span class="keyword">while</span>(right &lt;n<span class="number">-1</span> &amp;&amp; left &gt; <span class="number">0</span> &amp;&amp; s[left<span class="number">-1</span>]==s[right+<span class="number">1</span>])</span><br><span class="line">          &#123;</span><br><span class="line">              --left;</span><br><span class="line">              ++right;</span><br><span class="line">             </span><br><span class="line">          &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(max_length &lt; right - left +<span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                max_length = right - left + <span class="number">1</span>;</span><br><span class="line">                start = left;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> s.substr(start,max_length);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190404032254882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>此为中心扩展法，自里向外搜索回文子串</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/macOS%20%E8%BF%9C%E7%A8%8BSSH%E8%BF%9E%E6%8E%A5%20%20Linux/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/macOS%20%E8%BF%9C%E7%A8%8BSSH%E8%BF%9E%E6%8E%A5%20%20Linux/" class="post-title-link" itemprop="url">macOS 远程SSH连接  Linux</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:26" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:26+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>ssh 用户名@ip</p>
-<p>ssh -X 用户名@ip   是调用服务器的GUI界面</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF/" class="post-title-link" itemprop="url">sklearn 常用 分类器皿</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:25" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:25+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="KNN-Classifier"><a href="#KNN-Classifier" class="headerlink" title="KNN Classifier"></a>KNN Classifier</h3><p>from sklearn.neighbors import KNeighborsClassifier</p>
-<p>clf = KNeighborsClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Logistic-Regression-Classifier"><a href="#Logistic-Regression-Classifier" class="headerlink" title="Logistic Regression Classifier"></a>Logistic Regression Classifier</h3><p>from sklearn.linear_model import LogisticRegression</p>
-<p>clf = LogisticRegression(penalty=’l2’)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Random-Forest-Classifier"><a href="#Random-Forest-Classifier" class="headerlink" title="Random Forest Classifier"></a>Random Forest Classifier</h3><p>from sklearn.ensemble import RandomForestClassifier</p>
-<p>clf = RandomForestClassifier(n_estimators=8)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Decision-Tree-Classifier"><a href="#Decision-Tree-Classifier" class="headerlink" title="Decision Tree Classifier"></a>Decision Tree Classifier</h3><p>from sklearn import tree</p>
-<p>clf = tree.DecisionTreeClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="GBDT-Gradient-Boosting-Decision-Tree-Classifier"><a href="#GBDT-Gradient-Boosting-Decision-Tree-Classifier" class="headerlink" title="GBDT(Gradient Boosting Decision Tree) Classifier"></a>GBDT(Gradient Boosting Decision Tree) Classifier</h3><p>from sklearn.ensemble import GradientBoostingClassifier</p>
-<p>clf = GradientBoostingClassifier(n_estimators=200)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<p>###AdaBoost Classifier<br>from sklearn.ensemble import  AdaBoostClassifier</p>
-<p>clf = AdaBoostClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="GaussianNB"><a href="#GaussianNB" class="headerlink" title="GaussianNB"></a>GaussianNB</h3><p>from sklearn.naive_bayes import GaussianNB</p>
-<p>clf = GaussianNB()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Linear-Discriminant-Analysis"><a href="#Linear-Discriminant-Analysis" class="headerlink" title="Linear Discriminant Analysis"></a>Linear Discriminant Analysis</h3><p>from sklearn.discriminant_analysis import LinearDiscriminantAnalysis</p>
-<p>clf = LinearDiscriminantAnalysis()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Quadratic-Discriminant-Analysis"><a href="#Quadratic-Discriminant-Analysis" class="headerlink" title="Quadratic Discriminant Analysis"></a>Quadratic Discriminant Analysis</h3><p>from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis</p>
-<p>clf = QuadraticDiscriminantAnalysis()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="SVM-Classifier"><a href="#SVM-Classifier" class="headerlink" title="SVM Classifier"></a>SVM Classifier</h3><p>from sklearn.svm import SVC</p>
-<p>clf = SVC(kernel=’rbf’, probability=True)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Multinomial-Naive-Bayes-Classifier"><a href="#Multinomial-Naive-Bayes-Classifier" class="headerlink" title="Multinomial Naive Bayes Classifier"></a>Multinomial Naive Bayes Classifier</h3><p>from sklearn.naive_bayes import MultinomialNB</p>
-<p>clf = MultinomialNB(alpha=0.01)<br>clf.fit(train_x, train_y)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%206%20Z%E5%9E%8B%E5%8F%98%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%206%20Z%E5%9E%8B%E5%8F%98%E6%8D%A2/" class="post-title-link" itemprop="url">Leetcode 6 Z型变换</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:24" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:24+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190406183836370.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">convert</span><span class="params">(<span class="built_in">string</span> s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size = s.size();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(numRows &lt;= <span class="number">1</span> )</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> gap = <span class="number">2</span>*numRows <span class="number">-2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span>  new_str = <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; numRows; i++)</span><br><span class="line">       &#123;<span class="comment">//i == row current </span></span><br><span class="line">           </span><br><span class="line">         <span class="keyword">for</span>(<span class="keyword">int</span> j=i ; j&lt; size; j+=gap)</span><br><span class="line">         &#123;</span><br><span class="line">             </span><br><span class="line">             new_str+=s[j];</span><br><span class="line">             </span><br><span class="line">             <span class="keyword">if</span>(i &gt; <span class="number">0</span> &amp;&amp; i &lt; numRows <span class="number">-1</span> )</span><br><span class="line">             &#123;</span><br><span class="line">               <span class="keyword">int</span> t = j + gap <span class="number">-2</span>*i;</span><br><span class="line">                 <span class="keyword">if</span>( t &lt; size)</span><br><span class="line">                new_str+=s[t];</span><br><span class="line">                 </span><br><span class="line">             &#125;</span><br><span class="line">             </span><br><span class="line">             </span><br><span class="line">         &#125;</span><br><span class="line">           </span><br><span class="line">       &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> new_str;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-<p><img src="https://img-blog.csdnimg.cn/20190406183821328.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190406183916423.png" alt="在这里插入图片描述"><br>黑色的位置规律为 +2n-2  用 gap 表示规律，j表示当前黑色位置<br>i表示为当前行<br>红色的位置规律为  j+ gap - 2*i </p>
-<p>两个循环：<br>外循环遍历行数，内循环遍历每一行的操作。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%20%207%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%20%207%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" class="post-title-link" itemprop="url">Leetcode  7整数反转</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:22" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:22+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190406200617644.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">reverse</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//only &lt; 10</span></span><br><span class="line">        <span class="keyword">if</span>(x/<span class="number">10</span> == <span class="number">0</span>) <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">bool</span> flag=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">long</span> xx=x;</span><br><span class="line">        <span class="keyword">if</span>(x&lt;<span class="number">0</span>)</span><br><span class="line">        &#123;   </span><br><span class="line">            xx*=<span class="number">-1</span>;</span><br><span class="line">            flag=<span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> ans =<span class="number">0</span> ;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(xx != <span class="number">0</span> )</span><br><span class="line">        &#123;   <span class="keyword">if</span>(ans*<span class="number">10</span>+xx%<span class="number">10</span> &gt; INT_MAX) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            ans=ans*<span class="number">10</span>+xx%<span class="number">10</span>;</span><br><span class="line">            xx=xx/<span class="number">10</span>;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!flag)</span><br><span class="line">        &#123;</span><br><span class="line">           ans=ans*(<span class="number">-1</span>); </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190406200600678.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>range int [-2^31     ,   2^31 -1]</p>
-<p>like reverse  -2^31   ——–&gt; 2^31   ,that doesn’t work  .</p>
-<p>so we need to use ==long== to store x</p>
-<p>INT_MAX  —&gt;2^31 -1</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%20%20%208%20%20atoi%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B4%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%20%20%208%20%20atoi%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B4%E6%95%B0/" class="post-title-link" itemprop="url">Leetcode   8  atoi  字符串转整数</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:21" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:21+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190406205448509.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">myAtoi</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size =str.size();</span><br><span class="line">        <span class="keyword">long</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span> ,j=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(str[i] == <span class="string">' '</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span>((str[i]&lt;<span class="string">'0'</span> || str[i] &gt; <span class="string">'9'</span>) &amp;&amp; str[i] != <span class="string">'+'</span> &amp;&amp; str[i] != <span class="string">'-'</span>  )&#123;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(str[i]==<span class="string">'-'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            flag=<span class="literal">false</span>;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(str[i]== <span class="string">'+'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(str[i]&gt;=<span class="string">'0'</span> &amp;&amp; str[i] &lt;=<span class="string">'9'</span> &amp;&amp; i &lt;size)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = str[i] - <span class="string">'0'</span>;</span><br><span class="line">            <span class="keyword">if</span>((ans*<span class="number">10</span> + tmp) &gt; INT_MAX ) &#123;</span><br><span class="line">                <span class="keyword">if</span>(flag) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">return</span> INT_MIN;</span><br><span class="line">            &#125;</span><br><span class="line">            ans=ans*<span class="number">10</span>+tmp;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!flag)</span><br><span class="line">        &#123;</span><br><span class="line">            ans*=<span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190406205436655.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -909,7 +872,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -918,7 +881,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

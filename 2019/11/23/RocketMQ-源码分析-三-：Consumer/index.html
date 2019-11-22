@@ -53,15 +53,16 @@
 </script>
 
   <meta name="description" content="only a geek">
-<meta property="og:type" content="website">
-<meta property="og:title" content="邵靳天的小站">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;MQ&#x2F;index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketMQ 源码分析[三]：Consumer">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%89-%EF%BC%9AConsumer&#x2F;index.html">
 <meta property="og:site_name" content="邵靳天的小站">
 <meta property="og:description" content="only a geek">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-22T17:00:38.071Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/tags/MQ/">
+<link rel="canonical" href="http://yoursite.com/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%89-%EF%BC%9AConsumer/">
 
 
 <script id="page-configurations">
@@ -69,13 +70,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>标签: MQ | 邵靳天的小站</title>
+  <title>RocketMQ 源码分析[三]：Consumer | 邵靳天的小站</title>
   
 
 
@@ -216,50 +217,82 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">MQ
-          <small>标签</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%89-%EF%BC%9AConsumer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RocketMQ 源码分析[三]：Consumer
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-23 01:00:38" itemprop="dateCreated datePublished" datetime="2019-11-23T01:00:38+08:00">2019-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
+        
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-11-15T06:02:00+08:00"
-              content="2019-11-15">
-          11-15
-        </time>
-      </div>
+      <footer class="post-footer">
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2019/11/15/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/" itemprop="url">
-            <span itemprop="name">RocketMQ 源码分析[一]：Producer</span>
-          </a>
-      </h2>
+        
 
-    </header>
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%BA%8C-%EF%BC%9ABroker/" rel="next" title="RocketMQ 源码分析[二]：Broker">
+                  <i class="fa fa-chevron-left"></i> RocketMQ 源码分析[二]：Broker
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-0-%EF%BC%9A%E7%BB%BC%E8%BF%B0/" rel="prev" title="RocketMQ 源码分析[0]：综述">
+                  RocketMQ 源码分析[0]：综述 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
@@ -301,7 +334,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -310,7 +343,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

@@ -221,7 +221,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/15/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%A4%A7%E9%87%8FCLOSE_WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -235,7 +235,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/15/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80-%EF%BC%9AProducer/" class="post-title-link" itemprop="url">RocketMQ 源码分析[一]：Producer</a>
+            <a href="/2019/11/18/%E5%A4%A7%E9%87%8FCLOSE_WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">大量CLOSE_WAIT状态的原因与解决方法</a>
         </h1>
 
         <div class="post-meta">
@@ -244,20 +244,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2019-11-15 06:02:00 / 修改时间：05:29:15" itemprop="dateCreated datePublished" datetime="2019-11-15T06:02:00+08:00">2019-11-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/middleware/" itemprop="url" rel="index">
-                    <span itemprop="name">middleware</span>
-                  </a>
-                </span>
+              <time title="创建时间：2019-11-18 21:05:11" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:11+08:00">2019-11-18</time>
             </span>
 
           
@@ -271,20 +259,314 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
-<li><a href="#前言">前言</a></li>
-<li><a href="#参考">参考</a></li>
-<li><a href="#开篇">开篇</a><ul>
-<li><a href="#从单元测试出发">从单元测试出发</a></li>
+          <p>原因：</p>
+<h2 id="Server端在某些异常情况时，没有关闭Socket。"><a href="#Server端在某些异常情况时，没有关闭Socket。" class="headerlink" title="Server端在某些异常情况时，没有关闭Socket。"></a><strong>Server端在某些异常情况时，没有关闭Socket。</strong></h2><p>TCP套接字中<br>被动关闭的server端在接受到FIN后立即返回一个ACK报文，进入CLOSE_WAIT状态。<br><strong>应用程序层面</strong>来看，会是抛出一个SOCKET.ERROR。<br>抛出ERROR之后如果没有closesocket(),则会处于CLOSE_WAIT</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%8D%8F%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E5%8D%8F%E7%A8%8B/" class="post-title-link" itemprop="url">协程</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:05:04" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:04+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="协程："><a href="#协程：" class="headerlink" title="协程："></a>协程：</h2><h2 id="（用户态的轻量级线程）"><a href="#（用户态的轻量级线程）" class="headerlink" title="（用户态的轻量级线程）"></a>（用户态的轻量级线程）</h2><p>在用户态中执行<br>1:任何时刻只有一个协程程序在运行。并且这个在运行的协程只有明确被要求挂起时才会被挂起。<br>2：传统的进程、线程是<strong>抢占式多任务</strong>，不可避免的线程同步问题，访问不同的资源还需要加锁以保证同步。<br>协程是<strong>协作式多任务</strong></p>
+<p>优点</p>
+<ul>
+<li>无需线程上下文切换的开销</li>
+<li>无需锁和处理同步问题<br>缺点：</li>
+<li>协程本质上是单线程，无法单独利用多核cpu，需要与进程配合</li>
+<li>进行阻塞操作如IO时会阻塞整个程序，这时候需要异步IO</li>
+<li></li>
 </ul>
-</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>经过几天时间，我想清楚目前我还是不走人工智能方面了。一是因为时间不够了，二是感觉做AI至少得读个博士，自己懒得待在学校，但现在不太想做研究，还是做工程方面的探索吧。</p>
-<p>思前想后，之前从事了后台的实习,对ToC的业务开发完全没兴趣，对研发一些框架或者ToB的业务比较感兴趣，所以技术栈就往基础设施，中间件，架构，分布式，微服务紧靠。之前做完了MIT6.824的Raft部分，对分布式一致性协议有了一些了解，分布式逐渐成为自己的兴趣点。</p>
-<p>现在打算做一些中间件的研究和开发，希望剖析一些开源的MQ，然后自己做开源的MQ项目，参加一些infras的比赛。之后kafka，zookeeper(分布式，微服务组件)相继会一一剖析：）</p>
-<p>这就是这个RocketMQ剖析开篇的原因。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>极客时间是个好东西:)<br/><br><a href="https://time.geekbang.org/column/intro/100032301" target="_blank" rel="noopener">极客时间-消息队列高手课</a></p>
-<h2 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h2><h2 id="从单元测试出发"><a href="#从单元测试出发" class="headerlink" title="从单元测试出发"></a>从单元测试出发</h2>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/C++%E5%A4%9A%E6%80%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/C++%E5%A4%9A%E6%80%81/" class="post-title-link" itemprop="url">C++多态</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:04:57" itemprop="dateCreated datePublished" datetime="2019-11-18T21:04:57+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>C++多态意味着调用成员函数时，会根据被调用函数的对象类型选择执行不同的函数<br>1：静态多态（编译时多态）：<br>基类实现多个派生类，派生类可以重载基类的函数<br>2：动态多态（运行时多态）：<br>用虚函数实现<br>虚函数是有virtual关键字的函数，若基类的函数是虚函数，则告诉编译器不要静态链接到该函数，根据指针指向的对象类型调用相应的函数。<br>在程序执行的任意时间点，根据所调用的对象类型来选择选择调用的函数。<br>实现多个类，但用相同的名称，根据指向的对象类型来选择调用的函数<br>纯虚函数(在基类中定义，不实现)<br>virtual int  functionName () = 0;</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">C++内存管理</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:04:50" itemprop="dateCreated datePublished" datetime="2019-11-18T21:04:50+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1：new delete<br>new 分配内存的同时还创建了对象<br>2：malloc  free<br>malloc（）函数只分配了内存，还需创建对象</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Go%E7%BB%93%E6%9E%84%E4%BD%93%E9%87%8C%E5%B5%8C%E5%A5%97%E6%8E%A5%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/Go%E7%BB%93%E6%9E%84%E4%BD%93%E9%87%8C%E5%B5%8C%E5%A5%97%E6%8E%A5%E5%8F%A3/" class="post-title-link" itemprop="url">Go结构体里嵌套接口</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:04:43" itemprop="dateCreated datePublished" datetime="2019-11-18T21:04:43+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>目的是当前结构体实例可以用所有实现了该接口的其他结构体来初始化（即使他们的属性不完全一致）</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Go%E8%AF%AD%E8%A8%80%E4%B9%A6%E7%B1%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/Go%E8%AF%AD%E8%A8%80%E4%B9%A6%E7%B1%8D/" class="post-title-link" itemprop="url">Go语言书籍</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:04:24" itemprop="dateCreated datePublished" datetime="2019-11-18T21:04:24+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>《Go语言实战》<br><a href="http://item.jd.com/12136974.html" target="_blank" rel="noopener">http://item.jd.com/12136974.html</a></p>
+<p>《Go语言圣经》<br><a href="https://yar999.gitbooks.io/gopl-zh/" target="_blank" rel="noopener">https://yar999.gitbooks.io/gopl-zh/</a></p>
+<p>《Go语言标准库》<br><a href="https://github.com/polaris1119/The-Golang-Standard-Library-by-Example" target="_blank" rel="noopener">https://github.com/polaris1119/The-Golang-Standard-Library-by-Example</a></p>
+<p>《Go语言并发之道》<br><a href="https://item.jd.com/12504386.html" target="_blank" rel="noopener">https://item.jd.com/12504386.html</a></p>
+<p>《Go语言高级编程》<br><a href="https://github.com/chai2010/advanced-go-programming-book" target="_blank" rel="noopener">https://github.com/chai2010/advanced-go-programming-book</a></p>
+<p>《Go2编程指南》<br><a href="https://github.com/chai2010/go2-book" target="_blank" rel="noopener">https://github.com/chai2010/go2-book</a></p>
+<p>《Go并发编程实战（第2版）》<br><a href="https://item.jd.com/12063141.html" target="_blank" rel="noopener">https://item.jd.com/12063141.html</a></p>
+<p>《Go语言核心36讲》<br><a href="https://time.geekbang.org/column/intro/112" target="_blank" rel="noopener">https://time.geekbang.org/column/intro/112</a></p>
+
       
     </div>
 
@@ -1651,197 +1933,11 @@ DP：1003、10240、1029、1069、1074、1087、1114、1159、1160、1171、1176
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Machine%20Learning%20%E2%80%94LinearModel/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/19/Machine%20Learning%20%E2%80%94LinearModel/" class="post-title-link" itemprop="url">Machine Learning —LinearModel</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-11-19 09:30:00" itemprop="dateCreated datePublished" datetime="2018-11-19T09:30:00+08:00">2018-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-20 21:48:04" itemprop="dateModified" datetime="2019-11-20T21:48:04+08:00">2019-11-20</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<h2 id="Machine-Learning-—LinearModel"><a href="#Machine-Learning-—LinearModel" class="headerlink" title="Machine Learning —LinearModel"></a>Machine Learning —LinearModel</h2><p>Supervised Learning:<br>Basic topics are Classification and Regression.</p>
-<p>Classification:</p>
-<p>About linear model, it includes LinearSVC , LogisticRegression(a classifier not a regressor)， GaussianNaiveBayesClassifier (GuNBC), BernoulliNBC, MultinomialNBC , Decision Trees,Random Forests</p>
-<p>First model LinearSVC:</p>
-<p>parameters includes :</p>
-<p>Regularization class: L1 or L2 .<br>L1 norm can decrease the coefficients to zero .But L2 can’t do that. L2 norm only can try to decrease the coefficients to close to zero.</p>
-<p>So L1 norm can select the numbers of features , but L2 can’t.</p>
-<p>Then,L1 style can increase the interpretability of this model,but lose some important features.</p>
-<p>L2 maybe be pollued by meaningless features.</p>
-<p>2.C:(learning rate)</p>
-<p>C is about restrictive ability. If C is small , coefficients and intercept is be restricted to close to zero (whether it can be explicitly zero depends on L1 or L2)</p>
-<p>else if C is high, restrictive ability is low.</p>
-<p>Second model: LinearRegression</p>
-<p>parameters :</p>
-<p>1:Regularization class: L1 or L2 .</p>
-<p>This is the same as above the first line.</p>
-<p>2:alpha(learning rate)</p>
-<p>alpha is opposite to C .If alpha is high , coefficients and intercept is be restricted to close to zero (whether it can be explicitly zero depends on L1 or L2)</p>
-<p>else if alpha is low, restrictive ability is low.</p>
-<p>Third model : Gussian Naive Bayes Classifier</p>
-<p>paramerter:</p>
-<p>1:alpha</p>
-<p>Fourth model : Bernoulli Naive Bayes Classifier</p>
-<p>paramerter:</p>
-<p>1:alpha (controls the complexity of model)</p>
-<p>ability:</p>
-<p>Increase the smoothing performance of model via adding virtual many data points to datasets . Virtual data points contains all positive features .</p>
-<p>When increase the alpha , the model will be smoother. So it will decrease the complexity of model . When decrease it , the model will be more complex.</p>
-<p>Fourth model : Bernoulli Naive Bayes Classifier</p>
-<p>paramerter:</p>
-<p>1:alpha (controls the complexity of model) (It is the same as BernoulliNBC)</p>
-<p>ability:</p>
-<p>Increase the smoothing performance of model via adding virtual many data points to datasets . Virtual data points contains all positive features .</p>
-<p>When increase the alpha , the model will be smoother. So it will decrease the complexity of model . When decrease it , the model will be more complex.</p>
-<p>Fifth model: Decision Trees</p>
-<p>parameters:</p>
-<p>Advantages:</p>
-<p>1: Easily Visualize .</p>
-<p>Generate visualized decision trees to help non-experts to understand this model.</p>
-<p>2:less influence about data or features types</p>
-<p>Due to every feature is been processed separately , so whatever the data type is binary or continuous .</p>
-<p>Disadvantages :</p>
-<p>1:poor generalization ability</p>
-<p>Easy to overfit ,even it has used pre-pruning. Because of it ,we usually to use ensembles of decision trees to decrease this influence based on decision trees(such as Random Forests and Gradient Boosted Decision Trees)</p>
-<p>Sixth model :Random Forests:</p>
-<p>Parameters:</p>
-<p>1:n_estimator</p>
-<p>decide the numbers of decision trees .</p>
-<p>2:max_features</p>
-<p>decide the max numbers of features .</p>
-<p>Preprocessing:</p>
-<p>For dataset:</p>
-<p>Bootstrap Sample(自动采样）：</p>
-<p>To explain it , if we have 100 data nodes ,we select randomly 100 times from this dataset to generate a new dataset which is as big as original dataset , after every time selection ,we don’t reduce the data node from original dataset .Clear?</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/machine%20learning_instruction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/19/machine%20learning_instruction/" class="post-title-link" itemprop="url">machine learning_instruction</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-11-19 09:30:00" itemprop="dateCreated datePublished" datetime="2018-11-19T09:30:00+08:00">2018-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-20 21:48:28" itemprop="dateModified" datetime="2019-11-20T21:48:28+08:00">2019-11-20</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>机器学习简单来说是计算机通过对数据集的学习，对预测集的input找到正确的output。<br>笼统归为三步：<br>1：一系列实现任务的functions 形成 function set<br>2：可以评价这些functions的goodness<br>2：选择一个最佳的function解决task</p>
-<p><img src="https://img-blog.csdn.net/20181020002058750?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1885,7 +1981,7 @@ DP：1003、10240、1029、1069、1074、1087、1114、1159、1160、1171、1176
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1894,7 +1990,7 @@ DP：1003、10240、1029、1069、1074、1087、1114、1159、1160、1171、1176
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
