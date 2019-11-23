@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="baidu-site-verification" content="PKO0plnZfq" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="&amp;lt;p&amp;gt;总结 MIT6.824 Lab3B Log Compaction 实验笔记。&amp;lt;&#x2F;p&amp;gt; Lab3B日志过大的问题在 3A 部分，Put&#x2F;Append&#x2F;Get 等命令的日志只通过 leader 流向 followers，来维护节点间 kvDB 数据的一致性。但随着 Client 请求的增多，各节点的日志将占用更多空间。日志过长会导致：  当发生日志冲突时，fo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lab3B. Raft 日志压缩及数据快照">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;Lab3B-Raft-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BF%AB%E7%85%A7&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="&amp;lt;p&amp;gt;总结 MIT6.824 Lab3B Log Compaction 实验笔记。&amp;lt;&#x2F;p&amp;gt; Lab3B日志过大的问题在 3A 部分，Put&#x2F;Append&#x2F;Get 等命令的日志只通过 leader 流向 followers，来维护节点间 kvDB 数据的一致性。但随着 Client 请求的增多，各节点的日志将占用更多空间。日志过长会导致：  当发生日志冲突时，fo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-13-160714.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-12-013217.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-15-073120.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-14-152901.png">
+<meta property="og:updated_time" content="2019-11-23T14:21:31.559Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-13-160714.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/23/Lab3B-Raft-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BF%AB%E7%85%A7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Lab3B. Raft 日志压缩及数据快照 | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <meta name="baidu-site-verification" content="PKO0plnZfq" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，后端开发，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Lab3B-Raft-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BF%AB%E7%85%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lab3B. Raft 日志压缩及数据快照
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-23 22:21:00 / 修改时间：22:21:31" itemprop="dateCreated datePublished" datetime="2019-11-23T22:21:00+08:00">2019-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>&lt;p&gt;总结 MIT6.824 Lab3B Log Compaction 实验笔记。&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab3B"><a href="#Lab3B" class="headerlink" title="Lab3B"></a>Lab3B</h2><h3 id="日志过大的问题"><a href="#日志过大的问题" class="headerlink" title="日志过大的问题"></a>日志过大的问题</h3><p>在 3A 部分，<code>Put</code>/<code>Append</code>/<code>Get</code> 等命令的日志只通过 leader 流向 followers，来维护节点间 kvDB 数据的一致性。但随着 Client 请求的增多，各节点的日志将占用更多空间。日志过长会导致：</p>
+<ul>
+<li>当发生日志冲突时，follower 从头到尾查找冲突任期的首条日志将更耗时。</li>
+<li>某节点因长时间的网络隔离导致日志过于落后，或新节点加入集群，replay 日志将更耗时。</li>
+</ul>
+<p>以上多种耗时操作最终会<strong>降低集群的可用性</strong>，本节目标就是想办法减少日志长度，将大小控制在可控范围内。</p>
+<h3 id="日志压缩与数据快照"><a href="#日志压缩与数据快照" class="headerlink" title="日志压缩与数据快照"></a>日志压缩与数据快照</h3><p>参考论文第 7 节，Raft 最终选择快照机制来压缩日志大小，如下的 1-5 <strong>committed</strong> 状态的日志被压缩为快照，最终使长度为 7 的日志 = 长度为 2 的日志 + 快照数据。快照数据分为两部分：</p>
+<ul>
+<li>Raft 的快照元信息：LastIncludedIndex 与 LastIncludedTerm，用于生成快照后的 AppendEntries 一致性检查。</li>
+<li><p>kvDB 的状态：生成快照时的数据库状态，用于节点重启后恢复数据。</p>
+<p><a href="https://images.yinzige.com/2019-06-13-160714.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-13-160714.png" width="60%"></a></p>
+</li>
+</ul>
+<p>如上，压缩日志的本质是用<strong>某条 committed 日志代替之前的所有 committed 日志</strong>。所以生成快照会删除 Raft 的日志：<code>raft.logs = rf.logs[snapshotIndex:]</code>，于是要回头修改 Lab2 中基于日志长度、取日志的操作，需要把快照索引的偏移量加回去。所以需要将快照信息放入 Raft 结构中：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Raft <span class="keyword">struct</span> {</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// snapshot</span></span><br><span class="line">    lastIncludedIndex <span class="keyword">int</span> <span class="comment">// the snapshot replaces all entries up through and including this index</span></span><br><span class="line">    lastIncludedTerm  <span class="keyword">int</span> <span class="comment">// term of lastIncludedIndex</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>添加几个公用的日志偏移量计算方法，并替换那些直接对 rf.logs 的读操作：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">getLog</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">LogEntry</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.logs[i-rf.lastIncludedIndex]</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">addIdx</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.lastIncludedIndex + i</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">subIdx</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> i - rf.lastIncludedIndex</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">lastIdx</span><span class="params">()</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.lastIncludedIndex + <span class="built_in">len</span>(rf.logs) - <span class="number">1</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">lastTerm</span><span class="params">()</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.logs[<span class="built_in">len</span>(rf.logs)<span class="number">-1</span>].Term</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">logLength</span><span class="params">()</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.lastIdx() + <span class="number">1</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p><a href="https://images.yinzige.com/2019-06-12-013217.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-12-013217.png" alt="image-20190612093216321"></a></p>
+<ol>
+<li>任意节点都要实时检测 Raft 模块的日志大小。</li>
+<li>若日志大小超过临界值，将 kvDB 数据发送给 Raft 模块用于生成快照。</li>
+<li>Raft 将快照日志、kvDB 均持久化到 persister（模拟磁盘）</li>
+<li>leader 在心跳时若发现有新快照则同步，切换 AppendEntries RPC 为 InstallSnaoshot RPC</li>
+<li>follower 收到快照后，与本地快照及日志对比，决定进行日志覆盖或删除。</li>
+<li>follower 将新快照数据持久化。</li>
+<li>follower 将 leader 的快照数据回传给上层的 KVServer2，重置 kvDB 使状态机数据达成一致。</li>
+</ol>
+<h4 id="流程划分"><a href="#流程划分" class="headerlink" title="流程划分"></a>流程划分</h4><p> 1-2-3：各节点在日志过多时独立生成快照。leader 的存在是为了解决冲突维护日志的一致性，在 follower 生成快照时日志本身就是 <strong>committed</strong> 状态的，这并不违反强 leader 原则。</p>
+<p>4-5-6-7：仅 leader 操作。它通过 InstallSnapshot 将自己的快照同步给各 follower，使日志过于落后的 follower 快速达成一致。</p>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestSnapshotRPC3B</strong>：三个节点集群，若其中一个长时间网络隔离后重新加入集群，要能通过 InstallSnapshot RPC 加速日志回放，其他两个节点要能独立生成快照，使日志大小不超过 1000 字节。</li>
+<li><strong>TestSnapshotRecover3B</strong>：节点重启后要能从 persister 中恢复快照数据。</li>
+<li>其他测试：在网络分区、节点崩溃重启的环境下保持 kvDB 数据的线性一致性。</li>
+</ul>
+<p>测试通过：</p>
+<p><a href="https://images.yinzige.com/2019-06-15-073120.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-15-073120.png" alt="image-20190615153120071"></a></p>
+<h2 id="KVServer-生成快照"><a href="#KVServer-生成快照" class="headerlink" title="KVServer 生成快照"></a>KVServer 生成快照</h2><p>认真阅读并思考：<a href="https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html" target="_blank" rel="noopener">Lecture: Part B</a> 和 <a href="https://thesquareplanet.com/blog/students-guide-to-raft/#an-aside-on-optimizations" target="_blank" rel="noopener">Guide: An aside on optimizations</a></p>
+<h3 id="快照数据"><a href="#快照数据" class="headerlink" title="快照数据"></a>快照数据</h3><p>kvServer 在重启后会先从 persister 中读取快照信息重置 kvDB，同时为检测 Client 的重复请求，所以必须将 <code>kv.cid2seq</code> 一起持久化：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">encodeSnapshot</span><span class="params">()</span> []<span class="title">byte</span></span> {</span><br><span class="line">    w := <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line">    e := gob.NewEncoder(w)</span><br><span class="line">    <span class="keyword">if</span> err := e.Encode(kv.cid2seq); err != <span class="literal">nil</span> {</span><br><span class="line">        <span class="built_in">panic</span>(fmt.Errorf(<span class="string">"encode cid2seq fail: %v"</span>, err))</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> err := e.Encode(kv.db); err != <span class="literal">nil</span> {</span><br><span class="line">        <span class="built_in">panic</span>(fmt.Errorf(<span class="string">"encode db fail: %v"</span>, err))</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> w.Bytes()</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="检测-Raft-日志大小"><a href="#检测-Raft-日志大小" class="headerlink" title="检测 Raft 日志大小"></a>检测 Raft 日志大小</h3><p>每次 kvServer 的 Raft 模块通知它有新日志达成一致，就意味着 Raft 的日志又新增了一条，就检测 Raft 的日志是否接近边界值。注意 lab 中的 <code>maxraftstate</code> 是日志大小的上限，要在快接近时提前生成快照，因为调用 Raft 模块生成快照抢锁是需要等待的，若不提前就很可能超出上限，无法通过测试。所以取 90% 提前生成：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            op := msg.Command.(Op)</span><br><span class="line">            kv.mu.Lock()</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            kv.checkSnapshot(msg.CommandIndex) <span class="comment">// use committed index as snapshot LastIncludedIndex</span></span><br><span class="line">            kv.mu.Unlock()</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">checkSnapshot</span><span class="params">(appliedId <span class="keyword">int</span>)</span></span> {</span><br><span class="line">    <span class="keyword">if</span> kv.maxraftstate == <span class="number">-1</span> {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// take snapshot when raft size come near upper limit</span></span><br><span class="line">    <span class="keyword">if</span> kv.persister.RaftStateSize() &lt; kv.maxraftstate*<span class="number">9</span>/<span class="number">10</span> {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">  </span><br><span class="line">    rawSnapshot := kv.encodeSnapshot()</span><br><span class="line">    <span class="keyword">go</span> kv.rf.TakeSnapshot(appliedId, rawSnapshot) <span class="comment">// not take long time with KVServer's lock</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="通知-Raft-同步快照"><a href="#通知-Raft-同步快照" class="headerlink" title="通知 Raft 同步快照"></a>通知 Raft 同步快照</h3><p>kvServer 需告知 Raft 模块以哪条 committed 日志为准来生成快照，由于 applyCh 的 msg 都是 committed 的，所以如上直接使用它的 <code>msg.CommandIndex</code> 即可。</p>
+<p>Raft 收到生成快照的请求后更新完自己的快照信息就立刻返回，不要阻塞，快照同步交给心跳去处理：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// leader take snapshot should be async like Start(), must return quickly</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">TakeSnapshot</span><span class="params">(appliedId <span class="keyword">int</span>, rawSnapshot []<span class="keyword">byte</span>)</span></span> {</span><br><span class="line">    rf.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> rf.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// lock competition may delayed snapshot call, check this otherwise rf.logs[0] may out of bounds</span></span><br><span class="line">    <span class="keyword">if</span> appliedId &lt;= rf.lastIncludedIndex {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// discard the entries before that index, preserved it for AppendEntries consistency check</span></span><br><span class="line">    rf.logs = rf.logs[rf.subIdx(appliedId):]</span><br><span class="line">    rf.lastIncludedIndex = appliedId</span><br><span class="line">    rf.lastIncludedTerm = rf.logs[<span class="number">0</span>].Term</span><br><span class="line">    rf.persistStatesAndSnapshot(rawSnapshot)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>KVServer 多次调用 Raft.TakeSnapshot() 的执行顺序会收到 Raft 抢占锁的影响，可能新快照会先抢到锁，轮到旧日志处理时对应的 appliedId 日志已被删除，会造成 <code>rf.logs[0]</code> 溢出，所以要过滤旧快照。</p>
+<h2 id="Raft-同步快照"><a href="#Raft-同步快照" class="headerlink" title="Raft 同步快照"></a>Raft 同步快照</h2><h3 id="Leader-使用快照代替日志加速同步"><a href="#Leader-使用快照代替日志加速同步" class="headerlink" title="Leader 使用快照代替日志加速同步"></a>Leader 使用快照代替日志加速同步</h3><p>在 Lab2 中已实现 leader 向各 follower 发送缺失日志的心跳逻辑，引入快照机制后，可直接发送快照。当leader 发现快照比 nextIndex 还新，就将 AppendEntries RPC 换成 InstallSnapshot RPC，大大减少要同步的日志数量。</p>
+<p>如下leader 只需发送 6 一条日志，而非 3 4 5 6 四条：</p>
+<p> <a href="https://images.yinzige.com/2019-06-14-152901.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-14-152901.png" width="80%"></a></p>
+<p>在 Leader 给 follower 同步日志前，检查快照若更新则走 InstallSnapshot RPC 的逻辑：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// leader sync logs to followers</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">sync</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">        <span class="keyword">if</span> i == rf.me {</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">            <span class="keyword">for</span> {</span><br><span class="line">                <span class="keyword">if</span> !rf.isRunningLeader() {</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                }</span><br><span class="line"></span><br><span class="line">                rf.mu.Lock()</span><br><span class="line">                rf.syncConds[server].Wait() <span class="comment">// wait for trigger</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// sync new log or missing logs to server</span></span><br><span class="line">                next := rf.nextIndex[server]</span><br><span class="line"></span><br><span class="line">                <span class="comment">// if follower far behind from leader, just send snapshot to it for speeding up replay</span></span><br><span class="line">                <span class="keyword">if</span> next &lt;= rf.lastIncludedIndex {</span><br><span class="line">                    rf.syncSnapshot(server) <span class="comment">// InstallSnapshot RPC logic</span></span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                }</span><br><span class="line">          </span><br><span class="line">               <span class="comment">// AppendEntries RPC logic</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="InstallSnapshot-RPC"><a href="#InstallSnapshot-RPC" class="headerlink" title="InstallSnapshot RPC"></a>InstallSnapshot RPC</h3><p>参考论文的图 13，RPC 参数如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> InstallSnapshotArgs <span class="keyword">struct</span> {</span><br><span class="line">    Term              <span class="keyword">int</span>    <span class="comment">// leader's term</span></span><br><span class="line">    LeaderId          <span class="keyword">int</span>    <span class="comment">// so follower can redirect clients</span></span><br><span class="line">    LastIncludedIndex <span class="keyword">int</span>    <span class="comment">// the snapshot replaces all entries up through and including this index</span></span><br><span class="line">    LastIncludedTerm  <span class="keyword">int</span>    <span class="comment">// term of lastIncludedIndex</span></span><br><span class="line">    Data              []<span class="keyword">byte</span> <span class="comment">// raw bytes of the snapshot chunk, starting at offset</span></span><br><span class="line">    <span class="comment">// Offset            int    // byte offset where chunk is positioned in the snapshot file</span></span><br><span class="line">    <span class="comment">// Done              bool   // true if this is the last chunk</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> InstallSnapshotReply <span class="keyword">struct</span> {</span><br><span class="line">    Term <span class="keyword">int</span> <span class="comment">// currentTerm, for leader to update itself</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>lab 为简化流程，每次直接发送整个快照，而非论文中切割为 chunk 分块有序同步，所以 offset 取 0，done 取 true</p>
+<h4 id="Leader-端"><a href="#Leader-端" class="headerlink" title="Leader 端"></a>Leader 端</h4><figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sync snap shot to follower server</span></span><br><span class="line"><span class="comment">// rf.mu is locked when call syncSnapshot()</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">syncSnapshot</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">    <span class="keyword">if</span> rf.state != Leader || rf.crashed {</span><br><span class="line">        rf.mu.Unlock()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    args := InstallSnapshotArgs{</span><br><span class="line">        Term:              rf.curTerm,</span><br><span class="line">        LeaderId:          rf.me,</span><br><span class="line">        LastIncludedIndex: rf.lastIncludedIndex,</span><br><span class="line">        LastIncludedTerm:  rf.lastIncludedTerm,</span><br><span class="line">        Data:              rf.persister.ReadSnapshot(),</span><br><span class="line">    }</span><br><span class="line">    rf.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> reply InstallSnapshotReply</span><br><span class="line">    respCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>{})</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">        <span class="keyword">if</span> ok := rf.sendInstallSnapshot(server, &amp;args, &amp;reply); ok {</span><br><span class="line">            respCh &lt;- <span class="keyword">struct</span>{}{}</span><br><span class="line">        }</span><br><span class="line">    }()</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(RPC_CALL_TIMEOUT):</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">case</span> &lt;-respCh:</span><br><span class="line">        <span class="built_in">close</span>(respCh)</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    rf.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> rf.mu.Unlock()</span><br><span class="line">    <span class="keyword">if</span> reply.Term &gt; rf.curTerm {</span><br><span class="line">        rf.back2Follower(reply.Term, VOTE_NIL)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> rf.state != Leader || reply.Term &lt; rf.curTerm { <span class="comment">// curTerm changed already</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    rf.matchIndex[server] = args.LastIncludedIndex</span><br><span class="line">    rf.nextIndex[server] = args.LastIncludedIndex + <span class="number">1</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>注意在 syncSnapshot 中调用 RPC 前及时释放锁，否则同一时间只能发起一个调用。</p>
+<h4 id="Follower-端"><a href="#Follower-端" class="headerlink" title="Follower 端"></a>Follower 端</h4><figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// follower receive snapshot from leader and force overwrite local logs</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">InstallSnapshot</span><span class="params">(args *InstallSnapshotArgs, reply *InstallSnapshotReply)</span></span> {</span><br><span class="line">    rf.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> rf.mu.Unlock()</span><br><span class="line">    reply.Term = rf.curTerm</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. reply false if term &lt; currentTerm</span></span><br><span class="line">    <span class="keyword">if</span> args.Term &lt; rf.curTerm {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> args.Term &gt; rf.curTerm {</span><br><span class="line">        reply.Term = args.Term</span><br><span class="line">        rf.back2Follower(args.Term, VOTE_NIL)</span><br><span class="line">    }</span><br><span class="line">    rf.resetElectTimer()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// check snapshot may expired by lock competition, otherwise rf.logs may overflow below</span></span><br><span class="line">    <span class="keyword">if</span> args.LastIncludedIndex &lt;= rf.lastIncludedIndex {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. Create new snapshot file if first chunk (offset is 0)</span></span><br><span class="line">    <span class="comment">// 3. Write data into snapshot file at given offset</span></span><br><span class="line">    <span class="comment">// 4. Reply and wait for more data chunks if done is false</span></span><br><span class="line">    <span class="comment">// 5. Save snapshot file, discard any existing or partial snapshot with a smaller index</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. If existing log entry has same index and term as snapshot's last included entry, retain log entries following it and reply</span></span><br><span class="line">    <span class="keyword">if</span> args.LastIncludedIndex &lt; rf.lastIdx() {</span><br><span class="line">        <span class="comment">// the args.LastIncludedIndex log has agreed, if there are more logs, just retain them</span></span><br><span class="line">        rf.logs = rf.logs[args.LastIncludedIndex-rf.lastIncludedIndex:]</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">        <span class="comment">// 7. Discard the entire log</span></span><br><span class="line">        <span class="comment">// empty log use for AppendEntries RPC consistency check</span></span><br><span class="line">        rf.logs = []LogEntry{{Term: args.LastIncludedTerm, Command: <span class="literal">nil</span>}}</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// update snapshot state and persist them</span></span><br><span class="line">    rf.lastIncludedIndex = args.LastIncludedIndex</span><br><span class="line">    rf.lastIncludedTerm = args.LastIncludedTerm</span><br><span class="line">    rf.persistStatesAndSnapshot(args.Data)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// force the follower's log catch up with leader</span></span><br><span class="line">    rf.commitIndex = max(rf.commitIndex, args.LastIncludedIndex)</span><br><span class="line">    rf.lastApplied = max(rf.lastApplied, args.LastIncludedIndex)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 8. Reset state machine using snapshot contents (and load snapshot's cluster configuration)</span></span><br><span class="line">    rf.applyCh &lt;- ApplyMsg{</span><br><span class="line">        CommandValid: <span class="literal">false</span>, <span class="comment">// it's snapshot raw data, not a command</span></span><br><span class="line">        CommandIndex: <span class="number">-1</span>,</span><br><span class="line">        Command:      args.Data, <span class="comment">// use for KVServer restore kvDB</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>对应修改 KVServer 监听 applyCh 的逻辑，从中取出 leader 发来的快照数据：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            <span class="keyword">if</span> !msg.CommandValid { <span class="comment">// snapshot data</span></span><br><span class="line">                buf := msg.Command.([]<span class="keyword">byte</span>)</span><br><span class="line">                kv.mu.Lock()</span><br><span class="line">                kv.db, kv.cid2seq = kv.decodeSnapshot(buf) <span class="comment">// restore kvDB and cid2seq</span></span><br><span class="line">                kv.mu.Unlock()</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            }</span><br><span class="line">            </span><br><span class="line">      <span class="comment">// log agreement loginc</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>至此分别完成了三件事：</p>
+<ul>
+<li>各节点能实时检测 Raft 日志大小，独立地生成快照并持久化，重启时读取。</li>
+<li>leader 生成快照后通过心跳发起 InstallSnapshot RPC 给 followers 加速日志回放和同步。</li>
+<li>followers 将快照数据回传给上层的 KVServer 重置 kvDB 和 cid2seq，最终状态与 leader 一致。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Lab2 中实现了 Raft 算法的三个子模块，开放了 <code>Start()</code> 和 <code>applyCh</code> 供状态机使用。</p>
+<p>Lab3A 在其 Lab2 基础上实现了容错的 kvDB 集群，依靠底层 Raft 算法在节点崩溃重启甚至不可用、网络延迟丢包甚至分区的环境下，依旧对多个 Client 保证数据的线性一致性。</p>
+<p>Lab3B 实现了 Raft 日志大小的实时检测并截断生成快照，由 leader 通过 InstallSnapshot RPC 将日志同步给过于落后的节点来加速回放，同时重置各状态机（kvDB）的状态，使其数据与 leader 最达成一致。</p>
+<p>Lab3 比 Lab2 稍简单，关键在于梳理好 KVServer 与底层的 Raft 模块的交互流程，需重读 Raft 论文的第 7、8 节的快照机制，思考 lecture 的提示。调试时活锁、状态更新时机有误等问题居多，其余细节在代码注释中有标注。</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/" rel="next" title="Lab3A. 基于 Raft 实现容错的 kvDB">
+                  <i class="fa fa-chevron-left"></i> Lab3A. 基于 Raft 实现容错的 kvDB
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab3B"><span class="nav-number">1.</span> <span class="nav-text">Lab3B</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志过大的问题"><span class="nav-number">1.1.</span> <span class="nav-text">日志过大的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志压缩与数据快照"><span class="nav-number">1.2.</span> <span class="nav-text">日志压缩与数据快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交互流程"><span class="nav-number">1.3.</span> <span class="nav-text">交互流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流程划分"><span class="nav-number">1.3.1.</span> <span class="nav-text">流程划分</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试用例"><span class="nav-number">1.4.</span> <span class="nav-text">测试用例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KVServer-生成快照"><span class="nav-number">2.</span> <span class="nav-text">KVServer 生成快照</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#快照数据"><span class="nav-number">2.1.</span> <span class="nav-text">快照数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检测-Raft-日志大小"><span class="nav-number">2.2.</span> <span class="nav-text">检测 Raft 日志大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通知-Raft-同步快照"><span class="nav-number">2.3.</span> <span class="nav-text">通知 Raft 同步快照</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft-同步快照"><span class="nav-number">3.</span> <span class="nav-text">Raft 同步快照</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Leader-使用快照代替日志加速同步"><span class="nav-number">3.1.</span> <span class="nav-text">Leader 使用快照代替日志加速同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InstallSnapshot-RPC"><span class="nav-number">3.2.</span> <span class="nav-text">InstallSnapshot RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Leader-端"><span class="nav-number">3.2.1.</span> <span class="nav-text">Leader 端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Follower-端"><span class="nav-number">3.2.2.</span> <span class="nav-text">Follower 端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备19022833号-1 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

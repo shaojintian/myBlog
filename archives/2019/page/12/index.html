@@ -52,17 +52,16 @@
   };
 </script>
 
-  <meta name="description" content="经常会遇到从GitHub上download的progect在idea里面打开是普通文件夹形式，而并不是我们想要的module形式（文件夹图标右下角有个蓝色的tag），那么如何快速转换成我们想要的module形式呢？ 1、右击project，选择第二项“add framework support”，然后从对话框左侧选择“Maven”，OK即可 2、设置maven仓库地址：右击file，选择setti">
-<meta property="og:type" content="article">
-<meta property="og:title" content="idea 普通文件夹 转换成 java module">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;Untitled&#x2F;index.html">
+  <meta name="description" content="only a geek">
+<meta property="og:type" content="website">
+<meta property="og:title" content="邵靳天的小站">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;2019&#x2F;page&#x2F;12&#x2F;index.html">
 <meta property="og:site_name" content="邵靳天的小站">
-<meta property="og:description" content="经常会遇到从GitHub上download的progect在idea里面打开是普通文件夹形式，而并不是我们想要的module形式（文件夹图标右下角有个蓝色的tag），那么如何快速转换成我们想要的module形式呢？ 1、右击project，选择第二项“add framework support”，然后从对话框左侧选择“Maven”，OK即可 2、设置maven仓库地址：右击file，选择setti">
+<meta property="og:description" content="only a geek">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-23T09:16:29.285Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/23/Untitled/">
+<link rel="canonical" href="http://yoursite.com/archives/2019/page/12/">
 
 
 <script id="page-configurations">
@@ -70,13 +69,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: true,
+    isPost: false,
     isPage: false,
-    isArchive: false
+    isArchive: true
   };
 </script>
 
-  <title>idea 普通文件夹 转换成 java module | 邵靳天的小站</title>
+  <title>归档 | 邵靳天的小站</title>
   
 
 
@@ -217,104 +216,93 @@
           <div class="content">
             
 
-  <div class="posts-expand">
-      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Untitled/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          idea 普通文件夹 转换成 java module
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-23 17:16:00 / 修改时间：17:16:29" itemprop="dateCreated datePublished" datetime="2019-11-23T17:16:00+08:00">2019-11-23</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/idea/" itemprop="url" rel="index">
-                    <span itemprop="name">idea</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        
+        <span class="collection-header">很好! 目前共计 115 篇日志。 继续努力。</span>
+      </div>
 
       
-        <p>经常会遇到从GitHub上download的progect在idea里面打开是普通文件夹形式，而并不是我们想要的module形式（文件夹图标右下角有个蓝色的tag），那么如何快速转换成我们想要的module形式呢？</p>
-<p>1、右击project，选择第二项“add framework support”，然后从对话框左侧选择“Maven”，OK即可</p>
-<p>2、设置maven仓库地址：右击file，选择settings，找到maven，设置maven home directory以及后面两项。（图片大小超过限制。。我就不传图了）</p>
-<p>3、OK完成，等加载刷新。</p>
-<hr>
-<p>第二种情况：Remove Module（当你把project下中的一个module删除delete之后，会发现该文件夹右下角的蓝色flag消失了，但文件还在）。。那么如果你想重新把它加入module的话，该如何操作呢？</p>
-<p>1、右击该普通文件夹的父级（即它上一级的module），选择Open Module Settings，之后会弹出一个框</p>
-<p>2、在中间文件夹这一列找到刚刚的父级module，选中后点击列顶部的加号“+”，在弹出框选择“Import Module”，找到要加入module的子级文件夹，点击OK</p>
-<p>3、弹出框，选择“Next”，always，最后一步选择“Select all”，然后点击“Finish”，搞定！</p>
-<p>此时你会发现，消失的蓝色flag又恢复啦！</p>
-
+    <div class="collection-year">
+      <h1 class="collection-header">2019</h1>
     </div>
 
-    
-    
-    
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-      <footer class="post-footer">
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-11-15T05:05:00+08:00"
+              content="2019-11-15">
+          11-15
+        </time>
+      </div>
 
-        
+      <h2 class="post-title">
+          <a class="post-title-link" href="/2019/11/15/HDU%205901%20%E8%B6%85%E5%A4%A7%E7%B4%A0%E6%95%B0%E5%BF%AB%E5%88%A4/" itemprop="url">
+            <span itemprop="name">HDU 5901 超大素数快判</span>
+          </a>
+      </h2>
 
-          <div class="post-nav">
-            <div class="post-nav-next post-nav-item">
-                <a href="/2019/11/23/Netty%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80/" rel="next" title="Netty源码分析[一]">
-                  <i class="fa fa-chevron-left"></i> Netty源码分析[一]
-                </a>
-            </div>
-
-            <span class="post-nav-divider"></span>
-
-            <div class="post-nav-prev post-nav-item">
-                <a href="/2019/11/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F28-%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式28-访问者模式">
-                  设计模式28-访问者模式 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-      </footer>
-    
+    </header>
   </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-11-15T05:05:00+08:00"
+              content="2019-11-15">
+          11-15
+        </time>
+      </div>
+
+      <h2 class="post-title">
+          <a class="post-title-link" href="/2019/11/15/%E6%9D%AD%E7%94%B5ACM%E9%A2%98%E7%9B%AE%E5%88%86%E7%B1%BB/" itemprop="url">
+            <span itemprop="name">杭电ACM题目分类</span>
+          </a>
+      </h2>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-11-15T05:04:00+08:00"
+              content="2019-11-15">
+          11-15
+        </time>
+      </div>
+
+      <h2 class="post-title">
+          <a class="post-title-link" href="/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/" itemprop="url">
+            <span itemprop="name">MIT6.828——Lab1 Booting a PC</span>
+          </a>
+      </h2>
+
+    </header>
+  </article>
+
+
+    </div>
+  </div>
   
   
   
 
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/archives/2019/page/11/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/2019/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2019/page/11/">11</a><span class="page-number current">12</span>
+  </nav>
+
 
 
           </div>
@@ -356,12 +344,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-count">115</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">

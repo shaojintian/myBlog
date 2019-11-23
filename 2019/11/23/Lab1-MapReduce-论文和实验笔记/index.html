@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="baidu-site-verification" content="PKO0plnZfq" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="总结下 6.824 MapReduce lab 的论文笔记和实验过程。本文代码：&amp;lt;a href=&amp;quot;https:&#x2F;&#x2F;github.com&#x2F;shaojintian&#x2F;MIT6.824&#x2F;tree&#x2F;master&#x2F;mapreduce&amp;quot; target=&amp;quot;_blank&amp;quot; rel=&amp;quot;noopener&amp;quot;&amp;gt;MIT6.824&#x2F;mapred">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lab1. MapReduce 论文和实验笔记">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;Lab1-MapReduce-%E8%AE%BA%E6%96%87%E5%92%8C%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="总结下 6.824 MapReduce lab 的论文笔记和实验过程。本文代码：&amp;lt;a href=&amp;quot;https:&#x2F;&#x2F;github.com&#x2F;shaojintian&#x2F;MIT6.824&#x2F;tree&#x2F;master&#x2F;mapreduce&amp;quot; target=&amp;quot;_blank&amp;quot; rel=&amp;quot;noopener&amp;quot;&amp;gt;MIT6.824&#x2F;mapred">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-04-03-042855.png">
+<meta property="og:updated_time" content="2019-11-23T14:13:33.852Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-04-03-042855.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/23/Lab1-MapReduce-%E8%AE%BA%E6%96%87%E5%92%8C%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Lab1. MapReduce 论文和实验笔记 | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <meta name="baidu-site-verification" content="PKO0plnZfq" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，后端开发，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Lab1-MapReduce-%E8%AE%BA%E6%96%87%E5%92%8C%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lab1. MapReduce 论文和实验笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-23 22:10:00 / 修改时间：22:13:33" itemprop="dateCreated datePublished" datetime="2019-11-23T22:10:00+08:00">2019-11-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mit6-824/" itemprop="url" rel="index">
+                    <span itemprop="name">mit6.824</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>总结下 6.824 MapReduce lab 的论文笔记和实验过程。本文代码：&lt;a href=&quot;https://github.com/shaojintian/MIT6.824/tree/master/mapreduce&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;MIT6.824/mapreduce&lt;/a&gt;&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自己的 nsx PRC 框架 v0.2 需支持分布式环境下服务变更的通知，对 zookeeper 不想只停留在会用的层面，于是学习 <a href="https://pdos.csail.mit.edu/6.824/schedule.html" target="_blank" rel="noopener">MIT 6.824 Distributed Systems</a>，本文是 Lec1: MapReduce 的学习笔记。</p>
+<h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><p>原论文：<a href="https://research.google.com/archive/mapreduce-osdi04.pdf" target="_blank" rel="noopener">MapReduce: Simplified Data Processing on Large Clusters</a></p>
+<h3 id="问题来源"><a href="#问题来源" class="headerlink" title="问题来源"></a>问题来源</h3><p>在 2004 年以前，Google 团队为处理各种原始数据实现了上百个专用计算程序，比如对原始网页文档生成倒排索引，数据量少时单机处理就行，但数据量过大后单机处理就太耗时了，只能将数据分布在多个主机上并行处理，最后聚合各节点生成的索引数据。</p>
+<p>分布式计算降低了耗时，但也必须解决一些问题：如何分发数据？多节点如何保证负载均衡？如何处理节点失效？… 多节点调度工作并不简单。类似的大数据处理场景在谷歌内部还有很多。于是 Jeff 团队就将类似场景的处理流程抽象出来，在 2004 年推出了分布式计算模型 MapReduce，用户只需自定义的 2 个数据的处理函数：</p>
+<ul>
+<li>如何分割原始数据：Map Func</li>
+<li>如何聚合中间数据：Reduce Func</li>
+</ul>
+<p>之后就能使用 MR 模型通过加节点来提高计算效率，关于节点容错、数据分发、负载均衡的问题 MR 都已处理。</p>
+<h3 id="MR-应用实例"><a href="#MR-应用实例" class="headerlink" title="MR 应用实例"></a>MR 应用实例</h3><p>举个例子：对文本文件中的单词计数，论文中 MR 内部处理的伪代码如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MR 处理的数据是 Key-Value 结构的</span></span><br><span class="line"><span class="comment">// key 是文件名，value 是整个文件内容，对空格隔开的每个单词进行计数 "1" 操作</span></span><br><span class="line"><span class="keyword">map</span>(String key, String value):</span><br><span class="line">    <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents</span></span><br><span class="line">    <span class="keyword">for</span> each word w in value:</span><br><span class="line">        EmitIntermediate(w, <span class="string">"1"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对每个单词 key 都进行词频累加</span></span><br><span class="line">reduce(String key, Iterator values):</span><br><span class="line">    <span class="comment">// key: a word</span></span><br><span class="line">    <span class="comment">// values: a list of counts</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">        result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result));</span><br></pre></td></tr></tbody></table></figure>
+<p>MR 内部隐藏了 Map 操作后将计数结果写入中间文件，Reduce 操作从中间文件读取计数信息的细节。只需用户自己实现 Map/Reduce 的逻辑，即可将任务分布式并行化执行来大幅提升效率。</p>
+<h3 id="MR-数据结构"><a href="#MR-数据结构" class="headerlink" title="MR 数据结构"></a>MR 数据结构</h3><p>MR 面向的输入输出数据都是 Key-Value 结构，其中 k-v 约定都是 string 类型，值可能是整个原始文件的内容，也可能是数字，取决于用户自定义的 map func 和 reduce func，这 2 个函数的关联类型是固定的：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">map    (k1,v1)       → list(k2,v2)</span><br><span class="line">reduce (k2,list(v2)) → list(v2)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>map 处理 raw data 对每个内容点 k 都生成 k-v pair</li>
+<li>reduce 对每个 k 都聚合其 list 中间数据，最终生成聚合结果</li>
+</ul>
+<h3 id="MR-执行流程"><a href="#MR-执行流程" class="headerlink" title="MR 执行流程"></a>MR 执行流程</h3><p>首先说明 MapReduce 是一种分布式计算模型，不是某个开源的分布式调度框架，所以在不同场景下对模型的实现代码并不相同。比如对文本文件中的单词进行计数，可使用 MR 模型来实现分布式运行，系统运行流程如下：</p>
+<p><a href="https://images.yinzige.com/2019-04-03-042855.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-03-042855.png" alt=""></a></p>
+<ul>
+<li>Split： MR 将 input files 分割为 M 个子数据片段</li>
+<li>Fork：将用户程序 fork 后运行在多个节点上，整个运行过程会执行 M 个 map task 和 R 个 reduce task，节点由一个 master 和多个 worker 组成，其中 master 负责调度空闲的 worker 来运行 task</li>
+<li>Map：<ul>
+<li>被分配到 map task 的 worker 先读取子数据片段，再调用 Map func 来处理原始数据生成 k-v pairs 中间数据，并通过分区函数归类到 R 个子文件，随后写入本地磁盘。</li>
+<li>map worker 将中间文件的存储地址通知 master，随后 master 将 R 个中间文件分配给 reduce worker 处理</li>
+</ul>
+</li>
+<li>Reduce：<ul>
+<li>被分配到 reduce task 的 worker 使用 RPC 读取 map worker 上 master 给定的中间文件。虽然同一个 key 会被分区到同一个中间文件，但 key 与 key 之间的写入顺序是无序的，所以读取完毕后需对 keys 统一进行排序，否则输出到 output file 的结果是无序的，会导致 master merge 的结果也是无序的。</li>
+<li>排序完毕后对每个 key 都调用 Reduce func 来进行聚合，并将结果输出到对应分区的 output file 中</li>
+</ul>
+</li>
+<li>Merge：master 等所有的 map task 和 reduce task 都执行完毕后，将 R 个 output files 进行 Merge 操作，整个分布式计算过程执行结束。</li>
+</ul>
+<h3 id="处理容错"><a href="#处理容错" class="headerlink" title="处理容错"></a>处理容错</h3><h4 id="worker-失效"><a href="#worker-失效" class="headerlink" title="worker 失效"></a>worker 失效</h4><p>master 会定期向各个 worker 发送 ping 心跳包，若在超时时间内收到 pong 包则认为 worker 有效，否则标记为失效不可用。MR 会将原来分配到失效 worker 的 task 回收重新分配到其他可用的 worker 上重新执行。值得区分的是：</p>
+<ul>
+<li>map worker 失效后是必须重新运行 map task，因为 worker 崩溃了无法处理本地中间文件的访问请求</li>
+<li>reduce worker 如果失效但已生成聚合文件，通知给了 master 该文件在 GFS 中的位置，就不必重新运行</li>
+</ul>
+<p>相比论文中如上第 2 种 worker 容错机制，实际在 lab 中都是出错超时直接将 task 分配给其他 worker 运行，因为 lab 并没有实现 reduce worker 输出结果到 output file 后通知 master 的机制。</p>
+<h4 id="master-失效"><a href="#master-失效" class="headerlink" title="master 失效"></a>master 失效</h4><p>这种情形论文中只给出了简单的处理方案，即定期将 master 的所有状态作为快照 checkpoint 持久化到磁盘，当 master 崩溃后从最近的 checkpoint 启动新的 master 继续处理。</p>
+<p>因为 MR 要求 map func/reduce func 都必须是功能函数，不保留任何状态，即相同的输入能得到相同的输出。所以 master 恢复后继续调度运行是可行的。</p>
+<h4 id="GFS"><a href="#GFS" class="headerlink" title="GFS"></a>GFS</h4><p>论文中的容错机制充分利用了 GFS 分布式文件系统的文件原子特性，可直接看原论文是怎么用的。</p>
+<h3 id="MR-实用技巧"><a href="#MR-实用技巧" class="headerlink" title="MR 实用技巧"></a>MR 实用技巧</h3><h4 id="分区函数"><a href="#分区函数" class="headerlink" title="分区函数"></a>分区函数</h4><p>在 Map 阶段，使用 <code>hash(key) mod R</code> 来保证每个 key 都能汇总到同一中间文件，保证所有 key 尽可能地均匀分布在 R 个中间文件中。</p>
+<h4 id="保证顺序"><a href="#保证顺序" class="headerlink" title="保证顺序"></a>保证顺序</h4><p>在 Reduce 阶段从中间文件中读取数据时得先排序再聚合，这样聚合到 output files 之间就是分段有序的。</p>
+<h2 id="实验笔记"><a href="#实验笔记" class="headerlink" title="实验笔记"></a>实验笔记</h2><h3 id="Part1-处理-MR-的输入输出"><a href="#Part1-处理-MR-的输入输出" class="headerlink" title="Part1. 处理 MR 的输入输出"></a>Part1. 处理 MR 的输入输出</h3><p>注意 map task 的输出要能被 reduce task 读取，所以要约定好 encode/decode 结构。lab 注释建议每行存储一个 JSON Encode 后的  k-v，自己做的时候可以 <code>[]k-v</code> 直接 Marshal，在 reduce 读取时对应反序列化。</p>
+<h3 id="Part2-单机版-word-count"><a href="#Part2-单机版-word-count" class="headerlink" title="Part2. 单机版 word count"></a>Part2. 单机版 word count</h3><p>对照如上 MR 实例流程图实现。</p>
+<h3 id="Part3-分布式版-MR"><a href="#Part3-分布式版-MR" class="headerlink" title="Part3. 分布式版 MR"></a>Part3. 分布式版 MR</h3><p>lab 中使用 RPC 在本地模拟分布式多节点的情况，有新 worker 注册后会通知 registerChan，所以在 schedule 调度时候可 select 从 channel 接收新 worker，或者复用旧的空闲 worker 处理 task</p>
+<h3 id="Part4-实现-worker-容错"><a href="#Part4-实现-worker-容错" class="headerlink" title="Part4. 实现 worker 容错"></a>Part4. 实现 worker 容错</h3><p>lab 没有完全按照 paper 来，map/reduce worker 崩溃了都是直接分配给其他可用的空闲 worker 进行 re-execute，需注意多个 schedule goroutine 之间等待可用 worker 时可能出现竞态条件，自己尝试了几个方案后总结了一些经验：</p>
+<ul>
+<li><p>不要通过共享内存来进行通信，而是通过通信来共享内存</p>
+<p>lab 代码已有的 registerChan 是无缓冲 channel，如果复用它来在多个 schedule 间共享空闲 worker，那 map 任务结束后再向它发送 worker 会直接阻塞，此时使用缓冲 channel 合适。反之如果将 worker 的状态变更放到内存中共享使用，多个 schedule goroutine 共享和更新 worker，可能产生很多竞态条件。</p>
+</li>
+<li><p>锁使用粒度要小，要集中，不要写多个 goroutine 可能会产生竞态的代码</p>
+<p>如果跑测试有时候通过，有时候在 lock 周围 panic，那可能代码中还隐藏有竞态条件，而且不好复现调试。总之不要滥用 channel 和 sync.Mutex，梳理好多个 goroutine 之间数据传递方式后再写代码也不迟。</p>
+</li>
+</ul>
+<h3 id="Part5-使用-MR-生成倒排索引"><a href="#Part5-使用-MR-生成倒排索引" class="headerlink" title="Part5. 使用 MR 生成倒排索引"></a>Part5. 使用 MR 生成倒排索引</h3><p>注意给每个单词打分，将分数高的单词排在前边即可通过测试。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>MR 要求用户先把任务拆分成 Map / Reduce 2 种子任务，MR 并发地执行 Map 任务产生中间数据，再并发地执行 Reduce 任务聚合数据，最终 Merge 后输出结果，在处理海量数据时通过直接加 worker 就能提高系统性能，水平扩展能力很高。</p>
+<p>MR 是一种开创性的分布式计算模型，能通过拆分逻辑实现任务的分布式运行，比较通用化。现如今，虽然有的分布式场景下 MR 模型不是最佳解决方案，但对于设计和学习分布式系统依然很有价值。</p>
+<p>感谢 Jeffrey 团队</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/23/raft%E7%AC%94%E8%AE%B0/" rel="next" title="raft笔记">
+                  <i class="fa fa-chevron-left"></i> raft笔记
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/23/Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0/" rel="prev" title="Lab2A. Raft 选主实现">
+                  Lab2A. Raft 选主实现 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#论文阅读"><span class="nav-number">2.</span> <span class="nav-text">论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题来源"><span class="nav-number">2.1.</span> <span class="nav-text">问题来源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MR-应用实例"><span class="nav-number">2.2.</span> <span class="nav-text">MR 应用实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MR-数据结构"><span class="nav-number">2.3.</span> <span class="nav-text">MR 数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MR-执行流程"><span class="nav-number">2.4.</span> <span class="nav-text">MR 执行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理容错"><span class="nav-number">2.5.</span> <span class="nav-text">处理容错</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#worker-失效"><span class="nav-number">2.5.1.</span> <span class="nav-text">worker 失效</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#master-失效"><span class="nav-number">2.5.2.</span> <span class="nav-text">master 失效</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GFS"><span class="nav-number">2.5.3.</span> <span class="nav-text">GFS</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MR-实用技巧"><span class="nav-number">2.6.</span> <span class="nav-text">MR 实用技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分区函数"><span class="nav-number">2.6.1.</span> <span class="nav-text">分区函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保证顺序"><span class="nav-number">2.6.2.</span> <span class="nav-text">保证顺序</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验笔记"><span class="nav-number">3.</span> <span class="nav-text">实验笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part1-处理-MR-的输入输出"><span class="nav-number">3.1.</span> <span class="nav-text">Part1. 处理 MR 的输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part2-单机版-word-count"><span class="nav-number">3.2.</span> <span class="nav-text">Part2. 单机版 word count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part3-分布式版-MR"><span class="nav-number">3.3.</span> <span class="nav-text">Part3. 分布式版 MR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part4-实现-worker-容错"><span class="nav-number">3.4.</span> <span class="nav-text">Part4. 实现 worker 容错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part5-使用-MR-生成倒排索引"><span class="nav-number">3.5.</span> <span class="nav-text">Part5. 使用 MR 生成倒排索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备19022833号-1 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

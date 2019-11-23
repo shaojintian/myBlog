@@ -1,6 +1,1072 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Lab3B. Raft 日志压缩及数据快照</title>
+    <url>/2019/11/23/Lab3B-Raft-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BF%AB%E7%85%A7/</url>
+    <content><![CDATA[<div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>&lt;p&gt;总结 MIT6.824 Lab3B Log Compaction 实验笔记。&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab3B"><a href="#Lab3B" class="headerlink" title="Lab3B"></a>Lab3B</h2><h3 id="日志过大的问题"><a href="#日志过大的问题" class="headerlink" title="日志过大的问题"></a>日志过大的问题</h3><p>在 3A 部分，<code>Put</code>/<code>Append</code>/<code>Get</code> 等命令的日志只通过 leader 流向 followers，来维护节点间 kvDB 数据的一致性。但随着 Client 请求的增多，各节点的日志将占用更多空间。日志过长会导致：</p>
+<ul>
+<li>当发生日志冲突时，follower 从头到尾查找冲突任期的首条日志将更耗时。</li>
+<li>某节点因长时间的网络隔离导致日志过于落后，或新节点加入集群，replay 日志将更耗时。</li>
+</ul>
+<p>以上多种耗时操作最终会<strong>降低集群的可用性</strong>，本节目标就是想办法减少日志长度，将大小控制在可控范围内。</p>
+<h3 id="日志压缩与数据快照"><a href="#日志压缩与数据快照" class="headerlink" title="日志压缩与数据快照"></a>日志压缩与数据快照</h3><p>参考论文第 7 节，Raft 最终选择快照机制来压缩日志大小，如下的 1-5 <strong>committed</strong> 状态的日志被压缩为快照，最终使长度为 7 的日志 = 长度为 2 的日志 + 快照数据。快照数据分为两部分：</p>
+<ul>
+<li>Raft 的快照元信息：LastIncludedIndex 与 LastIncludedTerm，用于生成快照后的 AppendEntries 一致性检查。</li>
+<li><p>kvDB 的状态：生成快照时的数据库状态，用于节点重启后恢复数据。</p>
+<p><a href="https://images.yinzige.com/2019-06-13-160714.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-13-160714.png" width="60%"></a></p>
+</li>
+</ul>
+<p>如上，压缩日志的本质是用<strong>某条 committed 日志代替之前的所有 committed 日志</strong>。所以生成快照会删除 Raft 的日志：<code>raft.logs = rf.logs[snapshotIndex:]</code>，于是要回头修改 Lab2 中基于日志长度、取日志的操作，需要把快照索引的偏移量加回去。所以需要将快照信息放入 Raft 结构中：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Raft <span class="keyword">struct</span> {</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// snapshot</span></span><br><span class="line">    lastIncludedIndex <span class="keyword">int</span> <span class="comment">// the snapshot replaces all entries up through and including this index</span></span><br><span class="line">    lastIncludedTerm  <span class="keyword">int</span> <span class="comment">// term of lastIncludedIndex</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>添加几个公用的日志偏移量计算方法，并替换那些直接对 rf.logs 的读操作：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">getLog</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">LogEntry</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.logs[i-rf.lastIncludedIndex]</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">addIdx</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.lastIncludedIndex + i</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">subIdx</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> i - rf.lastIncludedIndex</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">lastIdx</span><span class="params">()</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.lastIncludedIndex + <span class="built_in">len</span>(rf.logs) - <span class="number">1</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">lastTerm</span><span class="params">()</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.logs[<span class="built_in">len</span>(rf.logs)<span class="number">-1</span>].Term</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">logLength</span><span class="params">()</span> <span class="title">int</span></span> {</span><br><span class="line">    <span class="keyword">return</span> rf.lastIdx() + <span class="number">1</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p><a href="https://images.yinzige.com/2019-06-12-013217.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-12-013217.png" alt="image-20190612093216321"></a></p>
+<ol>
+<li>任意节点都要实时检测 Raft 模块的日志大小。</li>
+<li>若日志大小超过临界值，将 kvDB 数据发送给 Raft 模块用于生成快照。</li>
+<li>Raft 将快照日志、kvDB 均持久化到 persister（模拟磁盘）</li>
+<li>leader 在心跳时若发现有新快照则同步，切换 AppendEntries RPC 为 InstallSnaoshot RPC</li>
+<li>follower 收到快照后，与本地快照及日志对比，决定进行日志覆盖或删除。</li>
+<li>follower 将新快照数据持久化。</li>
+<li>follower 将 leader 的快照数据回传给上层的 KVServer2，重置 kvDB 使状态机数据达成一致。</li>
+</ol>
+<h4 id="流程划分"><a href="#流程划分" class="headerlink" title="流程划分"></a>流程划分</h4><p> 1-2-3：各节点在日志过多时独立生成快照。leader 的存在是为了解决冲突维护日志的一致性，在 follower 生成快照时日志本身就是 <strong>committed</strong> 状态的，这并不违反强 leader 原则。</p>
+<p>4-5-6-7：仅 leader 操作。它通过 InstallSnapshot 将自己的快照同步给各 follower，使日志过于落后的 follower 快速达成一致。</p>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestSnapshotRPC3B</strong>：三个节点集群，若其中一个长时间网络隔离后重新加入集群，要能通过 InstallSnapshot RPC 加速日志回放，其他两个节点要能独立生成快照，使日志大小不超过 1000 字节。</li>
+<li><strong>TestSnapshotRecover3B</strong>：节点重启后要能从 persister 中恢复快照数据。</li>
+<li>其他测试：在网络分区、节点崩溃重启的环境下保持 kvDB 数据的线性一致性。</li>
+</ul>
+<p>测试通过：</p>
+<p><a href="https://images.yinzige.com/2019-06-15-073120.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-15-073120.png" alt="image-20190615153120071"></a></p>
+<h2 id="KVServer-生成快照"><a href="#KVServer-生成快照" class="headerlink" title="KVServer 生成快照"></a>KVServer 生成快照</h2><p>认真阅读并思考：<a href="https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html" target="_blank" rel="noopener">Lecture: Part B</a> 和 <a href="https://thesquareplanet.com/blog/students-guide-to-raft/#an-aside-on-optimizations" target="_blank" rel="noopener">Guide: An aside on optimizations</a></p>
+<h3 id="快照数据"><a href="#快照数据" class="headerlink" title="快照数据"></a>快照数据</h3><p>kvServer 在重启后会先从 persister 中读取快照信息重置 kvDB，同时为检测 Client 的重复请求，所以必须将 <code>kv.cid2seq</code> 一起持久化：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">encodeSnapshot</span><span class="params">()</span> []<span class="title">byte</span></span> {</span><br><span class="line">    w := <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line">    e := gob.NewEncoder(w)</span><br><span class="line">    <span class="keyword">if</span> err := e.Encode(kv.cid2seq); err != <span class="literal">nil</span> {</span><br><span class="line">        <span class="built_in">panic</span>(fmt.Errorf(<span class="string">"encode cid2seq fail: %v"</span>, err))</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> err := e.Encode(kv.db); err != <span class="literal">nil</span> {</span><br><span class="line">        <span class="built_in">panic</span>(fmt.Errorf(<span class="string">"encode db fail: %v"</span>, err))</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> w.Bytes()</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="检测-Raft-日志大小"><a href="#检测-Raft-日志大小" class="headerlink" title="检测 Raft 日志大小"></a>检测 Raft 日志大小</h3><p>每次 kvServer 的 Raft 模块通知它有新日志达成一致，就意味着 Raft 的日志又新增了一条，就检测 Raft 的日志是否接近边界值。注意 lab 中的 <code>maxraftstate</code> 是日志大小的上限，要在快接近时提前生成快照，因为调用 Raft 模块生成快照抢锁是需要等待的，若不提前就很可能超出上限，无法通过测试。所以取 90% 提前生成：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            op := msg.Command.(Op)</span><br><span class="line">            kv.mu.Lock()</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            kv.checkSnapshot(msg.CommandIndex) <span class="comment">// use committed index as snapshot LastIncludedIndex</span></span><br><span class="line">            kv.mu.Unlock()</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">checkSnapshot</span><span class="params">(appliedId <span class="keyword">int</span>)</span></span> {</span><br><span class="line">    <span class="keyword">if</span> kv.maxraftstate == <span class="number">-1</span> {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// take snapshot when raft size come near upper limit</span></span><br><span class="line">    <span class="keyword">if</span> kv.persister.RaftStateSize() &lt; kv.maxraftstate*<span class="number">9</span>/<span class="number">10</span> {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">  </span><br><span class="line">    rawSnapshot := kv.encodeSnapshot()</span><br><span class="line">    <span class="keyword">go</span> kv.rf.TakeSnapshot(appliedId, rawSnapshot) <span class="comment">// not take long time with KVServer's lock</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="通知-Raft-同步快照"><a href="#通知-Raft-同步快照" class="headerlink" title="通知 Raft 同步快照"></a>通知 Raft 同步快照</h3><p>kvServer 需告知 Raft 模块以哪条 committed 日志为准来生成快照，由于 applyCh 的 msg 都是 committed 的，所以如上直接使用它的 <code>msg.CommandIndex</code> 即可。</p>
+<p>Raft 收到生成快照的请求后更新完自己的快照信息就立刻返回，不要阻塞，快照同步交给心跳去处理：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// leader take snapshot should be async like Start(), must return quickly</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">TakeSnapshot</span><span class="params">(appliedId <span class="keyword">int</span>, rawSnapshot []<span class="keyword">byte</span>)</span></span> {</span><br><span class="line">    rf.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> rf.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// lock competition may delayed snapshot call, check this otherwise rf.logs[0] may out of bounds</span></span><br><span class="line">    <span class="keyword">if</span> appliedId &lt;= rf.lastIncludedIndex {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// discard the entries before that index, preserved it for AppendEntries consistency check</span></span><br><span class="line">    rf.logs = rf.logs[rf.subIdx(appliedId):]</span><br><span class="line">    rf.lastIncludedIndex = appliedId</span><br><span class="line">    rf.lastIncludedTerm = rf.logs[<span class="number">0</span>].Term</span><br><span class="line">    rf.persistStatesAndSnapshot(rawSnapshot)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>KVServer 多次调用 Raft.TakeSnapshot() 的执行顺序会收到 Raft 抢占锁的影响，可能新快照会先抢到锁，轮到旧日志处理时对应的 appliedId 日志已被删除，会造成 <code>rf.logs[0]</code> 溢出，所以要过滤旧快照。</p>
+<h2 id="Raft-同步快照"><a href="#Raft-同步快照" class="headerlink" title="Raft 同步快照"></a>Raft 同步快照</h2><h3 id="Leader-使用快照代替日志加速同步"><a href="#Leader-使用快照代替日志加速同步" class="headerlink" title="Leader 使用快照代替日志加速同步"></a>Leader 使用快照代替日志加速同步</h3><p>在 Lab2 中已实现 leader 向各 follower 发送缺失日志的心跳逻辑，引入快照机制后，可直接发送快照。当leader 发现快照比 nextIndex 还新，就将 AppendEntries RPC 换成 InstallSnapshot RPC，大大减少要同步的日志数量。</p>
+<p>如下leader 只需发送 6 一条日志，而非 3 4 5 6 四条：</p>
+<p> <a href="https://images.yinzige.com/2019-06-14-152901.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-14-152901.png" width="80%"></a></p>
+<p>在 Leader 给 follower 同步日志前，检查快照若更新则走 InstallSnapshot RPC 的逻辑：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// leader sync logs to followers</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">sync</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">        <span class="keyword">if</span> i == rf.me {</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">            <span class="keyword">for</span> {</span><br><span class="line">                <span class="keyword">if</span> !rf.isRunningLeader() {</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                }</span><br><span class="line"></span><br><span class="line">                rf.mu.Lock()</span><br><span class="line">                rf.syncConds[server].Wait() <span class="comment">// wait for trigger</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// sync new log or missing logs to server</span></span><br><span class="line">                next := rf.nextIndex[server]</span><br><span class="line"></span><br><span class="line">                <span class="comment">// if follower far behind from leader, just send snapshot to it for speeding up replay</span></span><br><span class="line">                <span class="keyword">if</span> next &lt;= rf.lastIncludedIndex {</span><br><span class="line">                    rf.syncSnapshot(server) <span class="comment">// InstallSnapshot RPC logic</span></span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                }</span><br><span class="line">          </span><br><span class="line">               <span class="comment">// AppendEntries RPC logic</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="InstallSnapshot-RPC"><a href="#InstallSnapshot-RPC" class="headerlink" title="InstallSnapshot RPC"></a>InstallSnapshot RPC</h3><p>参考论文的图 13，RPC 参数如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> InstallSnapshotArgs <span class="keyword">struct</span> {</span><br><span class="line">    Term              <span class="keyword">int</span>    <span class="comment">// leader's term</span></span><br><span class="line">    LeaderId          <span class="keyword">int</span>    <span class="comment">// so follower can redirect clients</span></span><br><span class="line">    LastIncludedIndex <span class="keyword">int</span>    <span class="comment">// the snapshot replaces all entries up through and including this index</span></span><br><span class="line">    LastIncludedTerm  <span class="keyword">int</span>    <span class="comment">// term of lastIncludedIndex</span></span><br><span class="line">    Data              []<span class="keyword">byte</span> <span class="comment">// raw bytes of the snapshot chunk, starting at offset</span></span><br><span class="line">    <span class="comment">// Offset            int    // byte offset where chunk is positioned in the snapshot file</span></span><br><span class="line">    <span class="comment">// Done              bool   // true if this is the last chunk</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> InstallSnapshotReply <span class="keyword">struct</span> {</span><br><span class="line">    Term <span class="keyword">int</span> <span class="comment">// currentTerm, for leader to update itself</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>lab 为简化流程，每次直接发送整个快照，而非论文中切割为 chunk 分块有序同步，所以 offset 取 0，done 取 true</p>
+<h4 id="Leader-端"><a href="#Leader-端" class="headerlink" title="Leader 端"></a>Leader 端</h4><figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// sync snap shot to follower server</span></span><br><span class="line"><span class="comment">// rf.mu is locked when call syncSnapshot()</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">syncSnapshot</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">    <span class="keyword">if</span> rf.state != Leader || rf.crashed {</span><br><span class="line">        rf.mu.Unlock()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    args := InstallSnapshotArgs{</span><br><span class="line">        Term:              rf.curTerm,</span><br><span class="line">        LeaderId:          rf.me,</span><br><span class="line">        LastIncludedIndex: rf.lastIncludedIndex,</span><br><span class="line">        LastIncludedTerm:  rf.lastIncludedTerm,</span><br><span class="line">        Data:              rf.persister.ReadSnapshot(),</span><br><span class="line">    }</span><br><span class="line">    rf.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> reply InstallSnapshotReply</span><br><span class="line">    respCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>{})</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">        <span class="keyword">if</span> ok := rf.sendInstallSnapshot(server, &amp;args, &amp;reply); ok {</span><br><span class="line">            respCh &lt;- <span class="keyword">struct</span>{}{}</span><br><span class="line">        }</span><br><span class="line">    }()</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(RPC_CALL_TIMEOUT):</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">case</span> &lt;-respCh:</span><br><span class="line">        <span class="built_in">close</span>(respCh)</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    rf.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> rf.mu.Unlock()</span><br><span class="line">    <span class="keyword">if</span> reply.Term &gt; rf.curTerm {</span><br><span class="line">        rf.back2Follower(reply.Term, VOTE_NIL)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> rf.state != Leader || reply.Term &lt; rf.curTerm { <span class="comment">// curTerm changed already</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    rf.matchIndex[server] = args.LastIncludedIndex</span><br><span class="line">    rf.nextIndex[server] = args.LastIncludedIndex + <span class="number">1</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>注意在 syncSnapshot 中调用 RPC 前及时释放锁，否则同一时间只能发起一个调用。</p>
+<h4 id="Follower-端"><a href="#Follower-端" class="headerlink" title="Follower 端"></a>Follower 端</h4><figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// follower receive snapshot from leader and force overwrite local logs</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">InstallSnapshot</span><span class="params">(args *InstallSnapshotArgs, reply *InstallSnapshotReply)</span></span> {</span><br><span class="line">    rf.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> rf.mu.Unlock()</span><br><span class="line">    reply.Term = rf.curTerm</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. reply false if term &lt; currentTerm</span></span><br><span class="line">    <span class="keyword">if</span> args.Term &lt; rf.curTerm {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> args.Term &gt; rf.curTerm {</span><br><span class="line">        reply.Term = args.Term</span><br><span class="line">        rf.back2Follower(args.Term, VOTE_NIL)</span><br><span class="line">    }</span><br><span class="line">    rf.resetElectTimer()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// check snapshot may expired by lock competition, otherwise rf.logs may overflow below</span></span><br><span class="line">    <span class="keyword">if</span> args.LastIncludedIndex &lt;= rf.lastIncludedIndex {</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. Create new snapshot file if first chunk (offset is 0)</span></span><br><span class="line">    <span class="comment">// 3. Write data into snapshot file at given offset</span></span><br><span class="line">    <span class="comment">// 4. Reply and wait for more data chunks if done is false</span></span><br><span class="line">    <span class="comment">// 5. Save snapshot file, discard any existing or partial snapshot with a smaller index</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. If existing log entry has same index and term as snapshot's last included entry, retain log entries following it and reply</span></span><br><span class="line">    <span class="keyword">if</span> args.LastIncludedIndex &lt; rf.lastIdx() {</span><br><span class="line">        <span class="comment">// the args.LastIncludedIndex log has agreed, if there are more logs, just retain them</span></span><br><span class="line">        rf.logs = rf.logs[args.LastIncludedIndex-rf.lastIncludedIndex:]</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">        <span class="comment">// 7. Discard the entire log</span></span><br><span class="line">        <span class="comment">// empty log use for AppendEntries RPC consistency check</span></span><br><span class="line">        rf.logs = []LogEntry{{Term: args.LastIncludedTerm, Command: <span class="literal">nil</span>}}</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// update snapshot state and persist them</span></span><br><span class="line">    rf.lastIncludedIndex = args.LastIncludedIndex</span><br><span class="line">    rf.lastIncludedTerm = args.LastIncludedTerm</span><br><span class="line">    rf.persistStatesAndSnapshot(args.Data)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// force the follower's log catch up with leader</span></span><br><span class="line">    rf.commitIndex = max(rf.commitIndex, args.LastIncludedIndex)</span><br><span class="line">    rf.lastApplied = max(rf.lastApplied, args.LastIncludedIndex)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 8. Reset state machine using snapshot contents (and load snapshot's cluster configuration)</span></span><br><span class="line">    rf.applyCh &lt;- ApplyMsg{</span><br><span class="line">        CommandValid: <span class="literal">false</span>, <span class="comment">// it's snapshot raw data, not a command</span></span><br><span class="line">        CommandIndex: <span class="number">-1</span>,</span><br><span class="line">        Command:      args.Data, <span class="comment">// use for KVServer restore kvDB</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>对应修改 KVServer 监听 applyCh 的逻辑，从中取出 leader 发来的快照数据：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            <span class="keyword">if</span> !msg.CommandValid { <span class="comment">// snapshot data</span></span><br><span class="line">                buf := msg.Command.([]<span class="keyword">byte</span>)</span><br><span class="line">                kv.mu.Lock()</span><br><span class="line">                kv.db, kv.cid2seq = kv.decodeSnapshot(buf) <span class="comment">// restore kvDB and cid2seq</span></span><br><span class="line">                kv.mu.Unlock()</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            }</span><br><span class="line">            </span><br><span class="line">      <span class="comment">// log agreement loginc</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>至此分别完成了三件事：</p>
+<ul>
+<li>各节点能实时检测 Raft 日志大小，独立地生成快照并持久化，重启时读取。</li>
+<li>leader 生成快照后通过心跳发起 InstallSnapshot RPC 给 followers 加速日志回放和同步。</li>
+<li>followers 将快照数据回传给上层的 KVServer 重置 kvDB 和 cid2seq，最终状态与 leader 一致。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Lab2 中实现了 Raft 算法的三个子模块，开放了 <code>Start()</code> 和 <code>applyCh</code> 供状态机使用。</p>
+<p>Lab3A 在其 Lab2 基础上实现了容错的 kvDB 集群，依靠底层 Raft 算法在节点崩溃重启甚至不可用、网络延迟丢包甚至分区的环境下，依旧对多个 Client 保证数据的线性一致性。</p>
+<p>Lab3B 实现了 Raft 日志大小的实时检测并截断生成快照，由 leader 通过 InstallSnapshot RPC 将日志同步给过于落后的节点来加速回放，同时重置各状态机（kvDB）的状态，使其数据与 leader 最达成一致。</p>
+<p>Lab3 比 Lab2 稍简单，关键在于梳理好 KVServer 与底层的 Raft 模块的交互流程，需重读 Raft 论文的第 7、8 节的快照机制，思考 lecture 的提示。调试时活锁、状态更新时机有误等问题居多，其余细节在代码注释中有标注。</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>]]></content>
+  </entry>
+  <entry>
+    <title>Lab3A. 基于 Raft 实现容错的 kvDB</title>
+    <url>/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/</url>
+    <content><![CDATA[<div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>&lt;p&gt;总结 6.824 Lab3A Fault-Tolerant kvDB 的实验笔记。&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab3A"><a href="#Lab3A" class="headerlink" title="Lab3A"></a>Lab3A</h2><p>Lab3 的目标是基于 Raft 实现容错的 key-value DB 集群：3A 处理节点容错，3B 实现日志快照。</p>
+<h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p>阅读 <a href="https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html" target="_blank" rel="noopener">lecture</a> 可知，Clerk 是客户端，KVServers 即 kvDBs（状态机），每台 KVServer 即一个 Raft 节点，依靠 Raft 协议保证底层的日志一致性，流程交互图：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-002335.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-002335.png" width="80%"></a></p>
+<ul>
+<li>Client 将 <code>Put</code>/<code>Append</code>/<code>Get</code> 命令发送给集群 Leader 处理，并等待调用返回。</li>
+<li>KVServer1 底层的 Raft 模块会向 follower 发起命令日志的复制。</li>
+<li>当复制副本达到大多数后，KVServer1 执行该命令，并将结果响应给 Client</li>
+</ul>
+<p>Raft 模块在 Lab2 已实现，本节将用到以下开放的接口：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// 发起命令的复制</span></span><br><span class="line"><span class="comment">// idx 是命令复制成功后，其在各节点日志中的索引</span></span><br><span class="line"><span class="comment">// isLeader 表明当前节点是否为 leader</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">Start</span><span class="params">(command <span class="keyword">interface</span>{})</span> <span class="params">(idx <span class="keyword">int</span>, term <span class="keyword">int</span>, isLeader <span class="keyword">bool</span>)</span></span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="线性一致性"><a href="#线性一致性" class="headerlink" title="线性一致性"></a>线性一致性</h3><p>linearizability 可理解为 CAP 理论中的 C(Consistency)，意为：</p>
+<blockquote>
+<p>A call must observe the effects of all calls that have completed before the call starts</p>
+</blockquote>
+<p>如下 4 个 Client 分别在不同时间向 KV 集群发起 4 个命令，蓝线是集群处理命令的时间点。如下 Get 命令的执行结果严格按时间受 Put 命令的影响，即系统满足线性一致性：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-010109.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-010109.png" width="70%"></a></p>
+<p>参考：<a href="https://www.anishathalye.com/2017/06/04/testing-distributed-systems-for-linearizability/" target="_blank" rel="noopener">anishathalye.com</a></p>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestBasic3A</strong>：正常情况下，保证单个 Client 命令能执行成功，保证 5 台 KVServer 日志一致。</li>
+<li><strong>TestUnreliable3A</strong>：处理 RPC 调用超时，重试请求。</li>
+<li><strong>TestOnePartition3A</strong>：处理多台 Client 和多台 Server 都发生网络分区的情况。</li>
+<li><strong>TestPersistPartitionUnreliableLinearizable3A</strong>：在节点失效、网络不可靠的环境中保证线性一致性。</li>
+</ul>
+<p>测试均通过：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-004945.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-004945.png" width="60%"></a></p>
+<h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><p>Client 需记录已知的 leader 位置，下次直接向该节点发起请求。Client 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Clerk <span class="keyword">struct</span> {</span><br><span class="line">    servers []*labrpc.ClientEnd <span class="comment">// kv servers / raft peers</span></span><br><span class="line">    leader  <span class="keyword">int</span>                 <span class="comment">// latest known leader</span></span><br><span class="line">    cid     <span class="keyword">int64</span>               <span class="comment">// client id</span></span><br><span class="line">    seq     <span class="keyword">int32</span>               <span class="comment">// latest request seq num</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>clientid 在初始化时调用 <code>nrand()</code> 随机生成即可，生产系统中可用 <code>ip:port</code> 来唯一标识。</p>
+<h3 id="检测重复请求"><a href="#检测重复请求" class="headerlink" title="检测重复请求"></a>检测重复请求</h3><p>Client 向 KVServer 发起 RPC 调用，当调用超时或被告知节点不是 Leader 后，需换个及诶点重试请求。因此，KVServer 要避免二次执行命令，或因网络延迟使执行过期命令。<br>参考论文第八节：为检测重复请求，可在每次请求中加入唯一 id，并随请求自增，再重试时使用同一 id，Server 只需<strong>对每个 Client 记录最大的请求 id</strong>，即可排除过期或重复请求。Request 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> PutAppendArgs <span class="keyword">struct</span> {</span><br><span class="line">    Cid   <span class="keyword">int64</span> <span class="comment">// client id</span></span><br><span class="line">    Seq   <span class="keyword">int32</span> <span class="comment">// request sequential number</span></span><br><span class="line">    Key   <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">    Op    <span class="keyword">string</span> <span class="comment">// Put/Append</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="发起请求"><a href="#发起请求" class="headerlink" title="发起请求"></a>发起请求</h3><p>对于 Get 请求本身是幂等的，无需加 id 标识。对于 Put/Append 操作则需唯一标识：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(ck *Clerk)</span> <span class="title">PutAppend</span><span class="params">(key <span class="keyword">string</span>, value <span class="keyword">string</span>, op <span class="keyword">string</span>)</span></span> {</span><br><span class="line">    curSeq := atomic.AddInt32(&amp;ck.seq, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        args := PutAppendArgs{</span><br><span class="line">            Cid:   ck.cid,</span><br><span class="line">            Seq:   curSeq,</span><br><span class="line">            Key:   key,</span><br><span class="line">            Value: value,</span><br><span class="line">            Op:    op,</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">var</span> reply PutAppendReply</span><br><span class="line">        ok := ck.servers[ck.leader].Call(<span class="string">"KVServer.PutAppend"</span>, &amp;args, &amp;reply)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> !ok || reply.WrongLeader { <span class="comment">// RPC call timeout, or ck.leader isn't current leader</span></span><br><span class="line">            ck.changeLeader()</span><br><span class="line">            <span class="keyword">continue</span> <span class="comment">// retry and re-use current sequential number</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="KVServer"><a href="#KVServer" class="headerlink" title="KVServer"></a>KVServer</h2><p>数据库的 key, value 都是 <code>string</code> 类型，可直接使用 <code>map[string]string</code> 存储，为避免并发读写还需加锁保护。KVServer 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> KVServer <span class="keyword">struct</span> {</span><br><span class="line">    mu      sync.Mutex</span><br><span class="line">    me      <span class="keyword">int</span></span><br><span class="line">    rf      *raft.Raft</span><br><span class="line">    applyCh <span class="keyword">chan</span> raft.ApplyMsg</span><br><span class="line"></span><br><span class="line">    maxraftstate <span class="keyword">int</span>               <span class="comment">// snapshot if log grows this big</span></span><br><span class="line">    db           <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="comment">// kvDB</span></span><br><span class="line">    cid2seq      <span class="keyword">map</span>[<span class="keyword">int64</span>]<span class="keyword">int32</span>   <span class="comment">// client id to max request sequential number</span></span><br><span class="line">    agreeChs     <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">chan</span> Op   <span class="comment">// command index to op channel</span></span><br><span class="line">    killCh       <span class="keyword">chan</span> <span class="keyword">struct</span>{}     <span class="comment">// kill KVServer</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>Raft 复制的日志需记录具体的某次请求：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Op <span class="keyword">struct</span> {</span><br><span class="line">    Cid   <span class="keyword">int64</span>  <span class="comment">// client id</span></span><br><span class="line">    Seq   <span class="keyword">int32</span>  <span class="comment">// request sequence number</span></span><br><span class="line">    Cmd   <span class="keyword">string</span> <span class="comment">// command type, Put/Append/Get</span></span><br><span class="line">    Key   <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>由于日志可能被新 leader 覆盖，所以当 KVServer 发现统一索引上，自己发出的 Op 和 Raft 返回的 Op 不一致，就说明同步过程中，我已不再是 leader 且日志已被覆盖：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isSameOp</span><span class="params">(a, b Op)</span> <span class="title">bool</span></span> {</span><br><span class="line">    <span class="keyword">return</span> a.Cid == b.Cid &amp;&amp; a.Seq == b.Seq &amp;&amp; a.Cmd == b.Cmd &amp;&amp; a.Key == b.Key &amp;&amp; a.Value == b.Value</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="异步复制"><a href="#异步复制" class="headerlink" title="异步复制"></a>异步复制</h3><p>根据 <a href="https://thesquareplanet.com/blog/students-guide-to-raft/#applications-on-top-of-raft" target="_blank" rel="noopener">Guide</a> 提示，KVServer 调用 <code>Start(command)</code> 发起同步后，需<strong>异步等待</strong> Raft 模块从 <code>applyCh</code> 通知已复制成功的日志 <code>index</code>，再响应 index 对应的请求。在初始化时在后台开启 goroutine 监听：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// wait agreement from Raft</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            op := msg.Command.(Op)</span><br><span class="line">            kv.mu.Lock()</span><br><span class="line">            maxSeq, ok := kv.cid2seq[op.Cid]</span><br><span class="line">            <span class="keyword">if</span> !ok || op.Seq &gt; maxSeq { <span class="comment">// only handle new request from specific client</span></span><br><span class="line">                kv.cid2seq[op.Cid] = op.Seq</span><br><span class="line">                <span class="keyword">switch</span> op.Cmd {</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"Put"</span>:</span><br><span class="line">                    kv.db[op.Key] = op.Value</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"Append"</span>:</span><br><span class="line">                    kv.db[op.Key] += op.Value</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            kv.mu.Unlock()</span><br><span class="line"></span><br><span class="line">            kv.getAgreeCh(msg.CommandIndex) &lt;- op</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>注意：由于请求处理与 waitAgree 监听的执行顺序是不确定的，需有一个共用 agreeCh 的逻辑：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">getAgreeCh</span><span class="params">(idx <span class="keyword">int</span>)</span> <span class="title">chan</span> <span class="title">Op</span></span> {</span><br><span class="line">    kv.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> kv.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    ch, ok := kv.agreeChs[idx]</span><br><span class="line">    <span class="keyword">if</span> !ok {</span><br><span class="line">        ch = <span class="built_in">make</span>(<span class="keyword">chan</span> Op, <span class="number">1</span>) <span class="comment">// never block this</span></span><br><span class="line">        kv.agreeChs[idx] = ch</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> ch</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="处理-Get-请求"><a href="#处理-Get-请求" class="headerlink" title="处理 Get 请求"></a>处理 Get 请求</h3><p>为避免过期 leader 返回旧数据，在处理 Get 请求前，leader 必须与集群中大多数节点完成通信，确保自己的数据是最新的。论文第八节建议让 leader 主动发起一次心跳并统计正常节点数量，不过根据 lecture 提示：</p>
+<blockquote>
+<p>A kvserver should not complete a <code>Get()</code> RPC if it is not part of a majority (so that it does not serve stale data). A simple solution is to enter every <code>Get()</code> (as well as each <code>Put()</code> and <code>Append()</code>) in the Raft log</p>
+</blockquote>
+<p>可让 Get 请求像 Put/Append 请求一样走日志同步流程，就不必再修改 Lab2 的 Raft 实现。请求处理流程：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">Get</span><span class="params">(args *GetArgs, reply *GetReply)</span></span> {</span><br><span class="line">    cmd := Op{Cmd: <span class="string">"Get"</span>, Key: args.Key,}</span><br><span class="line">    idx, _, isLeader := kv.rf.Start(cmd)</span><br><span class="line">    <span class="keyword">if</span> !isLeader {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ch := kv.getAgreeCh(idx)</span><br><span class="line">    <span class="keyword">var</span> op Op</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> op = &lt;-ch: <span class="comment">// current leader can communicate with majority</span></span><br><span class="line">        <span class="built_in">close</span>(ch)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(<span class="number">500</span> * time.Millisecond): <span class="comment">// agreement may be failed, treat as timeout and client will retry</span></span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// if old leader has in net partition, may it's log may be overwrited, then reply value will be different</span></span><br><span class="line">    <span class="keyword">if</span> !isSameOp(cmd, op) {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    kv.mu.Lock()</span><br><span class="line">    reply.Value = kv.db[args.Key] <span class="comment">// if key not exist, just return "" or return ErrNoKey</span></span><br><span class="line">    kv.mu.Unlock()</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="处理-Put-Append-请求"><a href="#处理-Put-Append-请求" class="headerlink" title="处理 Put/Append 请求"></a>处理 Put/Append 请求</h3><p>由于 Put/Append 请求会更新 <code>kv.db</code> 数据，要避免重复请求被二次执行，即 waitAgree 中的 Seq 对比逻辑。</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">PutAppend</span><span class="params">(args *PutAppendArgs, reply *PutAppendReply)</span></span> {</span><br><span class="line">    cmd := Op{</span><br><span class="line">        Cid:   args.Cid,</span><br><span class="line">        Seq:   args.Seq,</span><br><span class="line">        Cmd:   args.Op,</span><br><span class="line">        Key:   args.Key,</span><br><span class="line">        Value: args.Value,</span><br><span class="line">    }</span><br><span class="line">    idx, _, isLeader := kv.rf.Start(cmd)</span><br><span class="line">    <span class="keyword">if</span> !isLeader {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ch := kv.getAgreeCh(idx) <span class="comment">// sequence of PutAppend() and &lt;-applyCh are uncertain</span></span><br><span class="line">    <span class="keyword">var</span> op Op</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> op = &lt;-ch:</span><br><span class="line">        <span class="built_in">close</span>(ch)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(<span class="number">500</span> * time.Millisecond):</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> !isSameOp(cmd, op) {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>至此完成了基于 Raft 实现容错 kvDB 的搭建。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Lab2 中实现的 Raft 库开放了 <code>applyCh</code> 和 <code>Start(command)</code> 接口，本节在此基础上实现异步监听、超时重试、请求去重等机制，使上层的 kvDB 能在主机崩溃重启，请求发生延迟、失序、丢失甚至隔离的网络环境下，依旧能对客户端保证数据的线性一致性。</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>]]></content>
+  </entry>
+  <entry>
+    <title>Lab2A. Raft 选主实现</title>
+    <url>/2019/11/23/Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>总结 MIT6.824 Lab2A Raft 选主的实验笔记。&lt;br&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab2A"><a href="#Lab2A" class="headerlink" title="Lab2A"></a>Lab2A</h2><p>Raft 将一致性问题分解成三个子问题：Leader 选举、日志复制、安全性保证，在 Lab 的 2A, 2B 中实现，快照功能在 Lab3 实现，均可参考原论文图 2 中对 Raft 实现的简要总结。</p>
+<h3 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h3><ul>
+<li>实现 Leader 选举：选出单个 leader 并保持领导地位，直到自己 crash 或发生网络分区</li>
+<li>实现心跳通信：实现 leader 与其他节点的无日志 AppendEntries RPC 调用</li>
+</ul>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestInitialElection2A：</strong>集群正常情况下保证单一 leader</li>
+<li><strong>TestReElection2A：</strong>处理好 leader 网络分区、多数节点失效造成 split vote 的情况。</li>
+</ul>
+<p>测试均通过：<br> <a href="https://images.yinzige.com/2019-05-10-035030.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-05-10-035030.png" width="60%"></a></p>
+<h2 id="一些坑"><a href="#一些坑" class="headerlink" title="一些坑"></a>一些坑</h2><h3 id="RPC-调用超时"><a href="#RPC-调用超时" class="headerlink" title="RPC 调用超时"></a>RPC 调用超时</h3><p>在分布式系统中，每次调用会有三种结果：成功、失败、超时。Lab 将 net rpc 库封装成 labrpc，通过隔离节点网络来模拟节点不可用。不可用节点的 RPC 调用超时会返回 <code>false</code>，但这里不能死等 labrpc 库不确定的超时时长（100ms，2s 均可能），应该在调用时使用 timer 有预期地控制超时（如稍大于心跳间隔：150ms）<br>调用超时后，不必像论文中描述的无限次重试，应简化处理，直接认为调用失败。</p>
+<h3 id="充分使用-sync-包来实现同步"><a href="#充分使用-sync-包来实现同步" class="headerlink" title="充分使用 sync 包来实现同步"></a>充分使用 sync 包来实现同步</h3><p>AppendEntries RPC 用于心跳通信和日志同步，调用时机有两个：</p>
+<ul>
+<li>定时心跳：leader 需在后台定期向其他节点发送 heartbeat，保持领导地位。同时在心跳还充当着日志同步的作用，当某个节点日志一致性检查失败后，会将冲突信息返回，leader 需将本地日志同步到该节点。</li>
+<li>新日志同步：当客户端发来新命令时，leader 将日志 append 到本地后即响应（lab 与论文不同），随后立刻开始新日志的同步。<br>要调用 AppendEntries 的地方很多，因而使用 sync.Cond 条件变量而非散落各处的 channel 来进行同步触发。</li>
+</ul>
+<h3 id="一些时机"><a href="#一些时机" class="headerlink" title="一些时机"></a>一些时机</h3><ul>
+<li>每个节点在收到有效 RPC 调用后要重置 Election Timer，即使 Leader 无需对自己进行 rpc 调用，但重置 Timer 也是必要的。</li>
+<li>当节点收到更高 term 的 RPC 调用或响应时，要立刻回退到 follower 并重置 Timer，由于不能确信对方身份就是 Leader，所以 <code>voteFor</code> 要重置为 nil</li>
+</ul>
+<h3 id="关于调试"><a href="#关于调试" class="headerlink" title="关于调试"></a>关于调试</h3><p>  改造 util.go 中 DPrintf() 来输出毫秒及调试信息，方便追溯系统的时序性等问题。比如我的调试日志：</p>
+<p>  <a href="https://images.yinzige.com/2019-05-09-010157.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-05-09-010157.png" alt="image-20190509090156921"></a></p>
+<h2 id="Leader-选举"><a href="#Leader-选举" class="headerlink" title="Leader 选举"></a>Leader 选举</h2><p>Lab 限制 leader 每秒最多发送 10 次心跳请求，实现时取心跳间隔为 100ms。相应的，选举超时时间应比心跳大一个量级左右，我实现时取 <code>400 + rand.Intn(4) * 100</code>，即 400~800ms 内的随机值，尽可能避免选举 split vote 情况。</p>
+<h3 id="选举流程"><a href="#选举流程" class="headerlink" title="选举流程"></a>选举流程</h3><p>参考上一篇文章：<a href="https://github.com/wuYin/blog/blob/master/distributed_systems/raft-notes.md#leader-%E9%80%89%E4%B8%BE" target="_blank" rel="noopener">Leader 选举</a></p>
+<p><a href="https://images.yinzige.com/2019-04-23-035737.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-23-035737.png" alt="image-20190423115736847"></a></p>
+<h3 id="发起投票"><a href="#发起投票" class="headerlink" title="发起投票"></a>发起投票</h3><p>定义 Raft 节点：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Raft <span class="keyword">struct</span> {</span><br><span class="line">    mu        sync.Mutex          <span class="comment">// Lock to protect shared access to this peer's state</span></span><br><span class="line">    peers     []*labrpc.ClientEnd <span class="comment">// RPC end points of all peers</span></span><br><span class="line">    persister *Persister          <span class="comment">// Object to hold this peer's persisted state</span></span><br><span class="line">    me        <span class="keyword">int</span>                 <span class="comment">// this peer's index into peers[]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// persistent states</span></span><br><span class="line">    curTerm  <span class="keyword">int</span>        <span class="comment">// latest term server has seen(initialized to 0 on first boot, increases monotonically)</span></span><br><span class="line">    votedFor <span class="keyword">int</span>        <span class="comment">// candidateId that received vote in current term(or null if none)</span></span><br><span class="line">    logs     []LogEntry <span class="comment">// log entries; each entry contains command for state machine, and term when entry was received by leader(first index is 1)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// implementation</span></span><br><span class="line">    state     PeerState</span><br><span class="line">    timer     *RaftTimer</span><br><span class="line">    syncConds []*sync.Cond  <span class="comment">// every Raft peer has a condition, use for trigger AppendEntries RPC</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>每个节点在 <code>Make</code> 初始化时都选择时长随机的 RaftTimer，之后启动新的 goroutine 监听 election timer 超时：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-rf.timer.t.C: <span class="comment">// election timeout</span></span><br><span class="line">            rf.resetElectTimer() <span class="comment">// this reset is necessary, reset it when timeout</span></span><br><span class="line">            rf.vote()</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}()</span><br></pre></td></tr></tbody></table></figure>
+<p>timer 超时后，发起投票：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// start vote</span></span><br><span class="line"><span class="comment">// leader can start vote repeatedly, such as 2 nodes are crashed in 3 nodes cluster</span></span><br><span class="line"><span class="comment">// leader should reset election timeout when heartbeat to prevent this</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">vote</span><span class="params">()</span></span> {</span><br><span class="line">    pr(<span class="string">"Vote|Timeout|%v"</span>, rf)</span><br><span class="line">    rf.curTerm++</span><br><span class="line">    rf.state = Candidate</span><br><span class="line">    rf.votedFor = rf.me</span><br><span class="line"></span><br><span class="line">    args := RequestVoteArgs{</span><br><span class="line">        Term:        rf.curTerm,</span><br><span class="line">        CandidateID: rf.me,</span><br><span class="line">    }</span><br><span class="line">    replyCh := <span class="built_in">make</span>(<span class="keyword">chan</span> RequestVoteReply, <span class="built_in">len</span>(rf.peers))</span><br><span class="line">    <span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">        <span class="keyword">if</span> i == rf.me {</span><br><span class="line">            rf.resetElectTimer() <span class="comment">// other followers will reset when receive valid RPC, leader same</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">            <span class="keyword">defer</span> wg.Done()</span><br><span class="line">            <span class="keyword">var</span> reply RequestVoteReply</span><br><span class="line">            respCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>{})</span><br><span class="line">            <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">                rf.sendRequestVote(server, &amp;args, &amp;reply)</span><br><span class="line">                respCh &lt;- <span class="keyword">struct</span>{}{}</span><br><span class="line">            }()</span><br><span class="line">            <span class="keyword">select</span> {</span><br><span class="line">            <span class="keyword">case</span> &lt;-time.After(RPC_CALL_TIMEOUT): <span class="comment">// 1s</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">case</span> &lt;-respCh:</span><br><span class="line">                replyCh &lt;- reply</span><br><span class="line">            }</span><br><span class="line">        }(i)</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">        wg.Wait()</span><br><span class="line">        <span class="built_in">close</span>(replyCh) <span class="comment">// avoid goroutine leak</span></span><br><span class="line">    }()</span><br><span class="line"></span><br><span class="line">    votes := <span class="number">1</span></span><br><span class="line">    majority := <span class="built_in">len</span>(rf.peers)/<span class="number">2</span> + <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> reply := <span class="keyword">range</span> replyCh {</span><br><span class="line">        <span class="keyword">if</span> reply.Term &gt; rf.curTerm { <span class="comment">// higher term leader</span></span><br><span class="line">            pr(<span class="string">"Vote|Higher Term:%d|%v"</span>, reply.Term, rf)</span><br><span class="line">            rf.back2Follower(reply.Term, VOTE_NIL)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span> reply.VoteGranted {</span><br><span class="line">            votes++</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> votes &gt;= majority { <span class="comment">// if reach majority earlier, shouldn't wait crashed peer for timeout</span></span><br><span class="line">            rf.state = Leader</span><br><span class="line">            <span class="keyword">go</span> rf.heartbeat()</span><br><span class="line">            <span class="keyword">go</span> rf.sync()</span><br><span class="line"></span><br><span class="line">            pr(<span class="string">"Vote|Win|%v"</span>, rf)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// split vote</span></span><br><span class="line">    pr(<span class="string">"Vote|Split|%v"</span>, rf)</span><br><span class="line">    rf.back2Follower(rf.curTerm, VOTE_NIL)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="响应投票"><a href="#响应投票" class="headerlink" title="响应投票"></a>响应投票</h3><p>Raft 对投票节点提出了三点要求：</p>
+<ul>
+<li>每轮能投几张：一个任期内，一个节点只能投一张票</li>
+<li>是否要投：候选人的日志至少要和自己的一样新，才投票（Lab2B 实现日志的 up-to-date 比较）</li>
+<li>投给谁：first-come-first-served，投给第一个符合条件的候选人</li>
+</ul>
+<p><strong>实现</strong></p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> RequestVoteArgs <span class="keyword">struct</span> {</span><br><span class="line">    Term        <span class="keyword">int</span></span><br><span class="line">    CandidateID <span class="keyword">int</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> RequestVoteReply <span class="keyword">struct</span> {</span><br><span class="line">    Term        <span class="keyword">int</span></span><br><span class="line">    VoteGranted <span class="keyword">bool</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">RequestVote</span><span class="params">(args *RequestVoteArgs, reply *RequestVoteReply)</span></span> {</span><br><span class="line">    reply.Term = rf.curTerm</span><br><span class="line">    reply.VoteGranted = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> args.Term &lt; rf.curTerm {</span><br><span class="line">        <span class="keyword">return</span> <span class="comment">// candidate expired</span></span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> args.Term &gt; rf.curTerm {</span><br><span class="line">        rf.back2Follower(args.Term, VOTE_NIL)</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// now the term are same</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> rf.votedFor == VOTE_NIL || rf.votedFor == args.CandidateID {</span><br><span class="line">        reply.VoteGranted = <span class="literal">true</span></span><br><span class="line">        rf.back2Follower(args.Term, args.CandidateID)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="心跳通信"><a href="#心跳通信" class="headerlink" title="心跳通信"></a>心跳通信</h2><p>Raft 将客户端的命令封装为 log entry：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> LogEntry <span class="keyword">struct</span> {</span><br><span class="line">    Term    <span class="keyword">int</span></span><br><span class="line">    Command <span class="keyword">interface</span>{}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="心跳请求"><a href="#心跳请求" class="headerlink" title="心跳请求"></a>心跳请求</h3><p>当候选人成功竞选为 leader 后要 <strong>立刻</strong> 给集群中其他节点发送心跳，避免其他节点也超时发起新一轮选举。实现方案：获得多数票后，在后台为其他的所有 peer 启动同步日志的 goroutine，等待下一轮心跳 tick，这种广播方式最好使用 sync.Cond 条件变量来实现。</p>
+<p>获得多数票后为所有节点准备 sync</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// leader sync logs to followers</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">sync</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">        <span class="keyword">if</span> i == rf.me {</span><br><span class="line">            rf.resetElectTimer()</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">            <span class="keyword">for</span> {</span><br><span class="line">                rf.mu.Lock()</span><br><span class="line">                rf.syncConds[server].Wait() <span class="comment">// wait for trigger</span></span><br><span class="line"></span><br><span class="line">                args := AppendEntriesArgs{</span><br><span class="line">                    Term:         rf.curTerm,</span><br><span class="line">                    LeaderID:     rf.me,</span><br><span class="line">                    PrevLogIndex: <span class="number">0</span>,</span><br><span class="line">                    PrevLogTerm:  <span class="number">0</span>,</span><br><span class="line">                    Entries:      <span class="literal">nil</span>, <span class="comment">// heartbeat entries are empty</span></span><br><span class="line">                }</span><br><span class="line">                rf.mu.Unlock()</span><br><span class="line"></span><br><span class="line">                <span class="comment">// do not depend on labrpc to call timeout(it may more bigger than heartbeat), so should be check manually</span></span><br><span class="line">                <span class="keyword">var</span> reply AppendEntriesReply</span><br><span class="line">                respCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>{})</span><br><span class="line">                <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">                    rf.sendAppendEntries(server, &amp;args, &amp;reply)</span><br><span class="line">                    respCh &lt;- <span class="keyword">struct</span>{}{}</span><br><span class="line">                }()</span><br><span class="line">                <span class="keyword">select</span> {</span><br><span class="line">                <span class="keyword">case</span> &lt;-time.After(RPC_CALL_TIMEOUT): <span class="comment">// After() with currency may be inefficient</span></span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">case</span> &lt;-respCh: <span class="comment">// response succ</span></span><br><span class="line">                }</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> reply.Term &gt; rf.curTerm { <span class="comment">// higher term</span></span><br><span class="line">                    rf.back2Follower(reply.Term, VOTE_NIL)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }(i)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>同时开启心跳 tick，准备广播通知 sync</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// send heartbeat</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">heartbeat</span><span class="params">()</span></span> {</span><br><span class="line">    ch := time.Tick(HEARTBEAT_INTERVAL)</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">if</span> !rf.isLeader() {</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">            <span class="keyword">if</span> i == rf.me {</span><br><span class="line">                rf.resetElectTimer() <span class="comment">// leader reset timer voluntary, so it won't elect again</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            }</span><br><span class="line"></span><br><span class="line">            rf.syncConds[i].Broadcast()</span><br><span class="line">        }</span><br><span class="line">        &lt;-ch</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="响应心跳"><a href="#响应心跳" class="headerlink" title="响应心跳"></a>响应心跳</h3><p>对于心跳请求，节点暂时只需对比任期号，若 term 未过期则调用成功。2B 部分将实现日志的一致性检查：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">AppendEntries</span><span class="params">(args *AppendEntriesArgs, reply *AppendEntriesReply)</span></span> {</span><br><span class="line">    reply.Term = rf.curTerm</span><br><span class="line">    reply.Succ = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> rf.curTerm &gt; args.Term {</span><br><span class="line">        <span class="keyword">return</span> <span class="comment">// leader expired</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    rf.back2Follower(args.Term, VOTE_NIL)</span><br><span class="line">    reply.Succ = <span class="literal">true</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个实验可从 test 着手，实验环境是 3 个节点组成的集群，实现时需在 leader crash 后及时选出下一任 leader，且处理好旧 leader re-join 等情况。<br>个人经验：对于分布式系统，调试时可在请求参数、响应结构中加入 debug 信息，用于追踪某次请求的处理过程和结果，梳理清楚了执行流程，再去针对性的解决问题。<br>为了让代码更清爽，我把 raft.go 的代码按功能拆分为了 2 部分：vote 处理投票请求，enry 处理心跳请求。之后的两个实验小节将对应修改这两个文件。<br> <a href="https://images.yinzige.com/2019-04-23-044741.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-23-044741.png" width="40%"></a></p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>]]></content>
+  </entry>
+  <entry>
+    <title>Lab1. MapReduce 论文和实验笔记</title>
+    <url>/2019/11/23/Lab1-MapReduce-%E8%AE%BA%E6%96%87%E5%92%8C%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>总结下 6.824 MapReduce lab 的论文笔记和实验过程。本文代码：&lt;a href=&quot;https://github.com/shaojintian/MIT6.824/tree/master/mapreduce&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;MIT6.824/mapreduce&lt;/a&gt;&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自己的 nsx PRC 框架 v0.2 需支持分布式环境下服务变更的通知，对 zookeeper 不想只停留在会用的层面，于是学习 <a href="https://pdos.csail.mit.edu/6.824/schedule.html" target="_blank" rel="noopener">MIT 6.824 Distributed Systems</a>，本文是 Lec1: MapReduce 的学习笔记。</p>
+<h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><p>原论文：<a href="https://research.google.com/archive/mapreduce-osdi04.pdf" target="_blank" rel="noopener">MapReduce: Simplified Data Processing on Large Clusters</a></p>
+<h3 id="问题来源"><a href="#问题来源" class="headerlink" title="问题来源"></a>问题来源</h3><p>在 2004 年以前，Google 团队为处理各种原始数据实现了上百个专用计算程序，比如对原始网页文档生成倒排索引，数据量少时单机处理就行，但数据量过大后单机处理就太耗时了，只能将数据分布在多个主机上并行处理，最后聚合各节点生成的索引数据。</p>
+<p>分布式计算降低了耗时，但也必须解决一些问题：如何分发数据？多节点如何保证负载均衡？如何处理节点失效？… 多节点调度工作并不简单。类似的大数据处理场景在谷歌内部还有很多。于是 Jeff 团队就将类似场景的处理流程抽象出来，在 2004 年推出了分布式计算模型 MapReduce，用户只需自定义的 2 个数据的处理函数：</p>
+<ul>
+<li>如何分割原始数据：Map Func</li>
+<li>如何聚合中间数据：Reduce Func</li>
+</ul>
+<p>之后就能使用 MR 模型通过加节点来提高计算效率，关于节点容错、数据分发、负载均衡的问题 MR 都已处理。</p>
+<h3 id="MR-应用实例"><a href="#MR-应用实例" class="headerlink" title="MR 应用实例"></a>MR 应用实例</h3><p>举个例子：对文本文件中的单词计数，论文中 MR 内部处理的伪代码如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// MR 处理的数据是 Key-Value 结构的</span></span><br><span class="line"><span class="comment">// key 是文件名，value 是整个文件内容，对空格隔开的每个单词进行计数 "1" 操作</span></span><br><span class="line"><span class="keyword">map</span>(String key, String value):</span><br><span class="line">    <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents</span></span><br><span class="line">    <span class="keyword">for</span> each word w in value:</span><br><span class="line">        EmitIntermediate(w, <span class="string">"1"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对每个单词 key 都进行词频累加</span></span><br><span class="line">reduce(String key, Iterator values):</span><br><span class="line">    <span class="comment">// key: a word</span></span><br><span class="line">    <span class="comment">// values: a list of counts</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">        result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result));</span><br></pre></td></tr></tbody></table></figure>
+<p>MR 内部隐藏了 Map 操作后将计数结果写入中间文件，Reduce 操作从中间文件读取计数信息的细节。只需用户自己实现 Map/Reduce 的逻辑，即可将任务分布式并行化执行来大幅提升效率。</p>
+<h3 id="MR-数据结构"><a href="#MR-数据结构" class="headerlink" title="MR 数据结构"></a>MR 数据结构</h3><p>MR 面向的输入输出数据都是 Key-Value 结构，其中 k-v 约定都是 string 类型，值可能是整个原始文件的内容，也可能是数字，取决于用户自定义的 map func 和 reduce func，这 2 个函数的关联类型是固定的：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">map    (k1,v1)       → list(k2,v2)</span><br><span class="line">reduce (k2,list(v2)) → list(v2)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>map 处理 raw data 对每个内容点 k 都生成 k-v pair</li>
+<li>reduce 对每个 k 都聚合其 list 中间数据，最终生成聚合结果</li>
+</ul>
+<h3 id="MR-执行流程"><a href="#MR-执行流程" class="headerlink" title="MR 执行流程"></a>MR 执行流程</h3><p>首先说明 MapReduce 是一种分布式计算模型，不是某个开源的分布式调度框架，所以在不同场景下对模型的实现代码并不相同。比如对文本文件中的单词进行计数，可使用 MR 模型来实现分布式运行，系统运行流程如下：</p>
+<p><a href="https://images.yinzige.com/2019-04-03-042855.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-03-042855.png" alt=""></a></p>
+<ul>
+<li>Split： MR 将 input files 分割为 M 个子数据片段</li>
+<li>Fork：将用户程序 fork 后运行在多个节点上，整个运行过程会执行 M 个 map task 和 R 个 reduce task，节点由一个 master 和多个 worker 组成，其中 master 负责调度空闲的 worker 来运行 task</li>
+<li>Map：<ul>
+<li>被分配到 map task 的 worker 先读取子数据片段，再调用 Map func 来处理原始数据生成 k-v pairs 中间数据，并通过分区函数归类到 R 个子文件，随后写入本地磁盘。</li>
+<li>map worker 将中间文件的存储地址通知 master，随后 master 将 R 个中间文件分配给 reduce worker 处理</li>
+</ul>
+</li>
+<li>Reduce：<ul>
+<li>被分配到 reduce task 的 worker 使用 RPC 读取 map worker 上 master 给定的中间文件。虽然同一个 key 会被分区到同一个中间文件，但 key 与 key 之间的写入顺序是无序的，所以读取完毕后需对 keys 统一进行排序，否则输出到 output file 的结果是无序的，会导致 master merge 的结果也是无序的。</li>
+<li>排序完毕后对每个 key 都调用 Reduce func 来进行聚合，并将结果输出到对应分区的 output file 中</li>
+</ul>
+</li>
+<li>Merge：master 等所有的 map task 和 reduce task 都执行完毕后，将 R 个 output files 进行 Merge 操作，整个分布式计算过程执行结束。</li>
+</ul>
+<h3 id="处理容错"><a href="#处理容错" class="headerlink" title="处理容错"></a>处理容错</h3><h4 id="worker-失效"><a href="#worker-失效" class="headerlink" title="worker 失效"></a>worker 失效</h4><p>master 会定期向各个 worker 发送 ping 心跳包，若在超时时间内收到 pong 包则认为 worker 有效，否则标记为失效不可用。MR 会将原来分配到失效 worker 的 task 回收重新分配到其他可用的 worker 上重新执行。值得区分的是：</p>
+<ul>
+<li>map worker 失效后是必须重新运行 map task，因为 worker 崩溃了无法处理本地中间文件的访问请求</li>
+<li>reduce worker 如果失效但已生成聚合文件，通知给了 master 该文件在 GFS 中的位置，就不必重新运行</li>
+</ul>
+<p>相比论文中如上第 2 种 worker 容错机制，实际在 lab 中都是出错超时直接将 task 分配给其他 worker 运行，因为 lab 并没有实现 reduce worker 输出结果到 output file 后通知 master 的机制。</p>
+<h4 id="master-失效"><a href="#master-失效" class="headerlink" title="master 失效"></a>master 失效</h4><p>这种情形论文中只给出了简单的处理方案，即定期将 master 的所有状态作为快照 checkpoint 持久化到磁盘，当 master 崩溃后从最近的 checkpoint 启动新的 master 继续处理。</p>
+<p>因为 MR 要求 map func/reduce func 都必须是功能函数，不保留任何状态，即相同的输入能得到相同的输出。所以 master 恢复后继续调度运行是可行的。</p>
+<h4 id="GFS"><a href="#GFS" class="headerlink" title="GFS"></a>GFS</h4><p>论文中的容错机制充分利用了 GFS 分布式文件系统的文件原子特性，可直接看原论文是怎么用的。</p>
+<h3 id="MR-实用技巧"><a href="#MR-实用技巧" class="headerlink" title="MR 实用技巧"></a>MR 实用技巧</h3><h4 id="分区函数"><a href="#分区函数" class="headerlink" title="分区函数"></a>分区函数</h4><p>在 Map 阶段，使用 <code>hash(key) mod R</code> 来保证每个 key 都能汇总到同一中间文件，保证所有 key 尽可能地均匀分布在 R 个中间文件中。</p>
+<h4 id="保证顺序"><a href="#保证顺序" class="headerlink" title="保证顺序"></a>保证顺序</h4><p>在 Reduce 阶段从中间文件中读取数据时得先排序再聚合，这样聚合到 output files 之间就是分段有序的。</p>
+<h2 id="实验笔记"><a href="#实验笔记" class="headerlink" title="实验笔记"></a>实验笔记</h2><h3 id="Part1-处理-MR-的输入输出"><a href="#Part1-处理-MR-的输入输出" class="headerlink" title="Part1. 处理 MR 的输入输出"></a>Part1. 处理 MR 的输入输出</h3><p>注意 map task 的输出要能被 reduce task 读取，所以要约定好 encode/decode 结构。lab 注释建议每行存储一个 JSON Encode 后的  k-v，自己做的时候可以 <code>[]k-v</code> 直接 Marshal，在 reduce 读取时对应反序列化。</p>
+<h3 id="Part2-单机版-word-count"><a href="#Part2-单机版-word-count" class="headerlink" title="Part2. 单机版 word count"></a>Part2. 单机版 word count</h3><p>对照如上 MR 实例流程图实现。</p>
+<h3 id="Part3-分布式版-MR"><a href="#Part3-分布式版-MR" class="headerlink" title="Part3. 分布式版 MR"></a>Part3. 分布式版 MR</h3><p>lab 中使用 RPC 在本地模拟分布式多节点的情况，有新 worker 注册后会通知 registerChan，所以在 schedule 调度时候可 select 从 channel 接收新 worker，或者复用旧的空闲 worker 处理 task</p>
+<h3 id="Part4-实现-worker-容错"><a href="#Part4-实现-worker-容错" class="headerlink" title="Part4. 实现 worker 容错"></a>Part4. 实现 worker 容错</h3><p>lab 没有完全按照 paper 来，map/reduce worker 崩溃了都是直接分配给其他可用的空闲 worker 进行 re-execute，需注意多个 schedule goroutine 之间等待可用 worker 时可能出现竞态条件，自己尝试了几个方案后总结了一些经验：</p>
+<ul>
+<li><p>不要通过共享内存来进行通信，而是通过通信来共享内存</p>
+<p>lab 代码已有的 registerChan 是无缓冲 channel，如果复用它来在多个 schedule 间共享空闲 worker，那 map 任务结束后再向它发送 worker 会直接阻塞，此时使用缓冲 channel 合适。反之如果将 worker 的状态变更放到内存中共享使用，多个 schedule goroutine 共享和更新 worker，可能产生很多竞态条件。</p>
+</li>
+<li><p>锁使用粒度要小，要集中，不要写多个 goroutine 可能会产生竞态的代码</p>
+<p>如果跑测试有时候通过，有时候在 lock 周围 panic，那可能代码中还隐藏有竞态条件，而且不好复现调试。总之不要滥用 channel 和 sync.Mutex，梳理好多个 goroutine 之间数据传递方式后再写代码也不迟。</p>
+</li>
+</ul>
+<h3 id="Part5-使用-MR-生成倒排索引"><a href="#Part5-使用-MR-生成倒排索引" class="headerlink" title="Part5. 使用 MR 生成倒排索引"></a>Part5. 使用 MR 生成倒排索引</h3><p>注意给每个单词打分，将分数高的单词排在前边即可通过测试。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>MR 要求用户先把任务拆分成 Map / Reduce 2 种子任务，MR 并发地执行 Map 任务产生中间数据，再并发地执行 Reduce 任务聚合数据，最终 Merge 后输出结果，在处理海量数据时通过直接加 worker 就能提高系统性能，水平扩展能力很高。</p>
+<p>MR 是一种开创性的分布式计算模型，能通过拆分逻辑实现任务的分布式运行，比较通用化。现如今，虽然有的分布式场景下 MR 模型不是最佳解决方案，但对于设计和学习分布式系统依然很有价值。</p>
+<p>感谢 Jeffrey 团队</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>]]></content>
+      <categories>
+        <category>mit6.824</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>raft笔记</title>
+    <url>/2019/11/23/raft%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>&lt;p&gt;Raft 算法的学习笔记和个人理解。&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Raft 论文对算法本身做了详尽的讲解，同时细节也很多，如果不梳理清楚就去做 6.284 Lab2，越往后做就会越发现很多细节都没考虑清楚，也就没法应对各种非正常网络状况。本文记录对 Raft 的学习笔记和流程梳理。</p>
+<h2 id="Raft-算法概览"><a href="#Raft-算法概览" class="headerlink" title="Raft 算法概览"></a>Raft 算法概览</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>对于分布式存储系统，必须要解决的主要问题：当系统网络发生故障，或某些节点宕机，集群整体也要能对外可用，即保证容错性。通常通过复制副本来保证容错，即某个节点因宕机或网络隔离不可用后，可让另一个一直在复制它数据的节点来接替它的工作，继续处理请求。</p>
+<p>保证多个节点上复制的数据相同就是一致性算法要解决的问题。1990 年至今，<a href="https://zh.wikipedia.org/zh-hans/Paxos%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">Paxos 一致性算法</a> 依旧是学术界最知名的一致性算法，但其晦涩难懂且在工程应用时需进行大幅修改才能应用。于是 2013 年衍生出了更易理解的 <a href="https://zh.wikipedia.org/zh/Raft" target="_blank" rel="noopener">Raft 一致性算法</a>，其功能和性能与 Paxos 相当。</p>
+<h3 id="可理解性"><a href="#可理解性" class="headerlink" title="可理解性"></a>可理解性</h3><p>Raft 的易理解性源于自身的两个创新性设计：</p>
+<ul>
+<li>分解一致性问题为三个子问题：leader 选举、日志复制、安全性保证</li>
+<li>通过增强一致性状态来减少要考虑的状态数：如 Raft 通过额外选举机制保证新 leader 一定包含旧 leaders 已经 commited 的日志，让算法更好理解。</li>
+</ul>
+<h2 id="Leader-选举"><a href="#Leader-选举" class="headerlink" title="Leader 选举"></a>Leader 选举</h2><h3 id="状态变更"><a href="#状态变更" class="headerlink" title="状态变更"></a>状态变更</h3><p>在 Raft 中，每个节点只会有三种状态：leader、candidate、follower，转变时机如下：</p>
+<p><a href="https://images.yinzige.com/2019-04-10-095432.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-10-095432.jpg" width="60%"></a></p>
+<p>变更时机：</p>
+<ul>
+<li>集群初始化时节点均为 follower，它们的 election timeout 是从固定区间如 150-300ms 取的随机值</li>
+<li>第一个选举超时的 follower 发现一直未收到 leader 或 candidate 的 RPC（可能是 leader 宕机了，也可能是 leader 和当前 follower 发生了网络隔离）它就认为当前集群中并没有 leader，于是升级为 candidate，向其他 followers 发起投票请求，开始新一轮选举：<ul>
+<li>选举期间，若收到本轮的 leader 请求，或发现了更新一轮的节点，则自降为 follower</li>
+<li>若本轮选举超时了还未收到大多数票，也没收到请求，则重启新一轮选举</li>
+<li>若收到来自大多数 follower 的选票，则升级为 leader</li>
+</ul>
+</li>
+<li>leader 如果发现有更高任期的节点，则自降为 follower</li>
+</ul>
+<p>Raft 限制了只有收到大多数节点的投票，才能升级为 leader，从而保证了每个集群每个任期内只会有一个 leader，这也是节点个数最好设为奇数的原因。<br>成为 leader 后它会向其他节点发送心跳请求表明自己的领导地位。心跳请求的间隔时间需比选举超时时间小一个量级左右。比如每隔 50ms 并行发送一次心跳请求，对应选举超时时间设为 400ms 左右，才能让 leader 一直保持自己的领导地位。</p>
+<h3 id="选举流程"><a href="#选举流程" class="headerlink" title="选举流程"></a>选举流程</h3><h4 id="从-follower-到-leader-的选举步骤："><a href="#从-follower-到-leader-的选举步骤：" class="headerlink" title="从 follower 到 leader 的选举步骤："></a>从 follower 到 leader 的选举步骤：</h4><ol>
+<li>选举超时时间到，切换为 candidate 身份</li>
+<li>currentTerm 自增 1</li>
+<li>给自己投一票</li>
+<li>并行向其他节点发起 RequestVote RPC，候选人等待响应时可能发生 3 种情况：</li>
+</ol>
+<ul>
+<li>成功收到大多数节点的选票：升级为 leader</li>
+<li><p>收到本轮已选出 leader 的请求，则主动放弃竞选降为 follower。如下图的 B 节点：</p>
+<p><a href="https://images.yinzige.com/2019-04-19-083231.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-19-083231.png" width="70%"></a></p>
+</li>
+<li><p>本轮选举超时了还没有收到大多数票，也没收到其他请求，就继续保持 candidate 身份，开启下一轮选举。<br>如下是平票（split vote）情况，有 A,B,C,D 四个节点的集群，若 A 和 C 近乎同时选举超时。B 给最近的 A 投了一票，D 给最近的 C 投了一票。于是 A 和 D 两个候选人都没有达成多数票，二者都会重新开启 Term 2 的新选举。 此时 Raft 让 A 和 C <strong>随机</strong>选择选举超时时间，所以 A 和 C 在 Term2 不会同时超时，能成功选出 leader</p>
+</li>
+</ul>
+<p><a href="https://images.yinzige.com/2019-04-19-091229.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-19-091229.png" width="80%"></a></p>
+<h4 id="Raft-对投票者提出了三点要求"><a href="#Raft-对投票者提出了三点要求" class="headerlink" title="Raft 对投票者提出了三点要求"></a>Raft 对投票者提出了三点要求</h4><ul>
+<li>每轮能投几张：一个任期内，一个节点只能投一张票</li>
+<li>是否要投：candidate 的日志至少要和自己的一样新（下节详述），才投票</li>
+<li>投给谁：first-come-first-served，投给第一个符合条件的 candidate</li>
+</ul>
+<h4 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h4><p><a href="https://images.yinzige.com/2019-04-23-035725.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-23-035725.png" alt=""></a></p>
+<h2 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h2><p>成功选出 leader 后，集群即对外可用。Raft 让客户端的请求统一给 leader 处理，若 follower 收到请求会直接转发给 leader 处理。而 leader 的工作是保证各个 follower 上的日志顺序、内容都是一致的。</p>
+<p>leader 将每个客户的请求都封装成一条日志 log entry，随后将这些日志 entries replicate 到其他 followers 节点，它们随后以相同的顺序、相同的内容执行命令，从而让 followers 数据一致。</p>
+<h3 id="请求处理流程"><a href="#请求处理流程" class="headerlink" title="请求处理流程"></a>请求处理流程</h3><p>leader 将客户端请求中的命令（如 <code>SET x 3</code>）封装成一条 log entry：</p>
+<ol>
+<li>leader 将该条日志 append 到本地</li>
+<li>leader 并行地向其他节点发起 AppendEntries RPC 调用</li>
+<li>leader 收到大多数节点 RPC 调用成功的响应</li>
+<li>leader 在本地状态机上 apply 该条日志</li>
+<li>leader 响应客户端请求</li>
+<li>leader 通知 followers 可以安全地 apply 该条日志</li>
+</ol>
+<p>在第 3 步中，只要大多数节点响应说都成功 append 了日志，leader 就认为在自己的状态机上 apply 日志是安全的，对于那些未响应的节点 leader 会无限期地重试 AppendEntries RPC 调用。因此 Raft 并不是类似 2PC 协议的强一致性，而是保证最终一致性。</p>
+<h3 id="Log-Entry-存储结构"><a href="#Log-Entry-存储结构" class="headerlink" title="Log Entry 存储结构"></a>Log Entry 存储结构</h3><p>每个节点的每条日志都会包含：请求 append 该日志的 leader 任期号、要执行的命令。下图展示了 5 个节点的集群可能的状态：leader 看到索引 1-7 的日志至少在其他两个节点上复制成功，就认为该日志是 <strong>commited</strong> 状态，而最后一条 <code>x &lt;- 4</code> 的日志并未复制到多数节点，所以索引为 8 的那条日志是 <strong>uncommitted</strong> 状态</p>
+<p> <a href="https://images.yinzige.com/2019-04-10-145221.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-10-145221.jpg" width="65%"></a></p>
+<p>注意区分 log 的状态：</p>
+<ul>
+<li>commit / commited：log 成功复制到大多数节点后的状态，还未执行不会影响节点值</li>
+<li>apply / applied：log 成功被状态机执行后的状态，会真正影响节点值</li>
+<li>uncommitted：leader 持有的新日志，但未成功复制到大多数节点上</li>
+</ul>
+<h2 id="安全性保证"><a href="#安全性保证" class="headerlink" title="安全性保证"></a>安全性保证</h2><p>在分布式系统中，网络永远不可靠，而节点一般都用高性价比的普通主机，磁盘异常导致宕机更是常事。Raft 在网络隔离、节点不可用等环境下仍能保证节点数据的一致性，得利于它的一个原则四个特性：</p>
+<h3 id="1-Leader-Append-Only-原则"><a href="#1-Leader-Append-Only-原则" class="headerlink" title="1. Leader Append-Only 原则"></a>1. Leader Append-Only 原则</h3><p>leader 对自己的日志不能覆盖和删除，只能进行 append 新日志的操作。</p>
+<h3 id="2-Election-Safety-特性"><a href="#2-Election-Safety-特性" class="headerlink" title="2. Election Safety 特性"></a>2. Election Safety 特性</h3><p>每个任期内最多只能选出一个 leader，试想如果集群同一任期选出了多个 leader，即发生了 brain split（脑裂），会直接导致同一时刻集群中多个 follower 之间数据不一致。在 Raft 中用以下限制来保证 election safety</p>
+<ul>
+<li>一个节点每个任期内只能投一张票</li>
+<li>获得多数票（过半）的节点才有资格升级为 leader</li>
+</ul>
+<h3 id="3-Log-Matching-特性"><a href="#3-Log-Matching-特性" class="headerlink" title="3. Log Matching 特性"></a>3. Log Matching 特性</h3><p>若两个节点的日志中，同一索引的两条日志，任期号也相同。则两个节点在该索引前的日志都是相同的。Raft 通过额外机制保证日志匹配：</p>
+<ul>
+<li>append-only 保证：leader 在每个 term 的每个 index 只会存储一条 log entry，append 成功后不再修改</li>
+<li>一致性检查：leader 在 AppendEntries RPC 调用时会将上一条日志的索引和任期号 <code>prevLogIndex</code>, <code>prevLogTerm</code> 一并发送，即告诉 follower 接收新日志之前检查一下上一条日志是否和自己一致。<ul>
+<li>上一条日志匹配成功：则 follower 将新日志 append 到本地</li>
+<li>未匹配成功：follower 告知 leader 日志不一致性</li>
+</ul>
+</li>
+</ul>
+<p>集群初始化时，所有节点都是空日志，自然满足 log matching，之后的一致性检查保证了新增的日志也满足 log matching，一步步地累加日志，才能满足上边一条匹配，则前边所有日志也匹配的特性。</p>
+<p>正常 leader 不宕机的情况下，leader 和 followers 的日志会一直遵从 log matching，但 leader 也会出现宕机的情况，可能出现 leader 还没来得及把新日志全部复制给 followers 的情况：</p>
+<p> <a href="https://images.yinzige.com/2019-04-11-021842.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-11-021842.jpg" width="60%"></a></p>
+<p>如上盒子是一条日志，编号是任期号。因为 leader 和 follower 都可能会宕机，也就可能出现如上的日志不一致的情况：</p>
+<ul>
+<li>a，b：follower 可能丢失部分日志</li>
+<li>c，d：follower 本地可能 uncommited 的日志</li>
+<li>e，f：follower 可能既缺少本该有的日志，也多出额外的日志</li>
+</ul>
+<p>那 leader 如何处理日志不一致的情况呢？</p>
+<ol>
+<li>leader 强制让日志不一致的 follower 重写自己的日志，和 leader 保持一致</li>
+<li>leader 维护 <code>nextIndex[]</code> 数组，记录要发给每个 follower 的下一条日志索引。用于：</li>
+</ol>
+<p><a href="https://images.yinzige.com/2019-04-22-014633.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-22-014633.png" alt="image-20190422094632883"></a></p>
+<p>如上的一致性检查操作能让 follower 的日志和 leader 强制保持一致。</p>
+<h3 id="4-Leader-Completeness-特性"><a href="#4-Leader-Completeness-特性" class="headerlink" title="4. Leader Completeness 特性"></a>4. Leader Completeness 特性</h3><p>若某条日志在前任 leaders 中已被提交（commited），则这条日志也一定会出现在更大任期的 leader 日志中。此特性由以下限制实现：</p>
+<ul>
+<li>commited 状态：某条日志只有在成功复制给大多数节点后才是 commited </li>
+<li>leader 选举：只有获得多数票的候选人才能成为 leader，而 voter 给候选人投票的前提是，候选人的日志至少要和 voter 的一样新：</li>
+</ul>
+<p>Raft 通过比较两个节点<strong>最后一条日志</strong>的索引、任期号来比较新旧：</p>
+<ul>
+<li>先比任期：任期不同，则任期大的更新</li>
+<li>再比索引：任期相同，则索引大（更长）的日志更新</li>
+</ul>
+<p>如上两个 commited 大多数和 election 大多数一定会有重叠：<br><a href="https://images.yinzige.com/2019-04-22-021422.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-22-021422.png" alt="image-20190422101422311"></a></p>
+<p>即 leader 节点至少收到了一个包含最新 commited 日志的节点的投票。足以说明 leader 包含最新的 commited 日志。</p>
+<h3 id="5-State-Mechine-Safety-特性"><a href="#5-State-Mechine-Safety-特性" class="headerlink" title="5. State Mechine Safety 特性"></a>5. State Mechine Safety 特性</h3><p>考虑有 5 个节点的集群情况：</p>
+<p> <a href="https://images.yinzige.com/2019-04-11-101454.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-11-101454.jpg" width="70%"></a></p>
+<ul>
+<li>a：<strong>S1</strong> 当选 term2 的 leader，将日志成功复制到 S2，<strong>S1 crash</strong></li>
+<li>b：<strong>S5</strong> 当选 term3 的 leader，只接收了一条新日志，<strong>S5 crash</strong></li>
+<li>c：<strong>S1</strong> 重新当选 term4 的 leader，将自己在 term2 的日志复制到了 <strong>S3</strong> 上，该条日志成功复制到了大多数节点，为 commited 状态，S1、S2、S3 的状态机均可安全地 apply</li>
+</ul>
+<p>不幸的是：<strong>S1 crash again！</strong>，于是出现 d：<strong>S5</strong> 重新当选 term5 的 leader，将自己在 term3 的日志复制到了全部节点上。导致 c 中可能已被 applied 的日志被回滚。</p>
+<p>回滚的根本原因：<strong>S1</strong> 在 term4 中提交了自己在 term2 的旧日志。为避免日志被回滚，<u>Raft 不允许 leader 提交之前任期的日志</u>，而是在提交当前任期的新日志时候，根据 log matching 特性，<strong>顺带</strong> 将旧日志一并提交。此外，Raft 要求 leader 当选后立即尝试提交一条 no-op（无操作）的空日志，在一致性检查成功后及时将已有的日志提交。</p>
+<p>如上对 leader 提交时机的约束，集群将不会出现情形 c，而是 e：<strong>S1</strong> 只提交 term4 的新日志，顺带提交 term2 的旧日志。当新日志复制成功后哪怕 <strong>S1</strong> 再次 crash，<strong>S5</strong> 也不会当选（S5 最新日志任期为3，小于 <strong>S2, S3</strong> 的 4）</p>
+<h2 id="特殊-Case"><a href="#特殊-Case" class="headerlink" title="特殊 Case"></a>特殊 Case</h2><h3 id="网络分区"><a href="#网络分区" class="headerlink" title="网络分区"></a>网络分区</h3><p>如果集群内部发生网络分区，如下图举例：</p>
+<ul>
+<li>A, B 两个节点在上海</li>
+<li>C, D, E 三个节点在北京</li>
+</ul>
+<p>B 节点是原 leader，假定两地线路故障，造成集群内部的网络分区。此时北京的三个节点选出了新 leader E。虽然集群中同时存在两个 leader，但二者的 term 却不同。</p>
+<p> <a href="https://images.yinzige.com/2019-04-22-022355.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-22-022355.png" width="80%"></a></p>
+<p>现在考虑集群对外的读写</p>
+<ul>
+<li><p>写：上海的客户端优先选择节点 B 进行写操作，但 leader B 无法将日志复制到大多数节点，该日志是 uncommitted 状态，不会响应客户端说写入成功，而响应写入超时。</p>
+</li>
+<li><p>读：若网络分区一直未恢复，则可能存在某个客户端在节点  E  上写入新数据，但在节点 B 上读到的却是旧数据。为避免在网络分区阶段读到旧数据，可有如下两种解决方案（原论文 S8）：</p>
+<ul>
+<li>每次处理读请求时候，都必须和大多数节点进行通信，检查自己的 leader 地位，因此能保证读取最新数据，但高频通信有效率问题。</li>
+<li>使用租约机制实现心跳，若大多数节点的租约都未到期则读到的数据仍旧是最新的，但租约机制依赖时序性。</li>
+</ul>
+</li>
+</ul>
+<p>假设现网络分区恢复，节点 B 会发现有更高 term 的节点存在，就撤销自己 uncommitted 的日志，并和 leader E 进行日志同步，由此保证日志一致性。</p>
+<h3 id="Leader-Crash"><a href="#Leader-Crash" class="headerlink" title="Leader Crash"></a>Leader Crash</h3><p>参考：<a href="https://www.cnblogs.com/mindwind/p/5231986.html" target="_blank" rel="noopener">Raft 为什么是更易理解的分布式一致性算法</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Raft 将集群中节点的状态分为 3 类：leader（领导）、follower（民众）、candidate（候选人），并为系统增加了许多限制来实现四个特性，从而保证多节点的数据一致性，实现节点容错。</p>
+<ul>
+<li>Leader Append-Only 原则<br>日志只能从 leader 流向其他节点，leader 对日志只能 append，不覆盖也不删除。</li>
+<li>Election Safety 特性：<ul>
+<li>一个节点每个任期只能投一张票，投票标准：候选人的日志至少要和自己一样新</li>
+<li>获得多数票（过半）的候选人才能当选 leader</li>
+</ul>
+</li>
+<li>Log Matching 特性<br>AppendEntries RPC 调用时检查日志一致性，leader 维护 <code>nextIndex[]</code> 并循环检查后强制同步日志。</li>
+<li>Leader Completeness 特性：两个多数性原则会重叠，保证选出的 leader 包含集群的所有 commited 日志</li>
+<li>State Mechine Safety 特性：leader 不直接提交旧日志，而是 log matching 前提下提交新日志，校验一致后顺带提交。</li>
+</ul>
+<p>通读论文会发现细节多且零散，待 lab 做完再补充。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://raft.github.io/" target="_blank" rel="noopener">raft.github.io</a><br><a href="http://thesecretlivesofdata.com/raft" target="_blank" rel="noopener">thesecretlivesofdata.com/raft</a><br><a href="https://www.cnblogs.com/xybaby/p/10124083.html" target="_blank" rel="noopener">一文搞懂Raft算法</a></p>
+<p><a href="https://www.youtube.com/watch?v=YbZ3zDzDnrw" target="_blank" rel="noopener">Youtube: Raft lecture (Raft user study)</a> &amp; 笔记：</p>
+<p><a href="https://images.yinzige.com/raft-notes.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/raft-notes.png" alt=""></a></p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>]]></content>
+      <categories>
+        <category>raft</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>raft 论文中文翻译</title>
+    <url>/2019/11/23/raft-%E8%AE%BA%E6%96%87%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/</url>
+    <content><![CDATA[<div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wuyin.io/2019/04/13/raft-paper/">
+
+
+<p><a id="more"></a></p>
+<h2 id="寻找一种易于理解的一致性算法（扩展版）"><a href="#寻找一种易于理解的一致性算法（扩展版）" class="headerlink" title="寻找一种易于理解的一致性算法（扩展版）"></a>寻找一种易于理解的一致性算法（扩展版）</h2><p>斯坦福大学：<a href="https://ongardie.net/diego/" target="_blank" rel="noopener">Diego Ongaro</a> 和 <a href="https://web.stanford.edu/~ouster/cgi-bin/home.php" target="_blank" rel="noopener">John Ousterhout</a></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>Raft 是一种管理复制日志的一致性算法，功能和性能与 Multi-Paxos 算法相当，但结构上的差异使其更易理解和实现。为提高可理解性，Raft 抽离了一致性算法中的关键模块：leader 选举（leader election）、日志复制（log replication）、安全性（safety），并通过增强一致性来减少必须考虑的一致性状态的数量。此外 Raft 还实现了新的机制让集群节点动态变化，通过重叠大多数（overlapping majorties）来保障其变化安全。</p>
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>一致性算法能使多节点组成的集群像单机一样工作，哪怕集群内的部分节点不可用。过去十年内 Paxos 协议几乎成为了分布式一致性算法的代名词，但其晦涩难懂且需进行大幅修改才能应用于实际系统中。于是我们实现了更易理解和学习的一致性算法：Raft，为提升可理解性，Raft 分解了一致性算法中的几个模块：leader 选举、日志复制和安全性，并减少了状态机的状态数量（比 Paxos 降低了不确定性的程度，减少了多节点数据不一致的方式）</p>
+<p>Raft 和一些现有的一致性算法类似，但也有创新之处：</p>
+<ul>
+<li>强 leader：Raft 相比其他一致性算法，赋予了 leader 更高的领导能力，比如日志 entry 只能从 leader 流向其余节点，这种简化版的复制方式让日志更易管理，也让 Raft 更易理解。</li>
+<li>leader 选举：Raft 使用随机 timer 来选举新 leader，基于算法本身的心跳机制即可实现，还能简化了竞选平票时冲突的处理。</li>
+<li>成员关系调整：Raft 为调整成员配置变更使用了联合一致性（joint consensus），在配置切换时集群中新旧配置的大多数节点会重叠，以此保证对外持续可用。</li>
+</ul>
+<p>论文剩余章节安排如下：第 2 节介绍复制状态机（replicated state mechine）问题，第 3 节讨论 Paxos 算法的不足之处，第 4 节介绍 Raft 更易理解之处，第 5-8 节解释了 Raft 算法的细节，第 9 节评价了 Raft 算法，第 10 节讨论相关话题。</p>
+<h2 id="2-复制状态机（Replicated-state-machines）"><a href="#2-复制状态机（Replicated-state-machines）" class="headerlink" title="2. 复制状态机（Replicated state machines）"></a>2. 复制状态机（Replicated state machines）</h2><p>一致性算法在 <a href="https://www.cs.cornell.edu/fbs/publications/SMSurvey.pdf" target="_blank" rel="noopener">《replicated state mechines》</a> 背景下衍生而来。其要求多个主机上的状态机要能生成相同状态的副本，所以哪怕部分主机宕机，整个集群对外依旧可用。复制状态机在分布式系统中常用于解决节点容错相关的问题。如 GFS, HDFS 等大规模系统均使用单一 leader 节点机制，并使用独立的复制状态机来管理 leader 选举和存储配置信息，以实现在 leader 宕机的情况下依旧存活并快速恢复集群状态。复制状态机的应用案例有 Chubby 和 Zookeeper</p>
+<p>复制状态机使用复制日志来实现，其结构如下图：</p>
+<p> <a href="https://images.yinzige.com/2019-04-09-152316.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-09-152316.jpg" width="80%"></a></p>
+<blockquote>
+<p>图1：复制状态机结构图。一致性算法管理的是记录客户端状态命令的日志，多台状态机以相同的顺序执行日志中相同的命令，从而产生相同的输出，保持状态一致性。</p>
+</blockquote>
+<p>复制状态机通常基于复制日志实现，如上图中每台服务器（节点）都保存着存储一系列命令的日志，各自日志中的<strong>命令相同</strong>且<strong>顺序一致</strong>，所以多个节点执行系列命令的结果都是<strong>相同的</strong>，因此状态机的状态才能保持一致。</p>
+<p><strong>保持复制相同日志</strong>就是一致性算法的工作了。某个节点的一致性模块负责接收来自客户端的命令并将其写入自己的日志，同时它还要和其余服务器上的一致性模块进行通信以确保每条命令都以同一顺序写入它们的日志中，即使部分节点已宕机。一旦命令被正确复制，其余节点上的状态机都会以相同顺序应用日志中的命令，并将输出返回给客户端。最终使得多个节点组成的集群就像一台独立且高可靠的状态机。</p>
+<p>实际应用中的一致性算法大多有如下特性：</p>
+<ul>
+<li><strong>安全性保证（绝不返回错误的结果）</strong>：在所有非拜占庭错误下，比如网络延迟、网络分区、丢包、包冗余和包乱序等情况下都要保证安全性。</li>
+<li><strong>可用性保证</strong>：只要集群中大多数节点正常运行、能相互通信、能与客户端通信，就要保证可用性，因此在 5 个节点的集群中要能容忍 2 个节点不可用。节点不工作即认为不可用，随后它们可能恢复正常存储并重新加入集群。</li>
+<li><strong>日志的一致性不依赖于时序性</strong>：时钟出错或超高延迟等最坏情况下才会引起可用性问题</li>
+<li><strong>尽快响应命令的执行</strong>：通常一条命令需尽快在大多数节点响应 RPC 后响应客户端，少部分慢节点不能成为整个系统的性能瓶颈。</li>
+</ul>
+<h2 id="3-Paxos-的不足之处"><a href="#3-Paxos-的不足之处" class="headerlink" title="3. Paxos 的不足之处"></a>3. Paxos 的不足之处</h2><p>一言以蔽之：Paxos 虽然高效，但过于晦涩难懂。在工程应用中还需进行大量结构调整。</p>
+<h2 id="4-更易于理解的设计"><a href="#4-更易于理解的设计" class="headerlink" title="4. 更易于理解的设计"></a>4. 更易于理解的设计</h2><p>Raft 的几个设计目标：</p>
+<ul>
+<li>易于实现并应用在实际系统的开发中</li>
+<li>所有情况下保证安全性，大多数情况下保证可用性</li>
+<li>大部分操作要保证高效</li>
+<li>最重要也最困难的目标：提升可理解性</li>
+</ul>
+<p>Raft 使用两种方式提高可理解性：</p>
+<ul>
+<li>分解子问题：将一致性问题分解为 leader 选举、日志复制和安全保障。</li>
+<li>减少待考虑的状态数量来简化状态空间：尽可能加强系统一致性并降低不确定性。</li>
+</ul>
+<h2 id="5-Raft-一致性算法"><a href="#5-Raft-一致性算法" class="headerlink" title="5. Raft 一致性算法"></a>5. Raft 一致性算法</h2><p>Raft 是一种用来管理第 2 节所述复制日志的算法。下边的图 2 简要总结了算法内容以便参考，图 3 列出了 Raft 的原则和特性。图中内容将在本节介绍。</p>
+<p>Raft 通过选举产生 leader 并让其全权管理复制日志来实现一致性。leader 接收来自客户端的日志条目（log entries），并将这些日志复制到其余节点，同时 leader 还要在保证安全时告知其他节点将日志应用到他们的状态机中。单一 leader 极大简化了复制日志的管理工作，比如它无需和其他节点商议就能决定将新日志放到什么位置，并且限制了数据只能从 leader 流向其余节点。当 leader 不可用后其他节点可重新选举出新 leader</p>
+<p>通过单一 leader 的机制，Raft 将一致性问题分解为 3 个独立的子问题：</p>
+<ul>
+<li>leader 选举：当现有 leader 不可用时要选举出新 leader</li>
+<li>日志复制：leader 需接收客户端的请求命令，随后复制到集群中的其他节点，并强制要求其余节点日志与自己保持一致</li>
+<li>安全性保证：Raft 保证数据安全源于如下的状态机特性（原文图 3）：任意一个节点在自己的状态机上应用了一条确定的日志，那其他节点的状态机在同一日志索引上不会应用不同的日志（<strong>5.4</strong>）：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">原则</th>
+<th style="text-align:center">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">选举安全原则（Leader Election Safety）</td>
+<td style="text-align:center">每个任期内最多有一个 leader 会被选出</td>
+</tr>
+<tr>
+<td style="text-align:center">Leader Append-Only 原则</td>
+<td style="text-align:center">leader 绝不能覆盖或删除自己的日志，对新日志只能进行 append 操作</td>
+</tr>
+<tr>
+<td style="text-align:center">日志匹配原则（Log Matching）</td>
+<td style="text-align:center">若两份日志在某个<strong>相同索引</strong>位置上条目的<strong>任期也相同</strong>，就认为从两份日志从头到这个索引间的日志都相同。</td>
+</tr>
+<tr>
+<td style="text-align:center">Leader 完整性原则（Leader Completeness）</td>
+<td style="text-align:center">若一条日志在某个任期内已提交（<strong>commited</strong>），那它也一定会出现在所有更高任期的 Leader 中</td>
+</tr>
+<tr>
+<td style="text-align:center">状态机安全原则（State Mechine Safety）</td>
+<td style="text-align:center">若一个节点的状态机应用（<strong>applied</strong>）了给定索引位置的日志，那其余节点在相同索引位置应用的必定也是相同的日志。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>图3：Raft 无时无刻都能保障以上特性。</p>
+</blockquote>
+<p>如下 4 个小点是关于 Raft 的简要总结（不包含节点身份变更和日志复制的细节）（原文图 2）</p>
+<p><strong>（1）节点的状态</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">状态</th>
+<th style="text-align:center">所有节点均持久化存储的状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>currentTerm</code></td>
+<td style="text-align:center">节点已知的最后一个任期号（首次启动后从 0 开始递增）</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>votedFor</code></td>
+<td style="text-align:center">当前任期内获得选票的候选人 id（没有则为 null）</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>log[]</code></td>
+<td style="text-align:center">日志条目集合，每个条目包含：待执行的命令、收取日志时 leader 的任期号</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">状态</th>
+<th style="text-align:center">所有节点上经常变更的状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>commitIndex</code></td>
+<td style="text-align:center">节点上已知的最大 <strong>commited</strong> 日志索引（从 0 自增）</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>lastApplied</code></td>
+<td style="text-align:center">节点上最后一条被状态机 <strong>applied</strong> 的日志索引（从 0 自增）</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">状态</th>
+<th style="text-align:center">leader 中易变更的状态（选举后会重新初始化）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>nextIndex[]</code></td>
+<td style="text-align:center">对其他节点，分别记录下一个要发送的日志索引（初值为 leader 最后一条日志的索引 +1）</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>matchIndex[]</code></td>
+<td style="text-align:center">对其他节点，分别记录已成功 <strong>replicated</strong>（复制）的最大日志索引（从 0 自增）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>（2）Append Log RPC</strong></p>
+<p>此 RPC 用于 leader 向其余节点复制日志、发送心跳请求。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">入参</th>
+<th style="text-align:center">注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>term</code></td>
+<td style="text-align:center">leader 自己的任期号</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>leaderId</code></td>
+<td style="text-align:center">leader id，便于  follower 节点将客户端请求重定向给 leader 处理</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>prevLogIndex</code></td>
+<td style="text-align:center">新日志的上一条日志的索引</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>prevLogTerm</code></td>
+<td style="text-align:center">prevLogIndex 日志任期号</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>entries[]</code></td>
+<td style="text-align:center">要存储的日志数据（心跳请求的日志为空，为提升效率可能一次发送多条）</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>leaderCommit</code></td>
+<td style="text-align:center">leader 的 commitIndex</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">返回值</th>
+<th style="text-align:center">注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>term</code></td>
+<td style="text-align:center">follower 的 currentTerm，用于 leader 更新自己的任期号</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>succ</code></td>
+<td style="text-align:center">若 follower 在 <code>prevLogIndex</code> 和 <code>prevLogTerm</code> 处的日志都一致则为 true</td>
+</tr>
+</tbody>
+</table>
+<p>RPC 被调用方（followers）需实现：</p>
+<ul>
+<li>若 term &lt; currentTerm 则 succ 返回 fasle<strong>（5.1）</strong> // 已有更新 leader</li>
+<li>若在 prevLogIndex 处日志的任期号与 prevLogTerm 不一致，则返回 false<strong>（5.3）</strong> // 日志不一致</li>
+<li>若已存在的日志和新日志冲突（索引相同，任期不同），则删除本条及随后的所有日志条目<strong>（5.3）</strong> // follower 本地日志过旧，强制更新</li>
+<li>Append 任意本地不存在的新日志</li>
+<li>若 leaderCommit &gt; commitIndex，则将 commitIndex 重置为 leaderCommit 和自己最新日志索引中较小的一个值。</li>
+</ul>
+<p><strong>（3）RequestVote RPC</strong></p>
+<p>此 RPC 用于候选人发起投票，征集选票。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">入参</th>
+<th style="text-align:center">注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>term</code></td>
+<td style="text-align:center">候选人的任期号</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>candidateId</code></td>
+<td style="text-align:center">候选人 id</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>lastLogIndex</code></td>
+<td style="text-align:center">候选人节点上最新日志的索引<strong>（5.4）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>lastLogTerm</code></td>
+<td style="text-align:center">候选人节点上最新日志的任期号<strong>（5.4）</strong></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">返回值</th>
+<th style="text-align:center">注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>term</code></td>
+<td style="text-align:center">follower（选民）的任期号，用于候选人更新自身任期号</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>voteGrandted</code></td>
+<td style="text-align:center">赢得本张选票则为 true</td>
+</tr>
+</tbody>
+</table>
+<p>RPC 的被调用方（选民 followers）需实现：</p>
+<ul>
+<li>若 term &lt; currentTerm 则不投票，返回 false<strong>（5.1）</strong> // 已有更新的 leader</li>
+<li>若 votedFor 为 null 或为 candidateId，且候选人的日志和自己的一样新，则投票返回 true<strong>（5.2，5.4）</strong> </li>
+</ul>
+<p><strong>（4）所有节点需准从的规则</strong></p>
+<p><strong>全部节点：</strong></p>
+<ul>
+<li>若 <code>commitIndex</code> &gt; <code>lastApplied</code>：将 lastApplied 自增 1，同时在状态机上执行 <code>log[lastApplied]</code> 日志命令<strong>（5.3）</strong></li>
+<li>如果 RPC 请求或返回的 <code>term T &gt; currentTerm</code>：将 currentTerm 重置为 T，并自降身份为 follower<strong>（5.1）</strong></li>
+</ul>
+<p><strong>对于 Follwers：</strong></p>
+<ul>
+<li>响应 leader 和 candidate（候选人）的 RPC 请求</li>
+<li>若选举超时还未收到 leader 心跳，也没收到候选人的投票请求，则自抬身价为候选人</li>
+</ul>
+<p><strong>对于候选人：</strong></p>
+<ul>
+<li>成为候选人后开始选举：<ul>
+<li>currentTerm 自增 1</li>
+<li>给自己投一张选票</li>
+<li>重置选举超时定时器</li>
+<li>向其余节点发起 RequestVote RPC</li>
+</ul>
+</li>
+<li>若收到了大多数节点的选票：升级为 leader</li>
+<li>若收到了来自新 leader 的 AppendEntries RPC：降级为 follower</li>
+<li>若本轮选举超时，开启下一轮选举</li>
+</ul>
+<p><strong>对于 Leader：</strong></p>
+<ul>
+<li>成为 leader 后向其余节点发送心跳 RPC 请求，并在无日志请求的空闲时段重复发送心跳请求以防 followers 超时<strong>（5.2）</strong></li>
+<li>接收到来自客户端的命令后，将其 Append 到本地日志，当该日志被状态机成功应用后再响应客户端<strong>（5.3）</strong></li>
+<li>若 follower 最后一条日志索引 &gt;= <code>nextIndex</code>，则 leader 对 <code>nextIndex</code> 开始的日志发起 Append Log RPC<ul>
+<li>若 RPC 调用成功：更新相应 follower 的 <code>nextIndex</code>, <code>matchIndex</code><strong>（5.3）</strong></li>
+<li>如 RPC 因为日志不一致导致调用失败：自减 <code>nextIndex</code> 再重试<strong>（5.3）</strong> </li>
+</ul>
+</li>
+<li>若存在 N 满足 <u>N &gt; commitIndex</u>，同时大多数节点满足 <u>matchIndex[i] &gt;= N</u>，并且 <u>log[N].term == currentTerm</u>：直接将 <code>commitIndex</code> 重置为 N<strong>（5.3，5.4）</strong></li>
+</ul>
+<h3 id="5-1-Raft-基础"><a href="#5-1-Raft-基础" class="headerlink" title="5.1 Raft 基础"></a>5.1 Raft 基础</h3><p>一个 Raft 集群包含多个服务器节点，比如典型的集群有 5 个节点，能容忍 2 个节点不可用。任何时刻任意节点的状态只会有三种身份：leader，follower，candidate，通常集群中只会有 1 个 leader，其余节点均为 follower，其身份转换如下图 4：</p>
+<ul>
+<li><p>leader 处理所有客户端的请求：若客户端请求了 follower 那 follower 会将请求重定向给 leader 处理</p>
+</li>
+<li><p>follower 是被动响应的：它们不会发起任何请求，只会响应来自 leader 或候选人的请求</p>
+</li>
+<li>候选人身份只会在 <strong>（5.2）</strong>中选举新 leader 时才会用到</li>
+</ul>
+<p>三种身份更迭如下图4：</p>
+<p> <a href="https://images.yinzige.com/2019-04-10-095432.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-10-095432.jpg" width="60%"></a></p>
+<blockquote>
+<p>图4：节点身份转变过程。follower 只响应其余节点的请求，如果它在超时时间内未收到任何请求或心跳，则转变为候选人并开始新一轮选举。候选人如果收到大多数节点的选票则升级为 leader。而 leader 会保持 leader 身份直到自己宕机。</p>
+</blockquote>
+<p>如下图 5，Raft 将集群时间换分割成多个任意长度的任期，任期使用连续<strong>整数</strong>标识，即任期号。每次任期都始于选举，如果候选人引得了选举<strong>（5.2）</strong>，则它会变为下一任期的 leader。一些特殊情况下，选票可能被多个候选人瓜分导致未选出 leader，即当前任期内无 leader，不过此情形仅持续很短时间就开始下一轮选举。Raft 能保证任一任期内至多有一个 leader</p>
+<p> <a href="https://images.yinzige.com/2019-04-10-095842.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-10-095842.jpg" width="60%"></a></p>
+<blockquote>
+<p>图5：Raft 将集群时间划分成多个连续的任期，每个任期均始于选举。在选举成功后，单一 leader 会管理集群直到任期结束。有些选举会因为任期结束都还未选出 leader 而失败，会导致该任期内无 leader。</p>
+</blockquote>
+<p>不同节点在不同时间内可观察到任期变更，某些情况下节点也可能不知道发生了 leader 选举，甚至感知不到整个任期。Raft 的任期发挥了逻辑时钟的作用，让节点能检测过期信息比如过期的 leader。每个节点都会维护一个 <code>currentTerm</code> 数字，它只会单调递增。在节点间通信时会交换彼此的 <code>currentTerm</code>：</p>
+<ul>
+<li>若一个节点任期号比另一个小，那它会将自己的任期号更新为较大的一个</li>
+<li>若 <strong>leader 或候选人</strong>发现自己的任期号<strong>过期</strong>了，那它会降低身份变为 follower</li>
+<li>若节点收到的请求对应的任期号已过期，则拒绝处理此请求</li>
+</ul>
+<p>节点间通过 RPC 通信，基本的一致性算法只需要  2 种 RPC：</p>
+<ul>
+<li>RequestVote RPC：在候选人开始发起选举时调用<strong>（5.2）</strong></li>
+<li>AppendEntries RPC：在 leader 复制日志或发送心跳到其他节点时调用<strong>（5.3）</strong></li>
+</ul>
+<p>第 7 节会添加在节点间传输快照的第三种 RPC。当 RPC 调用未及时返回则节点会重试调用，而且通常会将多个调用并行化以提高性能。</p>
+<h3 id="5-2-Leader-选举"><a href="#5-2-Leader-选举" class="headerlink" title="5.2 Leader 选举"></a>5.2 Leader 选举</h3><p>Raft 使用心跳机制来触发 leader 选举。当集群刚启动时节点都是 follower 身份，只要收到 leader 或候选人的有效 RPC 调用，节点就会继续保持 follower 身份。leader 会定期发送心跳（无条目的空日志 AppendEntries RPC）给所有 follower 来维持自己的 leader 身份，如果某个 follower 在<strong>选举超时</strong>时间段内都未收到来自 leader 的任何调用，则认为 leader 已失效并成为候选人开启新一轮 leader 选举。</p>
+<p>选举开始，follower 自增自己的任期号并升级为候选人身份，它会先投自己一票，随后并行地向其余节点发起 RequestVote RPC 调用，它会继续保持候选人身份直到下述情形发生：</p>
+<ul>
+<li><p>它在本轮选举中赢得多数票</p>
+<p>如果候选人在一轮选举中获得了全部节点中大多数节点的选票，就算赢得本轮选举。每个节点依照先来先服务（first-come-first-served）的原则（5.4 对新加额外的限制），在每轮选举中最多投一个候选人。因此 <strong>大多数原则</strong> 能确保每轮选举最多选只会有一个候选人会获胜。一旦候选人赢得选举成为了新 leader，它就会发送心跳给其余节点来树立自己的领导地位，以阻止新一轮选举。</p>
+</li>
+<li><p>已有其他节点成为 leader</p>
+<p>候选人在收集选票时可能会收到其他已成为 leader 的节点发来的 AppedLog RPC 请求：</p>
+<ul>
+<li>若请求任期不小于自己的任期号，那就认可对方的 leader 身份，自己降为 follower</li>
+<li>若请求中的任期比自己的小，则拒绝响应调用并继续保持自己的候选人身份</li>
+</ul>
+</li>
+<li><p>选票被瓜分，选举超时后还未选出 leader</p>
+<p>若多个 follower 同时变更为候选人，那选票可能会被瓜分导致没有一个候选人能收到大多数选票。这种情况下多个候选人会在选举超时后分别开启下一轮选举，继续向其他节点发起 RequestVote RPC 请求。然而如果没有额外机制来分配选票，这种情况会周而复始地发生。</p>
+<p>Raft 使用<strong>随机的选举超时时长</strong>来避免出现选票被瓜分的情况，就算出现了也能很快解决。为了从根源上阻止选票被瓜分，各候选人的选举超时时长是从固定的时长区间（如 150-300ms）中随机选取的，这种机制保证多数情况下只有一个候选人超时，随后赢得选举并在其他候选人选举超时前发送心跳请求。同样的，每个候选人在开启新一轮选举前都要随机重置自己的选举超时时长，超时再重启下一轮选举。此种随机超时机制能有效避免选票被瓜分的情况。</p>
+<p>随机选举超时机制不仅容易理解和实现，而且明确高效。</p>
+</li>
+</ul>
+<h3 id="5-3-日志复制"><a href="#5-3-日志复制" class="headerlink" title="5.3 日志复制"></a>5.3 日志复制</h3><p>一旦成功选举出 leader，它就开始接收并处理客户端请求，每个请求都包含一个状态机要执行的命令。leader 会将此命令 append 到本地日志，随后向其余节点发起 AppendEntries RPC 请求来 replicate（复制）该命令日志。当日志成功复制后（如下详述），leader 的状态机才会应用本条日志并将执行结果返回给客户端。若 followers 不可用或发生了网络丢包，leader 会无限次重试调用 AppendEntries RPC（即使已将执行结果响应给了客户端），直到 followers 成功存储所有的日志条目。</p>
+<p> <a href="https://images.yinzige.com/2019-04-10-145221.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-10-145221.jpg" width="65%"></a></p>
+<blockquote>
+<p>图6：日志由有序序号标识的日志条目组成。每个条目包含创建时 leader 的任期号（图中盒子编号）、要应用到各自状态机的命令。日志条目的可提交（commited）状态标识它可安全应用到状态机。</p>
+</blockquote>
+<p>日志的组织方式如上图。每条日志会记录：</p>
+<ul>
+<li>状态机命令</li>
+<li>leader 接收到此命令时的任期号：用于检测不同节点上该日志的一致性，还能保证图 3 列出的部分特性</li>
+<li>索引：每条日志都有一个整数索引值标识其在日志中的位置</li>
+</ul>
+<p>leader 决定何时将日志应用到状态机上是安全的，此时日志状态为<strong>已提交（commited）</strong>。Raft 能保证已提交的日志会持久化存储，最终都都会应用到集群中可用的状态机上。一旦 leader 创建的日志条目已在大多数节点上成功复制，那这条日志是已提交状态，比如图 6 中的条目 7（leader、2、4 共三个节点都已成功复制），同时意味着 leader 节点上该条日志前的所有日志都是已提交状态，即使有些日志是前任 leaders 创建的（<strong>5.4</strong>）。leader 会维护它所知已提交日志的最大索引 <code>commitIndex</code>，在以后调用 AppendEntries RPC 请求时会将此索引带上以便让其他节点知道 leader 的提交位置。当 follower <strong>被告知</strong>某条日志为已提交状态，即可安全地在本地状态机上应用该日志。</p>
+<p>Raft 的日志机制保证了不同节点上日志的一致性，此机制降低了系统复杂度，让系统行为变得可预测，同时也保障了安全（图 3 的安全性原则）</p>
+<p>Raft 维护了以下特性：若在不同日志中，两条日志的索引号、任期号都一致，则：</p>
+<ul>
+<li>它们存储的<strong>命令是一致的</strong>：是因为 leader 在一个任期的一个日志索引上只存储一条日志，而且此后该条日志的位置不再修改，所以固定索引的日志值是不变的。</li>
+<li><p>它们在该条<strong>之前的所有日志都是一致的</strong>：由 leader 的一致性检查保证：leader 在复制日志发起 AppendEntries RPC 请求时会将上一条日志的索引 <code>prevLogIndex</code>、任期号 <code>prevLogTerm</code> 传入用于一致性检查。若 follower 在日志中没有发现相同索引、相同任期号的条目，则拒绝接收此次新日志。</p>
+<p>日志的一致性检查总结：集群初始状态的空日志是满足日志匹配原则（Log Matching Property），此后的一致性检查保证了新增日志后仍然是匹配的。因此只要 leader 收到 AppendEntries RPC 成功返回，就认为该 follower 的日志与自己的一致。</p>
+</li>
+</ul>
+<p>正常情况下，leader 和 followers 的日志是保持一致的，即 AppendEntries 一致性检查不会失败。然而，leader 宕机后很可能造成日志不一致（旧 leader 可能还没来得及将它的日志条目全部复制给 followers），不一致程度会随着 leader 和 follower 的一些列崩溃而愈发严重。</p>
+<p>下图是 followers 日志和新 leader 不一致的情形：follower 的日志可能比现有 leader 的日志更少，也可能更多，这部分错开的日志可能在多个任期内都一直存在。</p>
+<p> <a href="https://images.yinzige.com/2019-04-11-021842.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-11-021842.jpg" width="60%"></a></p>
+<blockquote>
+<p>图7：当新 leader 当选时 followers 状态可能是（a-f），每个盒子即一条日志，盒子编号是该条日志的任期号。顶部是 leader 日志条目，其他：</p>
+<ul>
+<li>a，b：follower 可能丢失部分日志</li>
+<li>c，d：follower 本地可能 uncommited 的日志</li>
+<li>e，f：follower 可能既缺少本该有的日志，也多出额外的日志</li>
+</ul>
+<p>比如 f 场景：2 号任期 leader 新增的日志还没提交就宕机了，随后很快重启并被选举为任期 3 的 leader，继续接收请求新增日志。然而在 3 号任期内日志还没来得及提交就又宕机了。</p>
+</blockquote>
+<p>在 Raft 中，leader 通过强制 followers 复制自己的日志来处理日志不一致的问题，即 follower 上有冲突的日志会被直接重写，<strong>5.4</strong> 节会增加额外机制来保证此操作是安全的。</p>
+<p>为保证 follower 的日志和自己一致，leader 必须对比查找与 follower 最后一条相同的日志，删除 follower  在该位置后的所有日志，随后发送自己在该位置后的所有日志给 follower，从而保证日志一致性。</p>
+<p>以上操作都在 AppendEntries RPC 做一致性检查时完成，leader 对每个 follower 都维护了 <code>nextIndex</code>，标识下一个要发送给 follower 的日志索引。当 leader 刚启动时，会将所有 <code>nextIndex</code> 重置为本地最后一条日志的索引加 1</p>
+<p>若某个 follower 的日志与 leader 不一致（ follower 日志超前）：那下次 AppendEntries RPC 一致性检查会失败，随后 leader 递减该 <code>nextIndex</code> 再次调用，直至 leader 和 follower 的日志匹配成功。匹配成功后，follower 要删除该匹配点之后的所有日志，再 append leader 在匹配点后的日志（强制同步）。当 AppendEntries RPC 调用成功后，follower 的日志就和 leader 保持一致，直到该 leader 的任期结束。</p>
+<blockquote>
+<p>算法实现时可通过减少 AppendEntries RPC 调用失败的次数进行优化。如 follower 在拒绝调用后，可记录下冲突日志的任期号，在该任期内存储的第一条日志索引。有了这些信息，leader 能增加 nextIndex 直接跳过该任期内的所有冲突日志，如此仅需一次 AppendEntries RPC 调用而非多次。</p>
+</blockquote>
+<p>在这种机制下，leader 在任期内无需额外的操作来保证日志的一致性，它只需要处理常规操作，日志就能自动地在 AppendEntries RPC 一致性检查失败时趋于一致。</p>
+<p>日志复制机制证实了第 2 节中的一致性特性：只要集群中的大多数节点正常工作，Raft 就正常 accept，replicate 和 apply 新日志。通常情况下，一条新日志能在一轮 RPC 调用中就复制到大多数节点上，所以单个低性能的慢 follower 不会影响到集群性能。</p>
+<h3 id="5-4-安全性"><a href="#5-4-安全性" class="headerlink" title="5.4 安全性"></a>5.4 安全性</h3><p>前两小节详述了 Raft 的 leader 选举和日志复制两种机制，截止目前还不能完全保证每个节点的状态机都会以相同顺序执行相同命令（能保证各节点的日志一致性）。如 leader 提交某些日志时某个 follower 不可用，之后该 follower 被选举成新 leader，会覆盖这些自己未接收到的日志，最终导致多台状态机执行的命令序列不一致。（解决办法：引入新机制，保证后续新 leader 一定含有之前 leaders 提交的所有日志）</p>
+<p>本节在 leader 选举时加入限制措施继续完善 Raft 算法，这些选举限制能确保每个任期的 leader  都存有前任 leaders 的所有已提交日志（图 3 中的 Leader 完整性原则）。这一选举限制让日志提交的规则更为清晰。本节最后会用草图说明 leader 完整性原则是如何纠正各状态机行为的。</p>
+<h4 id="5-4-1-选举限制"><a href="#5-4-1-选举限制" class="headerlink" title="5.4.1 选举限制"></a>5.4.1 选举限制</h4><p>在所有基于 leader 的一致性算法中，leader 最终都要存储所有已提交的日志。不过在一些算法中，如 Viewstamped，节点即使不存储所有已提交的日志也可被选举为 leader，是因为这些算法有额外机制来找到缺失的日志并传送给新 leader，这一过程会在选举时完成或选举后立即开始，不幸的是，这种机制过于复杂。Raft 用更简单的方式保证所有前任 leaders 提交的日志在选举时都会出现在新 leader 中，而不是要传输旧日志。因此日志只会有一个流动方向：从 leader 流向 followers，并且 leader 从不覆盖或删除已有日志。</p>
+<p>Raft 通过投票来防止<strong>不含全部已提交日志</strong>的候选人赢得选举。候选人为了获胜需与大多数节点通信，这意味着每条已提交的日志至少会出现在一个节点上。若它的日志至少和大多数节点的<strong>一样新</strong>（下述），就说明它存有全部已提交日志。RequestVote RPC 需实现：RPC 请求参数会带上候选人的日志信息，若投票节点的日志比候选人的还新则不投票。</p>
+<p>Raft 通过比较两份日志中<strong>最后一条日志</strong>的索引、任期来比较新旧：</p>
+<ul>
+<li>任期不同，则任期更大的日志新</li>
+<li>任期相同，则索引更大的日志新</li>
+</ul>
+<h4 id="5-4-2-提交前-leaders-任期内的日志"><a href="#5-4-2-提交前-leaders-任期内的日志" class="headerlink" title="5.4.2 提交前 leaders 任期内的日志"></a>5.4.2 提交前 leaders 任期内的日志</h4><p>如 <strong>5.3</strong> 所述，当日志被大多数节点存储后 leader 才会认为该条日志是已提交的。如果 leader 在提交日志条前宕机，以后的新 leader 会尝试继续复制该条日志。不过新 leader 无法断定已存在于大多数节点上的日志是否真的已被提交。如图 8 (c) 中 S1 可能已将日志复制到大多数节点，但依旧可能被 (d) 中 S5 的日志覆盖。</p>
+<p> <a href="https://images.yinzige.com/2019-04-11-101454.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-11-101454.jpg" width="70%"></a></p>
+<blockquote>
+<p>图8：如上的时序图说明，为什么新 leader 不能判断之前任期内的日志的提交状态：</p>
+<ul>
+<li><p>(a)：S1 作为 2 号任期的 leader 将索引为 2 的日志复制到节点 S2 上 </p>
+</li>
+<li><p>(b)：S1 宕机。S5 获得来自 S3、S4 及自己共三张多数票，成为 3 号任期新 leader，随后在本地索引 2 上存储新日志。</p>
+</li>
+<li><p>(c)：S5 宕机。S1 重启，获得 S2、S3 的选票后重新选为 4 号任期 leader，继续复制索引 2 上的日志。</p>
+</li>
+</ul>
+<p>此时，任期号为 2 的日志已成功复制到（replicated）大多数节点（S1、S2、S3），但这条日志未提交（uncommitted）</p>
+<ul>
+<li>(d) / (e)<ul>
+<li>(d)：若 S1 再次宕机。S5 能被 S2、S3、S4 选为新 leader，并将自己在 3 号任期还没来得及提交的日志强制覆盖到其他节点。</li>
+<li>(e)：若 S1 在宕机前将<strong>自己任期内的新日志</strong>复制给了大多数节点（S2、S3），那后面产生的新日志就会被提交，从而导致 S5 不会赢得选举（日志旧 3 &lt; 4），由此它之前的日志条目也已提交。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>为解决图 8 中的问题，Raft <strong>不会单纯地统计<u>前任期内</u>的某条日志的副本数来决定是否要提交</strong>。只有<strong><u>当前任期内</u></strong>的日志能统计副本数来判断是否已提交。一旦前任期内的日志以这种方式提交，因为日志匹配特性，该日志之前的所有日志都会被间接提交。（理解：从第一任期 leader 开始，通过判断自己的一条新日志是否已被大多数节点复制来判断是否已提交。之后 RPC 进行日志的一致性检查保证了 follower 的日志与自己匹配。由此迭代，后边的新 leader （旧 follower）也会保存有旧 leader 的所有已提交日志）</p>
+<p>Raft 在复制之前任期内的日志时，会保留旧的任期号，这使日志提交更为复杂。但在其他一致性算法中，同样复制场景则会使用新的任期号。Raft 为已提交的日志维护了旧的任期号，因此在对比日志时更为简单，也让新 leader 发送更少的之前任期日志。</p>
+<h4 id="5-4-3-安全性证明"><a href="#5-4-3-安全性证明" class="headerlink" title="5.4.3 安全性证明"></a>5.4.3 安全性证明</h4><p>如上给定了完整的 Raft 算法，本节将讨论 leader 完整性原则（<strong>9.2</strong> 详述）。通过反证法，假设完整性原则不存在，推导出会引发的矛盾。假设任期 T 的 leaderT 在自己任期内提交了一条日志，但本条日志未保存在随后的新 leader 中，比如任期 T 随后任期是 U，leaderU 上未保存该条 leaderT 提交的日志：</p>
+<p> <a href="https://images.yinzige.com/2019-04-11-145954.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-11-145954.jpg" width="50%"></a></p>
+<blockquote>
+<p>图9：若节点 S1（任期 T 的 leader）在任期内提交了一条新日志，而 S5 在紧随的任期 U 内选为了新 leader，所以至少必有一个节点（S3）既接收了 leaderT 的新日志，还给 S5 投了一票。</p>
+</blockquote>
+<ol>
+<li>leaderU 肯定缺少 leaderT 已提交的那条日志（leader 不会覆写或删除日志）</li>
+<li>leaderT 成功将日志复制到大多数节点上，同时 leaderU 赢得了大多数节点的选票。因此至少会有 1 个节点（<strong>voter</strong>）及接收了 leaderT 发来的日志，还给 leaderU 投了一票。</li>
+<li>voter 一定是先收到 leaderT 的日志，再给 leaderU 投票的。如果先收到 leaderU 的投票请求，则会因为 <code>T &lt;  U</code> 直接拒绝 leaderT 的日志 AppendEntries RPC</li>
+<li>voter 在投票给 leaderU 时依旧会把该日志存下来，因为基于假设，T 任期后的任何 leader 都应包含该日志。leader 不删日志，而 follower 只会在与 leader 日志冲突时才删除自己的日志。</li>
+<li>voter 给 leaderU 投了票，那 leaderU 的日志至少和 voter 的一样新。<strong>矛盾 1：leader 日志更旧，voter 不应该投票</strong></li>
+<li>首先，若 voter 和 leaderU 的最后一条日志任期号一致，leaderU 的日志至少和 voter 的一样长。<strong>矛盾2：leaderU 的日志中并不包含 leaderT 复制到 voter 的那一条，不应该一样长</strong></li>
+<li>否则，leaderU 最后一条日志的任期号就一定比 voter 的大，也定比 T 大，因为 voter 的最后一条日志任期号最小都是 T（保存有任期 T 提交的日志）。创建了 leaderU 上最后一条日志的上一任 leader，一定也保存了已提交的日志（基于假设）。由日志匹配原则，leaderU 的日志一定包含已提交的日志。<strong>矛盾 3：leaderU 未包含前一任 leader 已提交的日志</strong></li>
+<li>矛盾论点推导完毕。根据反证法可得出：任期比 T 大的 leader 一定包含有任期 T 内提交的所有日志。</li>
+<li><p>日志匹配原则保证了下一任新 leader 也会包含被间接提交的日志。如图 8 (d) 中索引为 2 的日志</p>
+<p>通过 leader 完整性原则，能证明图 3 中的状态机安全原则成立。即某个节点将给定索引的日志应用到自己的状态机上，那其他节点在同一索引不可能应用其他日志。节点在应用某条日志到状态机时，那它在该条日志前的日志必定和 leader 一致，而且都处于已提交的状态。考虑在节点上应用的一条指定索引位置日志的最小任期号，Log 完整性原则能保证更高任期的 leaders 会存储相同的日志，即之后任期里某个索引位置的体质条目值也是相同的。由此，证明了状态机的安全特性。</p>
+</li>
+</ol>
+<p>最后，Raft 要求节点按日志索引顺序地应用条目到状态机，结合状态机安全特性来看，可知所有节点会以相同顺序将相同日志应用到各自的状态机上。</p>
+<h3 id="5-5-Follower-和-Cadidate-崩溃"><a href="#5-5-Follower-和-Cadidate-崩溃" class="headerlink" title="5.5 Follower 和 Cadidate 崩溃"></a>5.5 Follower 和 Cadidate 崩溃</h3><p>到目前只讨论了 leader 崩溃的情况，相比之下 follower 和候选人崩溃后的处理简单得多，二者处理方式相同：崩溃后，发来的 AppendEntries RPC 和 RequestVote RPC 都会调用失败，对于这种失败 Raft 直接无限次重试调用。</p>
+<p>如果崩溃节点重启，那对它的 RPC 调用完全可以成功。若节点完成了 RPC 调用，但还没来得及响应就已崩溃，那等它重启后会再次接收到相同的 RPC 请求，由于 Raft 中的 RPC 调用是幂等的，不会造成什么问题。比如 follower 收到对一个已经保存了的日志的 AppendEntries RPC 请求，它会直接忽视该调用。</p>
+<h3 id="5-6-时序性和可用性"><a href="#5-6-时序性和可用性" class="headerlink" title="5.6 时序性和可用性"></a>5.6 时序性和可用性</h3><p>Raft 的安全性不能依赖时序性（timing）来保证：系统不能因某些操作过快或过慢导致给客户端返回了错误的结果。但是，可用性（系统能及时响应客户端请求）是无可避免地要依赖时序性的。比如 RPC 调用时长比节点故障间隔（正常工作时长）还大，即每次调用还没成功就又宕机了，会导致候选人没有足够的时间赢得选举，而 Raft 没有可用的 leader 是无法工作的。</p>
+<p>leader 选举是 Raft 对系统时序要求最高的地方，不过只要系统满足以下原则，Raft 就能选出并保持一个稳定的 leader：</p>
+<blockquote>
+<p>broadcastTime 广播时间 &lt;&lt; electionTimeout  选举超时时间 &lt;&lt; MTBF 平均故障间隔时间</p>
+</blockquote>
+<p>broadcastTime 是向其余节点开始并行调用 RPC 到收到响应的平均时间，electionTimeout 是 <strong>5.2</strong> 所述的选举超时时间，MTBF 则是节点失效间隔（正常运行时长）的平均时间。</p>
+<ul>
+<li><p>broadcastTime 应比 electionTimeout 小一个数量级，才能让 leader 能及时发送心跳信息给 followers 以防它们发起新选举，通过随机生成的 electionTimeout 能让选票被瓜分的概率极低。</p>
+</li>
+<li><p>electionTimeout 应比 MTBF 小多个数量级，才能让系统稳定运行。当 leader 崩溃后系统也只是在选举超时时段内不可用，我们系统不可用的时间只占运行时间的一小部分。</p>
+</li>
+</ul>
+<p>broadcastTime 和 MTBF 的大小由系统环境决定，不过 electionTimeout 是由我们选定的。Raft 的 RPC 要求被调用方数据存储要可靠，即 broadcastTime 约在 0.5-20ms 范围内，具体是多少取决于系统的存储技术，对应的 electionTimeout 一般在 10-500ms 之间，而对应的 MTBF 时间则为几个月甚至更长。如上的三个时间量级才满足 Raft 时序性。</p>
+<h2 id="6-集群成员变更"><a href="#6-集群成员变更" class="headerlink" title="6. 集群成员变更"></a>6. 集群成员变更</h2><p>截止目前假定所有节点的配置都不会修改。而现实中偶尔还是要调整节点的配置，如替换宕机的节点、调整日志的复制级别等。可以先将整个系统下线，调整配置后重启上线，但会导致调整期间系统对外不可用。如果是人工手动调整配置，那操作失误也是有可能的。为避免这些问题，我们将配置调整集成到了 Raft 算法中。</p>
+<p>为保障调整配置的安全，在调整期间一定不能出现同一时间选出两个 leader 的情况。不幸的是，无论用什么办法，节点的配置从旧转新的过程都是不安全的，不可能同时一次性调整好所有节点的配置，所以节点在调整配置期间会被分到 2 个不同的大多数群体：</p>
+<p> <a href="https://images.yinzige.com/2019-04-12-034501.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-12-034501.jpg" width="60%"></a></p>
+<blockquote>
+<p>图10：由于不同节点可在任何时间切换配置，导致节点直接切换配置是不安全的。</p>
+<p>上图中，集群节点从 3 个增加到 5 个，不过在同一任期内与可能选举出 2 个不同的 leader，分别从旧配置节点 C_old 中选出，从新配置节点 C_new 中选出。</p>
+</blockquote>
+<p>为保证安全，配置的调整需分成两个阶段。目前两阶段调整的方案有很多，一些系统在第一阶段直接将旧配置节点停用，不处理客户端请求，随后在第二阶段才加载新配置。在 Raft 中，集群先切换到称为 <strong>joint consensus</strong>的过渡配置，再切换到新配置。joint consensus 其实是新旧配置的组合：</p>
+<ul>
+<li>日志依旧都会复制到新、旧配置的所有节点上</li>
+<li>新旧配置的节点都能被选为 leader</li>
+<li>针对选举和提交操作，要想赢得选举必须在新配置节点、旧配置节点中都获得大多数票</li>
+</ul>
+<p>joint consensus 机制能让节点在保证安全的前提下切换配置，不仅如此，它还能让集群在切换配置时依然能对客户端提供服务。</p>
+<p> <a href="https://images.yinzige.com/2019-04-12-073737.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-12-073737.jpg" width="60%"></a></p>
+<blockquote>
+<p>图11：调整配置的时间线。虚线：创建日志但未提交；实线：最新提交的配置日志。</p>
+<p>leader 先自己创建 C_old,new 配置日志并将其复制到大多数节点（C_old 的大多数，C_new 的大多数）。之后它再创建 C_new 配置日志并提交给 C_new 的大多数节点。如此，C_old 和 C_new 做决策的时间点就被岔开了。</p>
+</blockquote>
+<p>集群配置在复制日志中以特殊日志条目的形式进行存储和提交。上图 11 展示了集群配置变更的过程：</p>
+<ul>
+<li>当 leader 接收到配置从 C_old 切换到 C_new 的请求时，它先将 joint consensus（图中 C_old,new）存储并复制给大多数节点。</li>
+<li><p>一旦某个节点将更新的配置存到它的日志中，其后所有决策都使用该配置（节点使用的配置总是最新的，不管是否已提交）；即 leader 要用 C_old,new 的规则来决定何时提交 C_old,new 配置日志。如果 leader 崩溃，那新 leader 的配置不是 C_old 就是 C_old,new。在这一阶段，C_new 的配置不会应用。</p>
+</li>
+<li><p>一旦 C_old,new 被提交，C_old 和 C_new 在没有其他节点的允许下都不会生效。且由 leader 完整性原则只有包含 C_old,new 配置的节点才有资格被选为新 leader。现在 leader 可以安全地将 C_new 配置日志复制到集群中，当节点收到新的配置后即刻生效。</p>
+</li>
+<li>当 C_new 日志被提交后，旧配置节点就无关紧了。</li>
+</ul>
+<p>如图 11 中，C_old 和 C_new 都无法单方面做出决策。由此保障了安全。</p>
+<p>针对配置调整提出三个问题：</p>
+<ol>
+<li><p>新节点启动时不含日志，若以这种初始状态加入集群，那它得需要一段时间追平日志，追赶的时间内它还不能提交新日志。为避免该节点的可用性间隙，Raft 在配置调整前处于额外的一个阶段：这个阶段内新加入的节点没有投票权（虽然 leader 依旧会向它复制日志，但在选举时不把它算作大多数）。一旦新节点的日志与其他节点同步，就可以像上边那样调整配置了。</p>
+</li>
+<li><p>leader 的配置可能还是旧的，这种情况下一旦 leader 提交了 C_new 日志，就退位到 follower。这意为着在 leader 提交 C_new 日志的时间段内，leader 虽然管理集群但不管自己，虽然向大多数节点复制日志但不包括自己。C_new 提交后会发生 leader 更换，因为此时的 C_new 是新配置下能独立运行的最早时间点（C_new 下总是能选出新 leader）。在此之前，集群只能从 C_old 中选 leader</p>
+</li>
+<li><p>移除不在 C_new 中的节点会扰乱集群。这部分节点收不到心跳，超时后可能发起选举，即用一个新任期号发起 RequestVote RPC 请求，这会让当前 leader 退回到 follower 状态。最终选出新 leader 后，移除的节点会再次超时…这个过程周而复始，降低了系统可用性。</p>
+<p>为解决此问题，当某个节点确信 leader 已存在的情况下，它会直接忽视 RequestVote RPC。若节点在最小选举超时时间内收到了 RequestVote RPC，它既不更新自己的当前任期号，也不投票。这种机制不会影响到正常的选举流程，每个节点在开始选举前都会等待最小选举超时时间，这避免了已移除节点的干扰：如果 leader 还能向集群中发送心跳，它就不会被更大的任期号所罢免。</p>
+</li>
+</ol>
+<h2 id="7-日志压缩"><a href="#7-日志压缩" class="headerlink" title="7. 日志压缩"></a>7. 日志压缩</h2><p>Raft 生成的日志会不断增长，但在实际系统中不会无限制增长。日志累积得越多，占用空间也就越多，回放耗时也就越长。如果没有额外机制来清理那些积累在日志中的过期数据，长此以往会引发系统可用性问题。</p>
+<p>系统快照是最简单的日志压缩方式。整个系统状态会被写入快照（snapshot）并存储在可靠介质中，这是日志可放心地清理掉。在 Chubby 和 Zookeeper 都用到了快照技术，本节将介绍它在 Raft 中的应用。</p>
+<p>记录日志增量来实现压缩，如日志清理（log cleanin）、日志结构合并树（log-structured merge tree）都是可行的。这些方案每次都只处理部分日志，均分了日志压缩的负载。它们先选一个积累了大量已删除或已覆写的数据区域，随后重写该区域内还活跃的数据，最后释放该区域。相比于简单的快照操作，以上操作需要额外的复杂机制来实现。状态机可实现 LSM Tree 来使用和快照相同的接口，而日志清除的工作就得 Raft 自己实现了。</p>
+<p> <a href="https://images.yinzige.com/2019-04-12-093049.jpg" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-12-093049.jpg" width="60%"></a></p>
+<blockquote>
+<p>图12：节点用快照替换了索引 1-5 的日志，该快照只存储目前的状态（以 x, y 为例）、日志最后的索引和任期号</p>
+</blockquote>
+<p>上图便是 Raft 的基础快照思想：每个节点都维护了各自的快照信息，只有已提交的日志会被拍进快照，其中的主要工作是将节点状态完整地写入快照中。此外，Raft 还在快照中嵌入了少量 metadata：</p>
+<ul>
+<li><strong>last included index</strong>：快照初的最后一条日志，即状态机最后应用的那条日志</li>
+<li><strong>last included term</strong>：快照最后一条日志的任期号</li>
+</ul>
+<p>metadata 中的这两个值，用于紧随快照的 AppendEntries RPC 进行日志一致性检查。为了让第 6 节的成员关系变更，该快照也会记录最后一条索引日志包含的配置。一旦节点完成快照存储，它可能会清理 last included index 之前的所有日志，之前的所有旧快照也要删除。</p>
+<p>虽然节点一般都各自处理各自的快照，但 leader 必须时不时地给那些落后的 followers 发送自己的快照，这种发送操作一般发生在 leader 已丢弃了本该发送给 followers 的日志。好在一般情况下这种情况下不太可能发生：与 leader 保持同步的 follower 多半已复制本条日志，不过运行较慢的 follower 或新加入集群的节点不会有这条日志，此时通过网络发送快照的方式即可同步本条日志。</p>
+<p>InstallSnapshot RPC：leader 调用它来向 follower 有序地发送日志 chunk 片段。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">入参</th>
+<th style="text-align:center">注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>term</code></td>
+<td style="text-align:center">当前 leader 的任期</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>leaderId</code></td>
+<td style="text-align:center">follower 用此来重定向客户端的请求给 leader 处理</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>lastIncludedIndex</code></td>
+<td style="text-align:center">快照中包含的最后一条日志的索引值</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>lastIncludedTerm</code></td>
+<td style="text-align:center">快照中包含的最后一条日志的任期号</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>offset</code></td>
+<td style="text-align:center">标识此日志 chunk 在快照中的字节偏移量</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>data[]</code></td>
+<td style="text-align:center">从 offset 开始的二进制快照 chunk数据</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>done</code></td>
+<td style="text-align:center">如果是最后一份 chunk 则为 true</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">返回值</th>
+<th style="text-align:center">注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>term</code></td>
+<td style="text-align:center">返回 currentTerm，用于 leader 更新自己的任期号</td>
+</tr>
+</tbody>
+</table>
+<p>被调用方（follower）需实现：</p>
+<ol>
+<li>若 term &lt; currentTerm 就立刻返回调用</li>
+<li>若是 offset 为 0 的首份 chunk，则新建快照</li>
+<li>从给定的 offset 开始将日志写入快照</li>
+<li>响应调用，之后只要 done 参数为 false 就等待接收更多 chunk</li>
+<li>保存快照文件，清理掉任何本地索引更小的日志</li>
+<li>若节点现有的日志条目和快照中的最后一条日志的索引、任期都相同，则保留其之后的日志并响应</li>
+<li>丢弃日志</li>
+<li>使用快照来重置状态机的状态（装载快照到集群配置）</li>
+</ol>
+<blockquote>
+<p>图13：关于 InstallSnapshot RPC 的总结，快照会被分割成 chunk 块传输。follower 接收到 chunk 后可认为当前 leader 依旧存活，会重置选举超时计时器。</p>
+</blockquote>
+<p>leader 使用新的 InstallSnapshot RPC 向过于落后的 follower 发送快照，如图 13 当 follower 收到此 RPC  发来的快照后，它得决定自己已有的日志怎么处理。</p>
+<ul>
+<li>通常日志会包含一些节点没有的新信息，这种情况下 follower 会直接丢弃自己的日志，用收到的快照来代替，不然本地未提交的日志可能与快照发生冲突。</li>
+<li>若由于传输错误等原因导致 follower 收到快照已是本地日志的前一部分，那它会将该前一部分日志删除，用快照代替，但之后的日志依旧保留。</li>
+</ul>
+<p>每个 follower 都能在不知道 leader 情况时自己拍快照，这背离了 Raft 的强 leader 原则。不过我们认为这种背离是有用的。leader 是为了解决达成一致性时日志冲突而存在的，而拍快照时日志已一致，所以不会有冲突，由此拍快照时无 leader 介入也是可行的。不过数据依旧只有一个流动方向：从 leader 流动到 followers</p>
+<p>我们也考虑过一种基于 leader 的快照方案：只有 leader 有权拍快照，随后将快照分发给 followers。此方案有 2 个大缺点：</p>
+<ul>
+<li>每次发送快照给 follower 都会消耗大量的网络带宽：followers 本地已有该快照的所有原料，它们在本地拍快照肯定比从 leader 拍好传过来代价要小得多</li>
+<li>这样会让 leader 实现起来更复杂：leader 需在向 followers 复制日志的同时将 snapshots 也发给它们，这样才不会阻塞新的客户端请求。</li>
+</ul>
+<p>现在还有两个可能会影响快照性能的问题：</p>
+<ul>
+<li>节点需要决定何时拍快照：若拍得太频繁，则会浪费大量的磁盘空间和网络带宽；若拍得不及时，就会面临磁盘空间耗尽的风险，而且重启后重建日志耗时也会更长。一个简单的解决办法是在日志增长到一个固定大小的阈值后就拍快照，只要此阈值比快照大小大得多，那拍快照对磁盘、带宽的压力就会小很多。</li>
+<li>将快照写入磁盘会消耗一定时间：我们不希望节点因为写快照影响了正常操作。解决方案是使用<strong>写时复制（copy-on-write）</strong>技术，这样就可以继续接受新的更新请求而不会影响到快照。比如，状态机内置的函数式数据结构就原生支持写时复制，有的操作系统在底层支持（如 Linux 的 fork 操作）可用来拍下内存中的状态机的快照。</li>
+</ul>
+<h2 id="8-与客户端的交互"><a href="#8-与客户端的交互" class="headerlink" title="8. 与客户端的交互"></a>8. 与客户端的交互</h2><p>本节描述 Raft 如何与客户端交互，比如客户端如何查找集群 leader、Raft 如何理解线性化语义，这些问题在大部分一致性系统中都存在，而 Raft 的解决方案也类似。</p>
+<p>Raft 的客户端会将自己的所有请求都发送给 leader 处理，当客户端初次启动时，它会随机选择一个节点发送请求，如果此节点不是 leader，那节点会拒绝该请求并将它已知的 leader 信息返回（AppendEntries RPC 需带上 leader 地址），如果该 leader 早已宕机，那此请求会超时。客户端会再次随机选一个节点进行重试。</p>
+<p>Raft 的设计目标之一是实现线性化语义（每次请求操作都立即执行，保证只执行一次）。然而到目前的实现中 Raft 会多次执行某个命令：当 leader 提交日志后还没来得及响应客户端就崩溃了，这时客户端会在新 leader 二次执行该命令。解决办法是客户端对每个请求命令都用唯一的序列号进行标识，leader 的状态机会追踪每个客户端的请求命令序号及其响应数据。若 leader 再次收到某个已执行过的命令，那就直接将响应返回而非二次执行。</p>
+<p>只读（Read-Only）操作可以无需记录到日志而直接处理，但如果没有任何限制的话会有返回旧数据的风险：旧 leader 响应客户端只读操作时可能已被新 leader 作废，而它却不知。线性读操作一定不能返回旧数据，Raft 需使用两个额外的措施在不使用日志的前提下保证不返回旧数据：</p>
+<ul>
+<li>leader 必须拥有最新的一条已提交日志信息：leader 完整性原则已经能保证 leader 包含所有已提交的日志，但在任期开始时它可能并不知道哪些日志已经被提交了。为此每个 leader 在其任期开始时提交一条空的<strong>无操作（no-op）</strong>日志。</li>
+<li>在处理只读请求时必须检查自己是否已被最新的 leader 罢免了（如果已选出新 leader 那它的数据就已经变旧了），Raft 让 leader 处理只读请求前先和大多数节点进行一次心跳交换来解决此问题。此外，leader 可通过心跳来实现租约机制，不过这种方案依赖时序性来保证安全性（假设时间误差有限）</li>
+</ul>
+<h2 id="9-实现与评价"><a href="#9-实现与评价" class="headerlink" title="9. 实现与评价"></a>9. 实现与评价</h2><p>Raft 的可理解性比 Paxos 要好得多，正确性已得到证明，而性能与 Paxos 不相上下。</p>
+<h2 id="10-相关工作"><a href="#10-相关工作" class="headerlink" title="10. 相关工作"></a>10. 相关工作</h2><p>参考原论文或完整翻译即可。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/maemual/raft-zh_cn" target="_blank" rel="noopener">GitHub: raft-zh_cn</a></p>
+<p><a href="https://www.infoq.cn/article/raft-paper" target="_blank" rel="noopener">InfoQ: Raft 一致性算法论文译文</a></p>
+
+
+]]></content>
+      <categories>
+        <category>raft</category>
+      </categories>
+  </entry>
+  <entry>
     <title>编写一个网络应用程序轮子-gotty</title>
     <url>/2019/11/23/%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%BD%AE%E5%AD%90-gotty/</url>
     <content><![CDATA[<h1 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h1><p><img src="/images/gotty/steps.png" alt="upload successful"></p>
@@ -15,24 +1081,6 @@
     <title>设计模式28-访问者模式</title>
     <url>/2019/11/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F28-%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>idea 普通文件夹 转换成 java module</title>
-    <url>/2019/11/23/Untitled/</url>
-    <content><![CDATA[<p>经常会遇到从GitHub上download的progect在idea里面打开是普通文件夹形式，而并不是我们想要的module形式（文件夹图标右下角有个蓝色的tag），那么如何快速转换成我们想要的module形式呢？</p>
-<p>1、右击project，选择第二项“add framework support”，然后从对话框左侧选择“Maven”，OK即可</p>
-<p>2、设置maven仓库地址：右击file，选择settings，找到maven，设置maven home directory以及后面两项。（图片大小超过限制。。我就不传图了）</p>
-<p>3、OK完成，等加载刷新。</p>
-<hr>
-<p>第二种情况：Remove Module（当你把project下中的一个module删除delete之后，会发现该文件夹右下角的蓝色flag消失了，但文件还在）。。那么如果你想重新把它加入module的话，该如何操作呢？</p>
-<p>1、右击该普通文件夹的父级（即它上一级的module），选择Open Module Settings，之后会弹出一个框</p>
-<p>2、在中间文件夹这一列找到刚刚的父级module，选中后点击列顶部的加号“+”，在弹出框选择“Import Module”，找到要加入module的子级文件夹，点击OK</p>
-<p>3、弹出框，选择“Next”，always，最后一步选择“Select all”，然后点击“Finish”，搞定！</p>
-<p>此时你会发现，消失的蓝色flag又恢复啦！</p>
-]]></content>
-      <categories>
-        <category>idea</category>
-      </categories>
   </entry>
   <entry>
     <title>Netty源码分析[一]</title>
@@ -236,6 +1284,11 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
+    <title>设计模式1-单例模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>设计模式2-简单工厂模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<p>1、简单工厂模式</p>
@@ -255,11 +1308,6 @@
       <tags>
         <tag>大话设计模式</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>设计模式1-单例模式</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>第五周report</title>

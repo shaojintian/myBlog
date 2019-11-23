@@ -221,6 +221,311 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E8%AF%A6%E8%A7%A3Linux%20I_O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E6%9C%BA%E5%88%B6epoll%E5%8F%8A%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E8%AF%A6%E8%A7%A3Linux%20I_O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E6%9C%BA%E5%88%B6epoll%E5%8F%8A%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" class="post-title-link" itemprop="url">详解Linux I_O多路复用机制epoll及源码剖析</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:05:39" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:39+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一：内核知识介绍"><a href="#一：内核知识介绍" class="headerlink" title="一：内核知识介绍"></a>一：内核知识介绍</h1><h1 id="二：epoll机制简单介绍"><a href="#二：epoll机制简单介绍" class="headerlink" title="二：epoll机制简单介绍"></a>二：epoll机制简单介绍</h1><ul>
+<li><h2 id="两种触发模式-LT，ET）"><a href="#两种触发模式-LT，ET）" class="headerlink" title="两种触发模式(LT，ET）"></a>两种触发模式(LT，ET）</h2>LT: level trigger<br>ET: edge trigger<h1 id="三：epoll源码完全解析注释"><a href="#三：epoll源码完全解析注释" class="headerlink" title="三：epoll源码完全解析注释"></a>三：epoll源码完全解析注释</h1></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E8%AF%A6%E8%A7%A3-%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5%E6%A6%82%E5%BF%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E8%AF%A6%E8%A7%A3-%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">详解-同步和异步概念</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:05:31" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:31+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>同步：当调用者发起一个请求，直到请求返回结果后，才进行下一步操作。<br>异步：当调用者发起一个请求，无需等待请求返回结果，可以继续执行后续操作。</p>
+<p>二者区别：是否需要等待请求结果，才可以继续执行后续操作。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E8%AF%A6%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%86%85%E6%A0%B8%E6%80%81%E5%92%8C%E7%94%A8%E6%88%B7%E6%80%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E8%AF%A6%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%86%85%E6%A0%B8%E6%80%81%E5%92%8C%E7%94%A8%E6%88%B7%E6%80%81/" class="post-title-link" itemprop="url">详解操作系统-内核态和用户态</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:05:19" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:19+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Linux进程的虚拟内存"><a href="#Linux进程的虚拟内存" class="headerlink" title="Linux进程的虚拟内存"></a>Linux进程的虚拟内存</h1><p>首先Linux有虚拟内存机制，每一个进程都有4GB的虚拟内存。<br><img src="https://img-blog.csdnimg.cn/20190616221600743.png" alt="在这里插入图片描述"><br>如图示<br>高1G内存，也就是3<del>4G内存是内核空间，放置内核代码和其他维护的数据。<br>低3G，也就是0</del>3G内存是用户空间</p>
+<h1 id="内核态和用户态"><a href="#内核态和用户态" class="headerlink" title="内核态和用户态"></a>内核态和用户态</h1><p>用户态：当一个进程在执行自己的用户空间代码块时，处于用户态<br>内核态：当一个进程因为某些原因陷入内核空间，执行内核代码块时，处于内核态.</p>
+<p>用户态-&gt;内核态<br>1）系统调用<br>如：fork<br>2）异常<br>如：<br>3）外部设备中断<br>如：如鼠标点击，点击完成后会向CPU发出中断信号，假设进程在用户态，cpu会暂停处理下一条指令，而去内核空间对应的中断处理程序执行后续的操作.<br>这样就是一次用户态到内核态的转变。</p>
+<h1 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h1><p>inter x86 cpu架构有四种特权级 0-3<br>0级最高对应内核态<br>3级最低对应用户态</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%A4%A7%E9%87%8FCLOSE_WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E5%A4%A7%E9%87%8FCLOSE_WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">大量CLOSE_WAIT状态的原因与解决方法</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:05:11" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:11+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>原因：</p>
+<h2 id="Server端在某些异常情况时，没有关闭Socket。"><a href="#Server端在某些异常情况时，没有关闭Socket。" class="headerlink" title="Server端在某些异常情况时，没有关闭Socket。"></a><strong>Server端在某些异常情况时，没有关闭Socket。</strong></h2><p>TCP套接字中<br>被动关闭的server端在接受到FIN后立即返回一个ACK报文，进入CLOSE_WAIT状态。<br><strong>应用程序层面</strong>来看，会是抛出一个SOCKET.ERROR。<br>抛出ERROR之后如果没有closesocket(),则会处于CLOSE_WAIT</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%8D%8F%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E5%8D%8F%E7%A8%8B/" class="post-title-link" itemprop="url">协程</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-18 21:05:04" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:04+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="协程："><a href="#协程：" class="headerlink" title="协程："></a>协程：</h2><h2 id="（用户态的轻量级线程）"><a href="#（用户态的轻量级线程）" class="headerlink" title="（用户态的轻量级线程）"></a>（用户态的轻量级线程）</h2><p>在用户态中执行<br>1:任何时刻只有一个协程程序在运行。并且这个在运行的协程只有明确被要求挂起时才会被挂起。<br>2：传统的进程、线程是<strong>抢占式多任务</strong>，不可避免的线程同步问题，访问不同的资源还需要加锁以保证同步。<br>协程是<strong>协作式多任务</strong></p>
+<p>优点</p>
+<ul>
+<li>无需线程上下文切换的开销</li>
+<li>无需锁和处理同步问题<br>缺点：</li>
+<li>协程本质上是单线程，无法单独利用多核cpu，需要与进程配合</li>
+<li>进行阻塞操作如IO时会阻塞整个程序，这时候需要异步IO</li>
+<li></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/C++%E5%A4%9A%E6%80%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1316,689 +1621,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/15/HDU%205901%20%E8%B6%85%E5%A4%A7%E7%B4%A0%E6%95%B0%E5%BF%AB%E5%88%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/15/HDU%205901%20%E8%B6%85%E5%A4%A7%E7%B4%A0%E6%95%B0%E5%BF%AB%E5%88%A4/" class="post-title-link" itemprop="url">HDU 5901 超大素数快判</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-15 05:05:00 / 修改时间：05:28:24" itemprop="dateCreated datePublished" datetime="2019-11-15T05:05:00+08:00">2019-11-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Meisell-Lehmer</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LL long long</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">5e6</span> + <span class="number">2</span>;</span><br><span class="line"><span class="keyword">bool</span> np[N];</span><br><span class="line"><span class="keyword">int</span> prime[N], pi[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getprime</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    np[<span class="number">0</span>] = np[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">    pi[<span class="number">0</span>] = pi[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; N; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(!np[i]) prime[++cnt] = i;</span><br><span class="line">        pi[i] = cnt;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= cnt &amp;&amp; i * prime[j] &lt; N; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            np[i * prime[j]] = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">if</span>(i % prime[j] == <span class="number">0</span>)   <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">7</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> PM = <span class="number">2</span> * <span class="number">3</span> * <span class="number">5</span> * <span class="number">7</span> * <span class="number">11</span> * <span class="number">13</span> * <span class="number">17</span>;</span><br><span class="line"><span class="keyword">int</span> phi[PM + <span class="number">1</span>][M + <span class="number">1</span>], sz[M + <span class="number">1</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    getprime();</span><br><span class="line">    sz[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= PM; ++i)  phi[i][<span class="number">0</span>] = i;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= M; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        sz[i] = prime[i] * sz[i - <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= PM; ++j) phi[j][i] = phi[j][i - <span class="number">1</span>] - phi[j / prime[i]][i - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sqrt2</span><span class="params">(LL x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LL r = (LL)<span class="built_in">sqrt</span>(x - <span class="number">0.1</span>);</span><br><span class="line">    <span class="keyword">while</span>(r * r &lt;= x)   ++r;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">int</span>(r - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sqrt3</span><span class="params">(LL x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LL r = (LL)cbrt(x - <span class="number">0.1</span>);</span><br><span class="line">    <span class="keyword">while</span>(r * r * r &lt;= x)   ++r;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">int</span>(r - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">LL <span class="title">getphi</span><span class="params">(LL x, <span class="keyword">int</span> s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="number">0</span>)  <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">if</span>(s &lt;= M)  <span class="keyword">return</span> phi[x % sz[s]][s] + (x / sz[s]) * phi[sz[s]][s];</span><br><span class="line">    <span class="keyword">if</span>(x &lt;= prime[s]*prime[s])   <span class="keyword">return</span> pi[x] - s + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(x &lt;= prime[s]*prime[s]*prime[s] &amp;&amp; x &lt; N)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> s2x = pi[sqrt2(x)];</span><br><span class="line">        LL ans = pi[x] - (s2x + s - <span class="number">2</span>) * (s2x - s + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = s + <span class="number">1</span>; i &lt;= s2x; ++i) ans += pi[x / prime[i]];</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> getphi(x, s - <span class="number">1</span>) - getphi(x / prime[s], s - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">LL <span class="title">getpi</span><span class="params">(LL x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(x &lt; N)   <span class="keyword">return</span> pi[x];</span><br><span class="line">    LL ans = getphi(x, pi[sqrt3(x)]) + pi[sqrt3(x)] - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = pi[sqrt3(x)] + <span class="number">1</span>, ed = pi[sqrt2(x)]; i &lt;= ed; ++i) ans -= getpi(x / prime[i]) - i + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">LL <span class="title">lehmer_pi</span><span class="params">(LL x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(x &lt; N)   <span class="keyword">return</span> pi[x];</span><br><span class="line">    <span class="keyword">int</span> a = (<span class="keyword">int</span>)lehmer_pi(sqrt2(sqrt2(x)));</span><br><span class="line">    <span class="keyword">int</span> b = (<span class="keyword">int</span>)lehmer_pi(sqrt2(x));</span><br><span class="line">    <span class="keyword">int</span> c = (<span class="keyword">int</span>)lehmer_pi(sqrt3(x));</span><br><span class="line">    LL sum = getphi(x, a) +(LL)(b + a - <span class="number">2</span>) * (b - a + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = a + <span class="number">1</span>; i &lt;= b; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        LL w = x / prime[i];</span><br><span class="line">        sum -= lehmer_pi(w);</span><br><span class="line">        <span class="keyword">if</span> (i &gt; c) <span class="keyword">continue</span>;</span><br><span class="line">        LL lim = lehmer_pi(sqrt2(w));</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &lt;= lim; j++) sum -= lehmer_pi(w / prime[j]) - (j - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    init();</span><br><span class="line">    LL n;</span><br><span class="line">    <span class="keyword">while</span>(~<span class="built_in">scanf</span>(<span class="string">"%lld"</span>,&amp;n))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,lehmer_pi(n));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/15/%E6%9D%AD%E7%94%B5ACM%E9%A2%98%E7%9B%AE%E5%88%86%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/15/%E6%9D%AD%E7%94%B5ACM%E9%A2%98%E7%9B%AE%E5%88%86%E7%B1%BB/" class="post-title-link" itemprop="url">杭电ACM题目分类</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-15 05:05:00 / 修改时间：05:28:40" itemprop="dateCreated datePublished" datetime="2019-11-15T05:05:00+08:00">2019-11-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<div id="article_content" class="article_content clearfix">
-                                    <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-3019150162.css">
-                                        <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-3019150162.css">
-                <div class="htmledit_views" id="content_views">
-
-<p>按此做成就大神之路：</p>
-<p>&nbsp;</p>
-<p>1002 简单的大数<br>
-1003 DP经典问题，最大连续子段和<br>
-1004 简单题<br>
-1005 找规律（循环点）<br>
-1006 感觉有点BT的题，我到现在还没过<br>
-1007 经典问题，最近点对问题，用分治<br>
-1008 简单题<br>
-1009 贪心<br>
-1010 搜索题，剪枝很关键<br>
-1011 <br>
-1012 简单题<br>
-1013 简单题（有个小陷阱）<br>
-1014 简单题<br>
-1015 可以看作搜索题吧<br>
-1016 经典的搜索<br>
-1017 简单数学题<br>
-1018 简单数学题<br>
-1019 简单数学题<br>
-1020 简单的字符串处理<br>
-1021 找规律的数学题<br>
-1022 数据结构的题（栈的应用）<br>
-1023 特殊的数（Catalan Number）<br>
-1024 经典DP，最大M子段和<br>
-1025 经典DP，最长递增子序列（要用NLogN的方法过）<br>
-1026 搜索<br>
-1027 数学题（或用STL）<br>
-1028 经典问题，整数拆分，用母函数做<br>
-1029 简单题（一般方法容易超时）<br>
-1030 简单题，可用模拟过<br>
-1031 简单题<br>
-1032 简单题<br>
-1033 模拟题<br>
-1034 Candy Sharing Game<br>
-1035 模拟题<br>
-1036 简单题<br>
-1037 简单题，不是一般的简单<br>
-1038 简单题<br>
-1039 字符串处理<br>
-1040 简单题，排序<br>
-1041 简单题，用大数<br>
-1042 大数<br>
-1043 经典搜索题，八数码问题 <br>
-1044 稍微有点麻烦的搜索题<br>
-1045 搜索题，可用匹配做<br>
-1046 简单题<br>
-1047 简单的大数 <br>
-1048 简单字符串处理<br>
-1049 简单题<br>
-1050 贪心<br>
-1051 经典贪心，也可以用DP<br>
-1052 贪心<br>
-1053 贪心，关于Huffman编码<br>
-1054 二分匹配<br>
-1055 二分匹配<br>
-1056 简单题<br>
-1057 模拟题<br>
-1058 经典问题，丑数，DP<br>
-1059 经典问题，可以用母函数或DP（不针对题目优化都会超时）<br>
-1060 数学题<br>
-1061 数学题<br>
-1062 简单字符串处理<br>
-1063 模拟大数<br>
-1064 简单题<br>
-1065 简单题<br>
-1066 数学题，找规律<br>
-1067 <br>
-1068 经典二分匹配<br>
-1069 经典DP<br>
-1070 简单题<br>
-1071 简单数学题<br>
-1072 搜索<br>
-1073 字符串处理<br>
-1074 DP<br>
-1075 字典树<br>
-1076 简单题<br>
-1077 <br>
-1078 DP<br>
-1079 博弈（DP）<br>
-1080 DP<br>
-1081 经典DP<br>
-1082 简单题<br>
-1083 二分匹配<br>
-1084 简单题<br>
-1085 母函数<br>
-1086 简单几何题<br>
-1087 简单DP<br>
-1088 字符串处理<br>
-1089~1096 （练习输入输出的8个题目）<br>
-1097 简单数学题<br>
-1098 数学题，注意找规律<br>
-1099 数学题</p>
-<p>模拟题, 枚举<br>
-1002 1004 1013 1015 1017 1020 1022 1029 1031 1033 1034 1035 1036 1037 1039 1042 1047 1048 1049 1050 1057 1062 1063 1064 1070 1073 1075 1082 1083 1084 1088 1106 1107 1113 1117 1119 1128 1129 1144 1148 1157 1161 1170 1172 1177 1197 1200 1201 1202 1205 1209 1212(大数取模)
- 1216（链表）1218 1219 1225 1228 1229 1230 1234 1235 1236 1237 1239 1250<br>
-1256 1259 1262 1263 1265 1266 1276 1279 1282 1283 1287 1296 1302 1303 1304 1305 1306 1309 1311 1314<br>
-复杂模拟</p>
-<p>搜索，递归求解<br>
-1010 1016 1026 1043(双广) 1044 (BFS+DFS) 1045 1067 1072 1104 1175 1180 1195 1208 1226 1238 1240 1241 1242 1258 1271 1312 1317<br>
-博奕<br>
-1079</p>
-<p>动态规划<br>
-1003 1024 1025 1028 1051 1058 1059 1069 1074 1078 1080 1081 1085 1087 1114 1158 1159 1160 1171 1176 1181 1203 1224 1227 1231 1244 1248 1253 1254 1283 1300</p>
-<p>数学，递推，规律<br>
-1005 1006 1012 1014 1018 1019 1021 1023 1027 1030 1032 1038 1041 1046 1059 1060 1061 1065 1066 1071(微积分) 1097 1098 1099 1100 1108 1110 1112 1124 1130 1131 1132 1134 1141 1143 1152 1155(物理题) 1163 1165 1178 1194 1196(lowbit) 1210 1214 1200 1221 1223 1249 1261
- 1267 1273 1290 1291 1292 1294 1297 1313 1316<br>
-数论<br>
-1164 1211 1215 1222 1286 1299</p>
-<p>计算几何<br>
-1086 1115 1147<br>
-贪心<br>
-1009 1052 1055 1257</p>
-<p>并查集<br>
-1198 1213 1232 1272<br>
-线段树,离散化<br>
-1199 1255<br>
-图论<br>
-最短路相关的问题 1142 1162 1217 1301<br>
-二分图问题 1054 1068 1150 1151 1281<br>
-其他<br>
-1053 (huffman) 1102(MST) 1116（欧拉回路） 1233(MST) 1269（强连通）<br>
-数据结构<br>
-1103（堆+模拟）1166（数状树组）1247 1251 1285（Topol） 1298<br>
-汉诺塔系列<br>
-1207<br>
-最近顶点对 1007</p>
-<p><br>
-1500 DP<br>
-1501 DP<br>
-1502 DP or 记忆化<br>
-1503 DP<br>
-1504 模拟<br>
-1505 DP<br>
-1506 DP<br>
-1507 2分匹配<br>
-1508 记忆化容易点<br>
-1509 模拟<br>
-1510 DP<br>
-1511 搜索可以过<br>
-1512 左偏树<br>
-1513 DP<br>
-1514 DP<br>
-1515 DFS<br>
-1516 DP<br>
-1517 博奕<br>
-1518 搜索<br>
-1519 DP（不确定）<br>
-1520 树状DP<br>
-1521 数学题，母函数什么的。其实都可以过<br>
-1522 稳定婚姻<br>
-1523 DP<br>
-1524 博弈<br>
-1525 博弈<br>
-1526 Maxflow<br>
-1527 博弈<br>
-1528 2分匹配<br>
-1529 简单题<br>
-1530 最大团<br>
-1531 差分约束<br>
-1532 Maxflow 入门题<br>
-1533 KM Or 最小费用流<br>
-1534 差分约束<br>
-1535 差分约束<br>
-1536 博弈<br>
-1537 模拟 加置换群的理论 CODE可以短些，其实没必要。。。<br>
-1538 很有意思的题目。据说是Microsoft亚洲总裁面试的题目<br>
-1539 搜索<br>
-1540 线段树<br>
-1541 树状数组<br>
-1542 离散，线段树<br>
-1543 线段树<br>
-1544 简单的<br>
-1545 DP</p>
-<p>1546 搜索<br>
-1547 模拟<br>
-1548 模拟<br>
-1551 2分答案<br>
-1553<br>
-1554<br>
-1555 简单<br>
-1556 技巧。数学<br>
-1557 搜索<br>
-1558 并查 + 线段判交<br>
-1559 DP<br>
-1560 减支 + 搜索<br>
-1561 树状DP<br>
-1562 暴力 between 1000 and 9999<br>
-1563 简单<br>
-1564 博弈。<br>
-1565 状态DP<br>
-1566 数学<br>
-1567 模拟<br>
-1568 大数<br>
-1569 最小割<br>
-1570 数学<br>
-1571 最段路<br>
-1572 搜索<br>
-1573 数学<br>
-1574 DP<br>
-1575 2分<br>
-1576 数论<br>
-1577 模拟，处理精度<br>
-1579 记忆化<br>
-1580 DP<br>
-1582 搜索<br>
-1583 模拟<br>
-1584 搜索<br>
-1585<br>
-1586<br>
-1587 简单题目<br>
-1591 模拟<br>
-1592 简单<br>
-1593 数学<br>
-1594 数学<br>
-1595 图论<br>
-1596 图论<br>
-1597 图论<br>
-1598 图论<br>
-1599 图论</p>
-<p>&nbsp;</p>
-<p>第二篇</p>
-<p>&nbsp;</p>
-<p>基础题：1000、1001、1004、1005、1008、1012、1013、1014、1017、1019、1021、1028、1029、1032、1037、1040、1048、1056、1058、1061、1070、1076、1089、1090、1091、1092、1093、1094、1095、1096、1097、1098、1106、1108、1157、1163、1164、1170、1194、1196、1197、1201、1202、1205、1219、1234、1235、1236、1248、1266、1279、1282、1283、1302、1303、1323、1326、1330、1334、1335、1339、1390、1391、1393、1395、1397、1405、1406、1407、1408、1412、1418、1420、1465、1491、1555、1562、1563、1570、1587、1673、1678、1708、1718、1720、1785、1799、1859、1862、1877、1898、1976、1977、1985、1994、2000、2001、2002、2003、2004、2005、2006、2007、2008、2009、2010、2011、2012、2013、2014、2015、2016、2017、2018、2019、2020、2021、2022、2023、2024、2025、2026、2027、2028、2029、2030、2031、2032、2033、2034、2035、2039、2040、2042、2043、2048、2049、2051、2053、2055、2056、2057、2060、2061、2071、2073、2075、2076、2078、2081、2083、2088、2090、2092、2093、2095、2096、2097、2098、2099、2101、2103、2106、2107、2109、2113、2114、2115、2123、2131、2132、2133、2135、2136、2137、2138、2139、2143、2148、2153、2156、2161、2162、2164、2178、2186、2192、2200、2201、2212、2304、2309、2317、2401、2500、2502、2503、2504、2519、2520、2521、2523、2524、2535、2537、2539、2547、2548、2549、2550、2551、2552、2555、2560、2561、2562、2566、2567、2568、2700、2710、</p>
-<p><br>
-DP：1003、10240、1029、1069、1074、1087、1114、1159、1160、1171、1176、1203、1231、1257、1260、1284、1421、1789、1978、2059、2084、2159、2191、2544、2571、2602、2709、</p>
-<p>搜索：1010、1015、1016、1026、1072、1075、1175、1180、1181、1238、1239、1240、1241、1242、1253、1254、1312、1372、1548、1597、1671、1677、1728、1800、1983、2102、2141、2553、2563、2605、2612、2614、1616、2717</p>
-<p>贪心：1009、1045、1049、1050、1051、1052、1257、1800、2037、2111、2124、2187、2391、2570</p>
-<p>数学题：1018、1065、1071、1115、1141、1162、1212、1220、1492、1593、1701、1722、1798、1840、1999、2036、2080、2086、2089、2105、2108、2134、2303、2393、2438、2529、2547、2548、2552、2554、2601、2603、2701、</p>
-<p>递推：1133、1143、1207、1249、1267、1284、1290、1297、1396、1992、1995、1996、2013、2014、2044、2045、2046、2047、2050、2064、2065、2067、2068、2070、2077、2085、2151、2154、2160、2190、2501、2512、2563、2569、2709、2716、</p>
-<p>字符串：1020、1039、1043、1062、1073、1075、1088、1113、1161、1200、1251、1256、1288、1321、1328、1379、1804、1860、1982、1984、2017、2024、2025、2026、2027、2043、2052、2054、2072、2074、2087、2131、2137、2140、2163、2203、2206、2352、2500、2549、2564、2565、2567、2572、2609、2607、2707、2708、2719、2721、2723、</p>
-<p>大数：1002、1042、1133、1250、1297、1715、1753、1865、2100、</p>
-<p>胡搞：1022、1027、1030、1035、1128、1165、1209、1210、1215、1222、1228、1229、1230、1237、1259、1276、1286、1337、1342、1361、1370、1506、1577、1597、1702、1716、1727、1868、1870、1896、1981、1986、1987、1988、1997、1998、1999、2058、2062、2089、2090、2094、2104、2116、2117、2135、2175、2183、2184、2197、2303、2368、2370、2374、2511、2522、2527、2600、2615、2703、2711、2714、2715、2725、</p>
-<p>博弈：1077、1404、1517、1524、1525、1527、1536、1564、1729、1730、1846、1847、1848、1849、1850、2147、2149、2176、2177、2188</p>
-<p>母函数：1085、1171、1398、2079、2082、2110、2152、2189、2566、</p>
-<p>hash：1264、1280、1425、1496、1800、2522、2600、<br></p>
-                                    </div>
-                    </div>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/" class="post-title-link" itemprop="url">MIT6.828——Lab1 Booting a PC</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-15 05:04:00 / 修改时间：05:29:03" itemprop="dateCreated datePublished" datetime="2019-11-15T05:04:00+08:00">2019-11-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OS/" itemprop="url" rel="index">
-                    <span itemprop="name">OS</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>Preface：之前已经做了一部分MIT-6.828了，后来要考托福就搁置了，现在重新捡起来。<br>顺便把所有的博客迁移到我的域名<a href="http://www.shaojintian.cn下" target="_blank" rel="noopener">www.shaojintian.cn下</a></p>
-<p>Sources:xv6 book &amp;&amp; xv6 source codes<br>Exercise1:</p>
-<blockquote>
-<p>看懂x86 的32bit汇编,参见xv6 book附录A</p>
-</blockquote>
-<p>Exercise2:</p>
-<blockquote>
-<p>Use GDB’ssi(Step Instruction) command to trace into the ROM BIOS               for a few more instructions, and try to guess what it might be doing. </p>
-</blockquote>
-<p>答案：依照提示使用GDB si</p>
-<p>Exercise 3. </p>
-<blockquote>
-<p>阅读bootloader的源码，回答问题<br>1：At what point does the processor start executing 32-bit code? What exactly causes the switch from 16- to 32-bit mode?</p>
-</blockquote>
-<p>答案：<br><img src="https://img-blog.csdnimg.cn/20191017140951937.png" alt="在这里插入图片描述"><br>ljmp  to 0x7c32   从i8086-&gt;i386（16bit-&gt;32bit)</p>
-<blockquote>
-<p>2：What is the last instruction of the boot loader executed, and what is the first instruction of the kernel it just loaded?</p>
-</blockquote>
-<p>答案：<br>last instruction:<br>查阅xv6 book, boot loader call bootmain()  to call kernel and run kernel<br>所以去boot.asm 找bootmain的位置<br>然后去找此汇编中bootmain（）最后一条语句为<br>((void (*)(void)) (ELFHDR-&gt;e_entry))();<br>找到此语句汇编的指向为 </p>
-<blockquote>
-<p>call *0x10018</p>
-</blockquote>
-<p>kernel 第一个instruction：</p>
-<p>从boot.asm找到最后一条指令的SI为0x7d6b<br>打上断点</p>
-<p><img src="https://img-blog.csdnimg.cn/201910171434175.png" alt="~/obj/boot/boot.asm"><br><img src="https://img-blog.csdnimg.cn/20191017143350903.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<blockquote>
-<p>movw $0x1234, 0x472</p>
-</blockquote>
-<p>反汇编<br>objdump -d obj/kern/kernel 验证了这个结果</p>
-<blockquote>
-<p>3：Where is the first instruction of the kernel?</p>
-</blockquote>
-<p>答案：<br>    0x10000c</p>
-<blockquote>
-<p>4：How does the boot loader decide how many sectors it must read in order to fetch the entire kernel from disk? Where does it find this information?</p>
-</blockquote>
-<p>答案：<br>    xv6 book chapter2  说明kernel是ELF文件<br>    kernel的大小包含在ELF的文件program  header中<br>    <img src="https://img-blog.csdnimg.cn/20191017144600260.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>Exercise 4</strong><br>Download the code for pointers.c, run it, and make sure you understand where all of the printed values come from.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Machine%20Learning%20%E2%80%94LinearModel/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/19/Machine%20Learning%20%E2%80%94LinearModel/" class="post-title-link" itemprop="url">Machine Learning —LinearModel</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-11-19 09:30:00" itemprop="dateCreated datePublished" datetime="2018-11-19T09:30:00+08:00">2018-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-20 21:48:04" itemprop="dateModified" datetime="2019-11-20T21:48:04+08:00">2019-11-20</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<h2 id="Machine-Learning-—LinearModel"><a href="#Machine-Learning-—LinearModel" class="headerlink" title="Machine Learning —LinearModel"></a>Machine Learning —LinearModel</h2><p>Supervised Learning:<br>Basic topics are Classification and Regression.</p>
-<p>Classification:</p>
-<p>About linear model, it includes LinearSVC , LogisticRegression(a classifier not a regressor)， GaussianNaiveBayesClassifier (GuNBC), BernoulliNBC, MultinomialNBC , Decision Trees,Random Forests</p>
-<p>First model LinearSVC:</p>
-<p>parameters includes :</p>
-<p>Regularization class: L1 or L2 .<br>L1 norm can decrease the coefficients to zero .But L2 can’t do that. L2 norm only can try to decrease the coefficients to close to zero.</p>
-<p>So L1 norm can select the numbers of features , but L2 can’t.</p>
-<p>Then,L1 style can increase the interpretability of this model,but lose some important features.</p>
-<p>L2 maybe be pollued by meaningless features.</p>
-<p>2.C:(learning rate)</p>
-<p>C is about restrictive ability. If C is small , coefficients and intercept is be restricted to close to zero (whether it can be explicitly zero depends on L1 or L2)</p>
-<p>else if C is high, restrictive ability is low.</p>
-<p>Second model: LinearRegression</p>
-<p>parameters :</p>
-<p>1:Regularization class: L1 or L2 .</p>
-<p>This is the same as above the first line.</p>
-<p>2:alpha(learning rate)</p>
-<p>alpha is opposite to C .If alpha is high , coefficients and intercept is be restricted to close to zero (whether it can be explicitly zero depends on L1 or L2)</p>
-<p>else if alpha is low, restrictive ability is low.</p>
-<p>Third model : Gussian Naive Bayes Classifier</p>
-<p>paramerter:</p>
-<p>1:alpha</p>
-<p>Fourth model : Bernoulli Naive Bayes Classifier</p>
-<p>paramerter:</p>
-<p>1:alpha (controls the complexity of model)</p>
-<p>ability:</p>
-<p>Increase the smoothing performance of model via adding virtual many data points to datasets . Virtual data points contains all positive features .</p>
-<p>When increase the alpha , the model will be smoother. So it will decrease the complexity of model . When decrease it , the model will be more complex.</p>
-<p>Fourth model : Bernoulli Naive Bayes Classifier</p>
-<p>paramerter:</p>
-<p>1:alpha (controls the complexity of model) (It is the same as BernoulliNBC)</p>
-<p>ability:</p>
-<p>Increase the smoothing performance of model via adding virtual many data points to datasets . Virtual data points contains all positive features .</p>
-<p>When increase the alpha , the model will be smoother. So it will decrease the complexity of model . When decrease it , the model will be more complex.</p>
-<p>Fifth model: Decision Trees</p>
-<p>parameters:</p>
-<p>Advantages:</p>
-<p>1: Easily Visualize .</p>
-<p>Generate visualized decision trees to help non-experts to understand this model.</p>
-<p>2:less influence about data or features types</p>
-<p>Due to every feature is been processed separately , so whatever the data type is binary or continuous .</p>
-<p>Disadvantages :</p>
-<p>1:poor generalization ability</p>
-<p>Easy to overfit ,even it has used pre-pruning. Because of it ,we usually to use ensembles of decision trees to decrease this influence based on decision trees(such as Random Forests and Gradient Boosted Decision Trees)</p>
-<p>Sixth model :Random Forests:</p>
-<p>Parameters:</p>
-<p>1:n_estimator</p>
-<p>decide the numbers of decision trees .</p>
-<p>2:max_features</p>
-<p>decide the max numbers of features .</p>
-<p>Preprocessing:</p>
-<p>For dataset:</p>
-<p>Bootstrap Sample(自动采样）：</p>
-<p>To explain it , if we have 100 data nodes ,we select randomly 100 times from this dataset to generate a new dataset which is as big as original dataset , after every time selection ,we don’t reduce the data node from original dataset .Clear?</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/machine%20learning_instruction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/19/machine%20learning_instruction/" class="post-title-link" itemprop="url">machine learning_instruction</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-11-19 09:30:00" itemprop="dateCreated datePublished" datetime="2018-11-19T09:30:00+08:00">2018-11-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-20 21:48:28" itemprop="dateModified" datetime="2019-11-20T21:48:28+08:00">2019-11-20</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>机器学习简单来说是计算机通过对数据集的学习，对预测集的input找到正确的output。<br>笼统归为三步：<br>1：一系列实现任务的functions 形成 function set<br>2：可以评价这些functions的goodness<br>2：选择一个最佳的function解决task</p>
-<p><img src="https://img-blog.csdn.net/20181020002058750?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span>
+    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2042,12 +1669,12 @@ DP：1003、10240、1029、1069、1074、1087、1114、1159、1160、1171、1176
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-count">115</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">

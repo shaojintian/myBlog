@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="baidu-site-verification" content="PKO0plnZfq" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="总结 MIT6.824 Lab2A Raft 选主的实验笔记。&amp;lt;br&amp;gt; Lab2ARaft 将一致性问题分解成三个子问题：Leader 选举、日志复制、安全性保证，在 Lab 的 2A, 2B 中实现，快照功能在 Lab3 实现，均可参考原论文图 2 中对 Raft 实现的简要总结。 实验目标 实现 Leader 选举：选出单个 leader 并保持领导地位，直到自己 cr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lab2A. Raft 选主实现">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="总结 MIT6.824 Lab2A Raft 选主的实验笔记。&amp;lt;br&amp;gt; Lab2ARaft 将一致性问题分解成三个子问题：Leader 选举、日志复制、安全性保证，在 Lab 的 2A, 2B 中实现，快照功能在 Lab3 实现，均可参考原论文图 2 中对 Raft 实现的简要总结。 实验目标 实现 Leader 选举：选出单个 leader 并保持领导地位，直到自己 cr">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-05-10-035030.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-05-09-010157.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-04-23-035737.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-04-23-044741.png">
+<meta property="og:updated_time" content="2019-11-23T14:15:15.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-05-10-035030.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/23/Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Lab2A. Raft 选主实现 | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <meta name="baidu-site-verification" content="PKO0plnZfq" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，后端开发，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lab2A. Raft 选主实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-23 22:14:00 / 修改时间：22:15:15" itemprop="dateCreated datePublished" datetime="2019-11-23T22:14:00+08:00">2019-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>总结 MIT6.824 Lab2A Raft 选主的实验笔记。&lt;br&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab2A"><a href="#Lab2A" class="headerlink" title="Lab2A"></a>Lab2A</h2><p>Raft 将一致性问题分解成三个子问题：Leader 选举、日志复制、安全性保证，在 Lab 的 2A, 2B 中实现，快照功能在 Lab3 实现，均可参考原论文图 2 中对 Raft 实现的简要总结。</p>
+<h3 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h3><ul>
+<li>实现 Leader 选举：选出单个 leader 并保持领导地位，直到自己 crash 或发生网络分区</li>
+<li>实现心跳通信：实现 leader 与其他节点的无日志 AppendEntries RPC 调用</li>
+</ul>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestInitialElection2A：</strong>集群正常情况下保证单一 leader</li>
+<li><strong>TestReElection2A：</strong>处理好 leader 网络分区、多数节点失效造成 split vote 的情况。</li>
+</ul>
+<p>测试均通过：<br> <a href="https://images.yinzige.com/2019-05-10-035030.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-05-10-035030.png" width="60%"></a></p>
+<h2 id="一些坑"><a href="#一些坑" class="headerlink" title="一些坑"></a>一些坑</h2><h3 id="RPC-调用超时"><a href="#RPC-调用超时" class="headerlink" title="RPC 调用超时"></a>RPC 调用超时</h3><p>在分布式系统中，每次调用会有三种结果：成功、失败、超时。Lab 将 net rpc 库封装成 labrpc，通过隔离节点网络来模拟节点不可用。不可用节点的 RPC 调用超时会返回 <code>false</code>，但这里不能死等 labrpc 库不确定的超时时长（100ms，2s 均可能），应该在调用时使用 timer 有预期地控制超时（如稍大于心跳间隔：150ms）<br>调用超时后，不必像论文中描述的无限次重试，应简化处理，直接认为调用失败。</p>
+<h3 id="充分使用-sync-包来实现同步"><a href="#充分使用-sync-包来实现同步" class="headerlink" title="充分使用 sync 包来实现同步"></a>充分使用 sync 包来实现同步</h3><p>AppendEntries RPC 用于心跳通信和日志同步，调用时机有两个：</p>
+<ul>
+<li>定时心跳：leader 需在后台定期向其他节点发送 heartbeat，保持领导地位。同时在心跳还充当着日志同步的作用，当某个节点日志一致性检查失败后，会将冲突信息返回，leader 需将本地日志同步到该节点。</li>
+<li>新日志同步：当客户端发来新命令时，leader 将日志 append 到本地后即响应（lab 与论文不同），随后立刻开始新日志的同步。<br>要调用 AppendEntries 的地方很多，因而使用 sync.Cond 条件变量而非散落各处的 channel 来进行同步触发。</li>
+</ul>
+<h3 id="一些时机"><a href="#一些时机" class="headerlink" title="一些时机"></a>一些时机</h3><ul>
+<li>每个节点在收到有效 RPC 调用后要重置 Election Timer，即使 Leader 无需对自己进行 rpc 调用，但重置 Timer 也是必要的。</li>
+<li>当节点收到更高 term 的 RPC 调用或响应时，要立刻回退到 follower 并重置 Timer，由于不能确信对方身份就是 Leader，所以 <code>voteFor</code> 要重置为 nil</li>
+</ul>
+<h3 id="关于调试"><a href="#关于调试" class="headerlink" title="关于调试"></a>关于调试</h3><p>  改造 util.go 中 DPrintf() 来输出毫秒及调试信息，方便追溯系统的时序性等问题。比如我的调试日志：</p>
+<p>  <a href="https://images.yinzige.com/2019-05-09-010157.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-05-09-010157.png" alt="image-20190509090156921"></a></p>
+<h2 id="Leader-选举"><a href="#Leader-选举" class="headerlink" title="Leader 选举"></a>Leader 选举</h2><p>Lab 限制 leader 每秒最多发送 10 次心跳请求，实现时取心跳间隔为 100ms。相应的，选举超时时间应比心跳大一个量级左右，我实现时取 <code>400 + rand.Intn(4) * 100</code>，即 400~800ms 内的随机值，尽可能避免选举 split vote 情况。</p>
+<h3 id="选举流程"><a href="#选举流程" class="headerlink" title="选举流程"></a>选举流程</h3><p>参考上一篇文章：<a href="https://github.com/wuYin/blog/blob/master/distributed_systems/raft-notes.md#leader-%E9%80%89%E4%B8%BE" target="_blank" rel="noopener">Leader 选举</a></p>
+<p><a href="https://images.yinzige.com/2019-04-23-035737.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-23-035737.png" alt="image-20190423115736847"></a></p>
+<h3 id="发起投票"><a href="#发起投票" class="headerlink" title="发起投票"></a>发起投票</h3><p>定义 Raft 节点：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Raft <span class="keyword">struct</span> {</span><br><span class="line">    mu        sync.Mutex          <span class="comment">// Lock to protect shared access to this peer's state</span></span><br><span class="line">    peers     []*labrpc.ClientEnd <span class="comment">// RPC end points of all peers</span></span><br><span class="line">    persister *Persister          <span class="comment">// Object to hold this peer's persisted state</span></span><br><span class="line">    me        <span class="keyword">int</span>                 <span class="comment">// this peer's index into peers[]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// persistent states</span></span><br><span class="line">    curTerm  <span class="keyword">int</span>        <span class="comment">// latest term server has seen(initialized to 0 on first boot, increases monotonically)</span></span><br><span class="line">    votedFor <span class="keyword">int</span>        <span class="comment">// candidateId that received vote in current term(or null if none)</span></span><br><span class="line">    logs     []LogEntry <span class="comment">// log entries; each entry contains command for state machine, and term when entry was received by leader(first index is 1)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// implementation</span></span><br><span class="line">    state     PeerState</span><br><span class="line">    timer     *RaftTimer</span><br><span class="line">    syncConds []*sync.Cond  <span class="comment">// every Raft peer has a condition, use for trigger AppendEntries RPC</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>每个节点在 <code>Make</code> 初始化时都选择时长随机的 RaftTimer，之后启动新的 goroutine 监听 election timer 超时：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-rf.timer.t.C: <span class="comment">// election timeout</span></span><br><span class="line">            rf.resetElectTimer() <span class="comment">// this reset is necessary, reset it when timeout</span></span><br><span class="line">            rf.vote()</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}()</span><br></pre></td></tr></tbody></table></figure>
+<p>timer 超时后，发起投票：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// start vote</span></span><br><span class="line"><span class="comment">// leader can start vote repeatedly, such as 2 nodes are crashed in 3 nodes cluster</span></span><br><span class="line"><span class="comment">// leader should reset election timeout when heartbeat to prevent this</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">vote</span><span class="params">()</span></span> {</span><br><span class="line">    pr(<span class="string">"Vote|Timeout|%v"</span>, rf)</span><br><span class="line">    rf.curTerm++</span><br><span class="line">    rf.state = Candidate</span><br><span class="line">    rf.votedFor = rf.me</span><br><span class="line"></span><br><span class="line">    args := RequestVoteArgs{</span><br><span class="line">        Term:        rf.curTerm,</span><br><span class="line">        CandidateID: rf.me,</span><br><span class="line">    }</span><br><span class="line">    replyCh := <span class="built_in">make</span>(<span class="keyword">chan</span> RequestVoteReply, <span class="built_in">len</span>(rf.peers))</span><br><span class="line">    <span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">        <span class="keyword">if</span> i == rf.me {</span><br><span class="line">            rf.resetElectTimer() <span class="comment">// other followers will reset when receive valid RPC, leader same</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">            <span class="keyword">defer</span> wg.Done()</span><br><span class="line">            <span class="keyword">var</span> reply RequestVoteReply</span><br><span class="line">            respCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>{})</span><br><span class="line">            <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">                rf.sendRequestVote(server, &amp;args, &amp;reply)</span><br><span class="line">                respCh &lt;- <span class="keyword">struct</span>{}{}</span><br><span class="line">            }()</span><br><span class="line">            <span class="keyword">select</span> {</span><br><span class="line">            <span class="keyword">case</span> &lt;-time.After(RPC_CALL_TIMEOUT): <span class="comment">// 1s</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">case</span> &lt;-respCh:</span><br><span class="line">                replyCh &lt;- reply</span><br><span class="line">            }</span><br><span class="line">        }(i)</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">        wg.Wait()</span><br><span class="line">        <span class="built_in">close</span>(replyCh) <span class="comment">// avoid goroutine leak</span></span><br><span class="line">    }()</span><br><span class="line"></span><br><span class="line">    votes := <span class="number">1</span></span><br><span class="line">    majority := <span class="built_in">len</span>(rf.peers)/<span class="number">2</span> + <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> reply := <span class="keyword">range</span> replyCh {</span><br><span class="line">        <span class="keyword">if</span> reply.Term &gt; rf.curTerm { <span class="comment">// higher term leader</span></span><br><span class="line">            pr(<span class="string">"Vote|Higher Term:%d|%v"</span>, reply.Term, rf)</span><br><span class="line">            rf.back2Follower(reply.Term, VOTE_NIL)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">if</span> reply.VoteGranted {</span><br><span class="line">            votes++</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> votes &gt;= majority { <span class="comment">// if reach majority earlier, shouldn't wait crashed peer for timeout</span></span><br><span class="line">            rf.state = Leader</span><br><span class="line">            <span class="keyword">go</span> rf.heartbeat()</span><br><span class="line">            <span class="keyword">go</span> rf.sync()</span><br><span class="line"></span><br><span class="line">            pr(<span class="string">"Vote|Win|%v"</span>, rf)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">// split vote</span></span><br><span class="line">    pr(<span class="string">"Vote|Split|%v"</span>, rf)</span><br><span class="line">    rf.back2Follower(rf.curTerm, VOTE_NIL)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="响应投票"><a href="#响应投票" class="headerlink" title="响应投票"></a>响应投票</h3><p>Raft 对投票节点提出了三点要求：</p>
+<ul>
+<li>每轮能投几张：一个任期内，一个节点只能投一张票</li>
+<li>是否要投：候选人的日志至少要和自己的一样新，才投票（Lab2B 实现日志的 up-to-date 比较）</li>
+<li>投给谁：first-come-first-served，投给第一个符合条件的候选人</li>
+</ul>
+<p><strong>实现</strong></p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> RequestVoteArgs <span class="keyword">struct</span> {</span><br><span class="line">    Term        <span class="keyword">int</span></span><br><span class="line">    CandidateID <span class="keyword">int</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> RequestVoteReply <span class="keyword">struct</span> {</span><br><span class="line">    Term        <span class="keyword">int</span></span><br><span class="line">    VoteGranted <span class="keyword">bool</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">RequestVote</span><span class="params">(args *RequestVoteArgs, reply *RequestVoteReply)</span></span> {</span><br><span class="line">    reply.Term = rf.curTerm</span><br><span class="line">    reply.VoteGranted = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> args.Term &lt; rf.curTerm {</span><br><span class="line">        <span class="keyword">return</span> <span class="comment">// candidate expired</span></span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> args.Term &gt; rf.curTerm {</span><br><span class="line">        rf.back2Follower(args.Term, VOTE_NIL)</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// now the term are same</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> rf.votedFor == VOTE_NIL || rf.votedFor == args.CandidateID {</span><br><span class="line">        reply.VoteGranted = <span class="literal">true</span></span><br><span class="line">        rf.back2Follower(args.Term, args.CandidateID)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="心跳通信"><a href="#心跳通信" class="headerlink" title="心跳通信"></a>心跳通信</h2><p>Raft 将客户端的命令封装为 log entry：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> LogEntry <span class="keyword">struct</span> {</span><br><span class="line">    Term    <span class="keyword">int</span></span><br><span class="line">    Command <span class="keyword">interface</span>{}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="心跳请求"><a href="#心跳请求" class="headerlink" title="心跳请求"></a>心跳请求</h3><p>当候选人成功竞选为 leader 后要 <strong>立刻</strong> 给集群中其他节点发送心跳，避免其他节点也超时发起新一轮选举。实现方案：获得多数票后，在后台为其他的所有 peer 启动同步日志的 goroutine，等待下一轮心跳 tick，这种广播方式最好使用 sync.Cond 条件变量来实现。</p>
+<p>获得多数票后为所有节点准备 sync</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// leader sync logs to followers</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">sync</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">        <span class="keyword">if</span> i == rf.me {</span><br><span class="line">            rf.resetElectTimer()</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(server <span class="keyword">int</span>)</span></span> {</span><br><span class="line">            <span class="keyword">for</span> {</span><br><span class="line">                rf.mu.Lock()</span><br><span class="line">                rf.syncConds[server].Wait() <span class="comment">// wait for trigger</span></span><br><span class="line"></span><br><span class="line">                args := AppendEntriesArgs{</span><br><span class="line">                    Term:         rf.curTerm,</span><br><span class="line">                    LeaderID:     rf.me,</span><br><span class="line">                    PrevLogIndex: <span class="number">0</span>,</span><br><span class="line">                    PrevLogTerm:  <span class="number">0</span>,</span><br><span class="line">                    Entries:      <span class="literal">nil</span>, <span class="comment">// heartbeat entries are empty</span></span><br><span class="line">                }</span><br><span class="line">                rf.mu.Unlock()</span><br><span class="line"></span><br><span class="line">                <span class="comment">// do not depend on labrpc to call timeout(it may more bigger than heartbeat), so should be check manually</span></span><br><span class="line">                <span class="keyword">var</span> reply AppendEntriesReply</span><br><span class="line">                respCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>{})</span><br><span class="line">                <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">                    rf.sendAppendEntries(server, &amp;args, &amp;reply)</span><br><span class="line">                    respCh &lt;- <span class="keyword">struct</span>{}{}</span><br><span class="line">                }()</span><br><span class="line">                <span class="keyword">select</span> {</span><br><span class="line">                <span class="keyword">case</span> &lt;-time.After(RPC_CALL_TIMEOUT): <span class="comment">// After() with currency may be inefficient</span></span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">case</span> &lt;-respCh: <span class="comment">// response succ</span></span><br><span class="line">                }</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> reply.Term &gt; rf.curTerm { <span class="comment">// higher term</span></span><br><span class="line">                    rf.back2Follower(reply.Term, VOTE_NIL)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }(i)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>同时开启心跳 tick，准备广播通知 sync</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// send heartbeat</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">heartbeat</span><span class="params">()</span></span> {</span><br><span class="line">    ch := time.Tick(HEARTBEAT_INTERVAL)</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">if</span> !rf.isLeader() {</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i := <span class="keyword">range</span> rf.peers {</span><br><span class="line">            <span class="keyword">if</span> i == rf.me {</span><br><span class="line">                rf.resetElectTimer() <span class="comment">// leader reset timer voluntary, so it won't elect again</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            }</span><br><span class="line"></span><br><span class="line">            rf.syncConds[i].Broadcast()</span><br><span class="line">        }</span><br><span class="line">        &lt;-ch</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="响应心跳"><a href="#响应心跳" class="headerlink" title="响应心跳"></a>响应心跳</h3><p>对于心跳请求，节点暂时只需对比任期号，若 term 未过期则调用成功。2B 部分将实现日志的一致性检查：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">AppendEntries</span><span class="params">(args *AppendEntriesArgs, reply *AppendEntriesReply)</span></span> {</span><br><span class="line">    reply.Term = rf.curTerm</span><br><span class="line">    reply.Succ = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> rf.curTerm &gt; args.Term {</span><br><span class="line">        <span class="keyword">return</span> <span class="comment">// leader expired</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    rf.back2Follower(args.Term, VOTE_NIL)</span><br><span class="line">    reply.Succ = <span class="literal">true</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个实验可从 test 着手，实验环境是 3 个节点组成的集群，实现时需在 leader crash 后及时选出下一任 leader，且处理好旧 leader re-join 等情况。<br>个人经验：对于分布式系统，调试时可在请求参数、响应结构中加入 debug 信息，用于追踪某次请求的处理过程和结果，梳理清楚了执行流程，再去针对性的解决问题。<br>为了让代码更清爽，我把 raft.go 的代码按功能拆分为了 2 部分：vote 处理投票请求，enry 处理心跳请求。之后的两个实验小节将对应修改这两个文件。<br> <a href="https://images.yinzige.com/2019-04-23-044741.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-04-23-044741.png" width="40%"></a></p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/23/Lab1-MapReduce-%E8%AE%BA%E6%96%87%E5%92%8C%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/" rel="next" title="Lab1. MapReduce 论文和实验笔记">
+                  <i class="fa fa-chevron-left"></i> Lab1. MapReduce 论文和实验笔记
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/" rel="prev" title="Lab3A. 基于 Raft 实现容错的 kvDB">
+                  Lab3A. 基于 Raft 实现容错的 kvDB <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab2A"><span class="nav-number">1.</span> <span class="nav-text">Lab2A</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实验目标"><span class="nav-number">1.1.</span> <span class="nav-text">实验目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试用例"><span class="nav-number">1.2.</span> <span class="nav-text">测试用例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些坑"><span class="nav-number">2.</span> <span class="nav-text">一些坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RPC-调用超时"><span class="nav-number">2.1.</span> <span class="nav-text">RPC 调用超时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#充分使用-sync-包来实现同步"><span class="nav-number">2.2.</span> <span class="nav-text">充分使用 sync 包来实现同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些时机"><span class="nav-number">2.3.</span> <span class="nav-text">一些时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于调试"><span class="nav-number">2.4.</span> <span class="nav-text">关于调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Leader-选举"><span class="nav-number">3.</span> <span class="nav-text">Leader 选举</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选举流程"><span class="nav-number">3.1.</span> <span class="nav-text">选举流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发起投票"><span class="nav-number">3.2.</span> <span class="nav-text">发起投票</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#响应投票"><span class="nav-number">3.3.</span> <span class="nav-text">响应投票</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#心跳通信"><span class="nav-number">4.</span> <span class="nav-text">心跳通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#心跳请求"><span class="nav-number">4.1.</span> <span class="nav-text">心跳请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#响应心跳"><span class="nav-number">4.2.</span> <span class="nav-text">响应心跳</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备19022833号-1 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

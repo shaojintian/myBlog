@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="baidu-site-verification" content="PKO0plnZfq" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="&amp;lt;p&amp;gt;总结 6.824 Lab3A Fault-Tolerant kvDB 的实验笔记。&amp;lt;&#x2F;p&amp;gt; Lab3ALab3 的目标是基于 Raft 实现容错的 key-value DB 集群：3A 处理节点容错，3B 实现日志快照。 交互流程阅读 lecture 可知，Clerk 是客户端，KVServers 即 kvDBs（状态机），每台 KVServer 即一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lab3A. 基于 Raft 实现容错的 kvDB">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="&amp;lt;p&amp;gt;总结 6.824 Lab3A Fault-Tolerant kvDB 的实验笔记。&amp;lt;&#x2F;p&amp;gt; Lab3ALab3 的目标是基于 Raft 实现容错的 key-value DB 集群：3A 处理节点容错，3B 实现日志快照。 交互流程阅读 lecture 可知，Clerk 是客户端，KVServers 即 kvDBs（状态机），每台 KVServer 即一个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-03-002335.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-03-010109.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-03-004945.png">
+<meta property="og:updated_time" content="2019-11-23T14:21:00.413Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;images.yinzige.com&#x2F;2019-06-03-002335.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Lab3A. 基于 Raft 实现容错的 kvDB | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <meta name="baidu-site-verification" content="PKO0plnZfq" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，后端开发，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lab3A. 基于 Raft 实现容错的 kvDB
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-23 22:20:00 / 修改时间：22:21:00" itemprop="dateCreated datePublished" datetime="2019-11-23T22:20:00+08:00">2019-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>&lt;p&gt;总结 6.824 Lab3A Fault-Tolerant kvDB 的实验笔记。&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab3A"><a href="#Lab3A" class="headerlink" title="Lab3A"></a>Lab3A</h2><p>Lab3 的目标是基于 Raft 实现容错的 key-value DB 集群：3A 处理节点容错，3B 实现日志快照。</p>
+<h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p>阅读 <a href="https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html" target="_blank" rel="noopener">lecture</a> 可知，Clerk 是客户端，KVServers 即 kvDBs（状态机），每台 KVServer 即一个 Raft 节点，依靠 Raft 协议保证底层的日志一致性，流程交互图：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-002335.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-002335.png" width="80%"></a></p>
+<ul>
+<li>Client 将 <code>Put</code>/<code>Append</code>/<code>Get</code> 命令发送给集群 Leader 处理，并等待调用返回。</li>
+<li>KVServer1 底层的 Raft 模块会向 follower 发起命令日志的复制。</li>
+<li>当复制副本达到大多数后，KVServer1 执行该命令，并将结果响应给 Client</li>
+</ul>
+<p>Raft 模块在 Lab2 已实现，本节将用到以下开放的接口：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发起命令的复制</span></span><br><span class="line"><span class="comment">// idx 是命令复制成功后，其在各节点日志中的索引</span></span><br><span class="line"><span class="comment">// isLeader 表明当前节点是否为 leader</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">Start</span><span class="params">(command <span class="keyword">interface</span>{})</span> <span class="params">(idx <span class="keyword">int</span>, term <span class="keyword">int</span>, isLeader <span class="keyword">bool</span>)</span></span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="线性一致性"><a href="#线性一致性" class="headerlink" title="线性一致性"></a>线性一致性</h3><p>linearizability 可理解为 CAP 理论中的 C(Consistency)，意为：</p>
+<blockquote>
+<p>A call must observe the effects of all calls that have completed before the call starts</p>
+</blockquote>
+<p>如下 4 个 Client 分别在不同时间向 KV 集群发起 4 个命令，蓝线是集群处理命令的时间点。如下 Get 命令的执行结果严格按时间受 Put 命令的影响，即系统满足线性一致性：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-010109.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-010109.png" width="70%"></a></p>
+<p>参考：<a href="https://www.anishathalye.com/2017/06/04/testing-distributed-systems-for-linearizability/" target="_blank" rel="noopener">anishathalye.com</a></p>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestBasic3A</strong>：正常情况下，保证单个 Client 命令能执行成功，保证 5 台 KVServer 日志一致。</li>
+<li><strong>TestUnreliable3A</strong>：处理 RPC 调用超时，重试请求。</li>
+<li><strong>TestOnePartition3A</strong>：处理多台 Client 和多台 Server 都发生网络分区的情况。</li>
+<li><strong>TestPersistPartitionUnreliableLinearizable3A</strong>：在节点失效、网络不可靠的环境中保证线性一致性。</li>
+</ul>
+<p>测试均通过：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-004945.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-004945.png" width="60%"></a></p>
+<h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><p>Client 需记录已知的 leader 位置，下次直接向该节点发起请求。Client 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Clerk <span class="keyword">struct</span> {</span><br><span class="line">    servers []*labrpc.ClientEnd <span class="comment">// kv servers / raft peers</span></span><br><span class="line">    leader  <span class="keyword">int</span>                 <span class="comment">// latest known leader</span></span><br><span class="line">    cid     <span class="keyword">int64</span>               <span class="comment">// client id</span></span><br><span class="line">    seq     <span class="keyword">int32</span>               <span class="comment">// latest request seq num</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>clientid 在初始化时调用 <code>nrand()</code> 随机生成即可，生产系统中可用 <code>ip:port</code> 来唯一标识。</p>
+<h3 id="检测重复请求"><a href="#检测重复请求" class="headerlink" title="检测重复请求"></a>检测重复请求</h3><p>Client 向 KVServer 发起 RPC 调用，当调用超时或被告知节点不是 Leader 后，需换个及诶点重试请求。因此，KVServer 要避免二次执行命令，或因网络延迟使执行过期命令。<br>参考论文第八节：为检测重复请求，可在每次请求中加入唯一 id，并随请求自增，再重试时使用同一 id，Server 只需<strong>对每个 Client 记录最大的请求 id</strong>，即可排除过期或重复请求。Request 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> PutAppendArgs <span class="keyword">struct</span> {</span><br><span class="line">    Cid   <span class="keyword">int64</span> <span class="comment">// client id</span></span><br><span class="line">    Seq   <span class="keyword">int32</span> <span class="comment">// request sequential number</span></span><br><span class="line">    Key   <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">    Op    <span class="keyword">string</span> <span class="comment">// Put/Append</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="发起请求"><a href="#发起请求" class="headerlink" title="发起请求"></a>发起请求</h3><p>对于 Get 请求本身是幂等的，无需加 id 标识。对于 Put/Append 操作则需唯一标识：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(ck *Clerk)</span> <span class="title">PutAppend</span><span class="params">(key <span class="keyword">string</span>, value <span class="keyword">string</span>, op <span class="keyword">string</span>)</span></span> {</span><br><span class="line">    curSeq := atomic.AddInt32(&amp;ck.seq, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        args := PutAppendArgs{</span><br><span class="line">            Cid:   ck.cid,</span><br><span class="line">            Seq:   curSeq,</span><br><span class="line">            Key:   key,</span><br><span class="line">            Value: value,</span><br><span class="line">            Op:    op,</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">var</span> reply PutAppendReply</span><br><span class="line">        ok := ck.servers[ck.leader].Call(<span class="string">"KVServer.PutAppend"</span>, &amp;args, &amp;reply)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> !ok || reply.WrongLeader { <span class="comment">// RPC call timeout, or ck.leader isn't current leader</span></span><br><span class="line">            ck.changeLeader()</span><br><span class="line">            <span class="keyword">continue</span> <span class="comment">// retry and re-use current sequential number</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="KVServer"><a href="#KVServer" class="headerlink" title="KVServer"></a>KVServer</h2><p>数据库的 key, value 都是 <code>string</code> 类型，可直接使用 <code>map[string]string</code> 存储，为避免并发读写还需加锁保护。KVServer 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> KVServer <span class="keyword">struct</span> {</span><br><span class="line">    mu      sync.Mutex</span><br><span class="line">    me      <span class="keyword">int</span></span><br><span class="line">    rf      *raft.Raft</span><br><span class="line">    applyCh <span class="keyword">chan</span> raft.ApplyMsg</span><br><span class="line"></span><br><span class="line">    maxraftstate <span class="keyword">int</span>               <span class="comment">// snapshot if log grows this big</span></span><br><span class="line">    db           <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="comment">// kvDB</span></span><br><span class="line">    cid2seq      <span class="keyword">map</span>[<span class="keyword">int64</span>]<span class="keyword">int32</span>   <span class="comment">// client id to max request sequential number</span></span><br><span class="line">    agreeChs     <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">chan</span> Op   <span class="comment">// command index to op channel</span></span><br><span class="line">    killCh       <span class="keyword">chan</span> <span class="keyword">struct</span>{}     <span class="comment">// kill KVServer</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>Raft 复制的日志需记录具体的某次请求：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Op <span class="keyword">struct</span> {</span><br><span class="line">    Cid   <span class="keyword">int64</span>  <span class="comment">// client id</span></span><br><span class="line">    Seq   <span class="keyword">int32</span>  <span class="comment">// request sequence number</span></span><br><span class="line">    Cmd   <span class="keyword">string</span> <span class="comment">// command type, Put/Append/Get</span></span><br><span class="line">    Key   <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>由于日志可能被新 leader 覆盖，所以当 KVServer 发现统一索引上，自己发出的 Op 和 Raft 返回的 Op 不一致，就说明同步过程中，我已不再是 leader 且日志已被覆盖：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isSameOp</span><span class="params">(a, b Op)</span> <span class="title">bool</span></span> {</span><br><span class="line">    <span class="keyword">return</span> a.Cid == b.Cid &amp;&amp; a.Seq == b.Seq &amp;&amp; a.Cmd == b.Cmd &amp;&amp; a.Key == b.Key &amp;&amp; a.Value == b.Value</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="异步复制"><a href="#异步复制" class="headerlink" title="异步复制"></a>异步复制</h3><p>根据 <a href="https://thesquareplanet.com/blog/students-guide-to-raft/#applications-on-top-of-raft" target="_blank" rel="noopener">Guide</a> 提示，KVServer 调用 <code>Start(command)</code> 发起同步后，需<strong>异步等待</strong> Raft 模块从 <code>applyCh</code> 通知已复制成功的日志 <code>index</code>，再响应 index 对应的请求。在初始化时在后台开启 goroutine 监听：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// wait agreement from Raft</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            op := msg.Command.(Op)</span><br><span class="line">            kv.mu.Lock()</span><br><span class="line">            maxSeq, ok := kv.cid2seq[op.Cid]</span><br><span class="line">            <span class="keyword">if</span> !ok || op.Seq &gt; maxSeq { <span class="comment">// only handle new request from specific client</span></span><br><span class="line">                kv.cid2seq[op.Cid] = op.Seq</span><br><span class="line">                <span class="keyword">switch</span> op.Cmd {</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"Put"</span>:</span><br><span class="line">                    kv.db[op.Key] = op.Value</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"Append"</span>:</span><br><span class="line">                    kv.db[op.Key] += op.Value</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            kv.mu.Unlock()</span><br><span class="line"></span><br><span class="line">            kv.getAgreeCh(msg.CommandIndex) &lt;- op</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>注意：由于请求处理与 waitAgree 监听的执行顺序是不确定的，需有一个共用 agreeCh 的逻辑：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">getAgreeCh</span><span class="params">(idx <span class="keyword">int</span>)</span> <span class="title">chan</span> <span class="title">Op</span></span> {</span><br><span class="line">    kv.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> kv.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    ch, ok := kv.agreeChs[idx]</span><br><span class="line">    <span class="keyword">if</span> !ok {</span><br><span class="line">        ch = <span class="built_in">make</span>(<span class="keyword">chan</span> Op, <span class="number">1</span>) <span class="comment">// never block this</span></span><br><span class="line">        kv.agreeChs[idx] = ch</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> ch</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="处理-Get-请求"><a href="#处理-Get-请求" class="headerlink" title="处理 Get 请求"></a>处理 Get 请求</h3><p>为避免过期 leader 返回旧数据，在处理 Get 请求前，leader 必须与集群中大多数节点完成通信，确保自己的数据是最新的。论文第八节建议让 leader 主动发起一次心跳并统计正常节点数量，不过根据 lecture 提示：</p>
+<blockquote>
+<p>A kvserver should not complete a <code>Get()</code> RPC if it is not part of a majority (so that it does not serve stale data). A simple solution is to enter every <code>Get()</code> (as well as each <code>Put()</code> and <code>Append()</code>) in the Raft log</p>
+</blockquote>
+<p>可让 Get 请求像 Put/Append 请求一样走日志同步流程，就不必再修改 Lab2 的 Raft 实现。请求处理流程：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">Get</span><span class="params">(args *GetArgs, reply *GetReply)</span></span> {</span><br><span class="line">    cmd := Op{Cmd: <span class="string">"Get"</span>, Key: args.Key,}</span><br><span class="line">    idx, _, isLeader := kv.rf.Start(cmd)</span><br><span class="line">    <span class="keyword">if</span> !isLeader {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ch := kv.getAgreeCh(idx)</span><br><span class="line">    <span class="keyword">var</span> op Op</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> op = &lt;-ch: <span class="comment">// current leader can communicate with majority</span></span><br><span class="line">        <span class="built_in">close</span>(ch)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(<span class="number">500</span> * time.Millisecond): <span class="comment">// agreement may be failed, treat as timeout and client will retry</span></span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// if old leader has in net partition, may it's log may be overwrited, then reply value will be different</span></span><br><span class="line">    <span class="keyword">if</span> !isSameOp(cmd, op) {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    kv.mu.Lock()</span><br><span class="line">    reply.Value = kv.db[args.Key] <span class="comment">// if key not exist, just return "" or return ErrNoKey</span></span><br><span class="line">    kv.mu.Unlock()</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="处理-Put-Append-请求"><a href="#处理-Put-Append-请求" class="headerlink" title="处理 Put/Append 请求"></a>处理 Put/Append 请求</h3><p>由于 Put/Append 请求会更新 <code>kv.db</code> 数据，要避免重复请求被二次执行，即 waitAgree 中的 Seq 对比逻辑。</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">PutAppend</span><span class="params">(args *PutAppendArgs, reply *PutAppendReply)</span></span> {</span><br><span class="line">    cmd := Op{</span><br><span class="line">        Cid:   args.Cid,</span><br><span class="line">        Seq:   args.Seq,</span><br><span class="line">        Cmd:   args.Op,</span><br><span class="line">        Key:   args.Key,</span><br><span class="line">        Value: args.Value,</span><br><span class="line">    }</span><br><span class="line">    idx, _, isLeader := kv.rf.Start(cmd)</span><br><span class="line">    <span class="keyword">if</span> !isLeader {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ch := kv.getAgreeCh(idx) <span class="comment">// sequence of PutAppend() and &lt;-applyCh are uncertain</span></span><br><span class="line">    <span class="keyword">var</span> op Op</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> op = &lt;-ch:</span><br><span class="line">        <span class="built_in">close</span>(ch)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(<span class="number">500</span> * time.Millisecond):</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> !isSameOp(cmd, op) {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>至此完成了基于 Raft 实现容错 kvDB 的搭建。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Lab2 中实现的 Raft 库开放了 <code>applyCh</code> 和 <code>Start(command)</code> 接口，本节在此基础上实现异步监听、超时重试、请求去重等机制，使上层的 kvDB 能在主机崩溃重启，请求发生延迟、失序、丢失甚至隔离的网络环境下，依旧能对客户端保证数据的线性一致性。</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/23/Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0/" rel="next" title="Lab2A. Raft 选主实现">
+                  <i class="fa fa-chevron-left"></i> Lab2A. Raft 选主实现
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/23/Lab3B-Raft-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BF%AB%E7%85%A7/" rel="prev" title="Lab3B. Raft 日志压缩及数据快照">
+                  Lab3B. Raft 日志压缩及数据快照 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab3A"><span class="nav-number">1.</span> <span class="nav-text">Lab3A</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交互流程"><span class="nav-number">1.1.</span> <span class="nav-text">交互流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性一致性"><span class="nav-number">1.2.</span> <span class="nav-text">线性一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试用例"><span class="nav-number">1.3.</span> <span class="nav-text">测试用例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Client"><span class="nav-number">2.</span> <span class="nav-text">Client</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检测重复请求"><span class="nav-number">2.1.</span> <span class="nav-text">检测重复请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发起请求"><span class="nav-number">2.2.</span> <span class="nav-text">发起请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KVServer"><span class="nav-number">3.</span> <span class="nav-text">KVServer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#异步复制"><span class="nav-number">3.1.</span> <span class="nav-text">异步复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理-Get-请求"><span class="nav-number">3.2.</span> <span class="nav-text">处理 Get 请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理-Put-Append-请求"><span class="nav-number">3.3.</span> <span class="nav-text">处理 Put/Append 请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备19022833号-1 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
