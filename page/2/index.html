@@ -221,7 +221,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/cold-start%20problem%EF%BC%88%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -235,7 +235,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/cold-start%20problem%EF%BC%88%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%EF%BC%89/" class="post-title-link" itemprop="url">cold-start problem（推荐系统）</a>
+            <a href="/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式3-策略模式</a>
         </h1>
 
         <div class="post-meta">
@@ -244,8 +244,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-11-19 09:30:51" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:51+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-22 20:12:02 / 修改时间：20:15:40" itemprop="dateCreated datePublished" datetime="2019-11-22T20:12:02+08:00">2019-11-22</time>
             </span>
 
           
@@ -259,29 +260,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>冷启动是在群体推荐系统中一个常见的问题。</p>
-<p>简单来说它是推荐过程中没有足够的信息来对用户进行可靠的推荐。</p>
-<p><strong>推荐系统</strong>是基于用户和产品的信息和交互，对信息进行过滤并达到向用户精准推荐其感兴趣的某些信息的一种技术。<br>推荐系统基于用户的个人资料，人—物交互过程及其条目的特征等进行推荐。</p>
-<ul>
-<li><p>如果是基于内容推荐（content—based ），则需要对items建模，分析其特征，将用户以往感兴趣的items与其他所有items比较，找到相似特征的items，来进行推荐。<br>如下图：<br><img src="https://img-blog.csdn.net/2018102314272251?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-</li>
-<li><p>如果是基于协同过滤（collaborative filtering),则不考虑items的特征，只注重人—items的交互过程，利用行为的相似性来进行推荐。<br><img src="https://img-blog.csdn.net/20181023143412925?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-</li>
-</ul>
-<p>由于上述都需要借鉴历史数据，所以会造成冷启动问题。</p>
-<p>==冷启动的三个类型：==</p>
-<ol>
-<li><p>新平台：<br> 例如一个新的网上购物网站，只有各种商品网站，但无用户，无商品购买记录，信息缺乏。</p>
-</li>
-<li><p>新条目：<br>   例如新商品，新书目等等<br>   由于新条目缺乏访问的次数，会导致推荐不准确，并缺少推荐过程，进而继续影响新条目的访问，造成复反馈。这样会导致一个流行偏见问题（popularity bias）</p>
-</li>
-<li><p>新用户：<br> 缺乏访问或购买记录，缺乏人—物交互过程</p>
-</li>
-</ol>
-<p>==改善策略==<br>1:采用混合推荐器：<br>    常用的是组合协同过滤和内容推荐两种推荐器，协同过滤用于处理cold items，内容推荐用于处理warm items</p>
-<p>2用户精准完善注册信息<br>     寻求一个方法让用户注册时就提供足够的信息来支持推荐系统，但是不至于过于繁琐，防止用户注册时抛弃这个产品。</p>
-<p>3：特征映射<br>    用机器学习的方法将内容推荐和协同过滤整合到一个模型</p>
-<p>4：多特征加权<br>    在特征映射的基础下，无论是items的特征还是用户的特征，都根据用户对items对其重要性的感知进行加权</p>
+          <p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
+<p>应用场景：</p>
+<p>优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。<br><br>劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。<br></p>
+<p><img src="/images/strategy.png" alt="upload successful"></p>
 
       
     </div>
@@ -301,7 +283,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91RGB%E5%B8%B8%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F27-%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -315,7 +297,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91RGB%E5%B8%B8%E7%94%A8/" class="post-title-link" itemprop="url">【转载】RGB常用</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F27-%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式27-解释器模式</a>
         </h1>
 
         <div class="post-meta">
@@ -325,7 +307,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:50" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:50+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:57:22" itemprop="dateCreated datePublished" datetime="2019-11-21T01:57:22+08:00">2019-11-21</time>
             </span>
 
           
@@ -339,14 +321,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
-                                            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-f76675cdea.css">
-                        <div class="htmledit_views">
-                <p><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_7a2ffd5c0100zii4.html" rel="nofollow" target="_blank">常用颜色的RGB值</a><strong>作者：</strong><a href="http://blog.sina.com.cn/u/2049965404" rel="nofollow" target="_blank">chase</a></p>
-
-
-
-
+          
       
     </div>
 
@@ -365,7 +340,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%9F%BA%E4%BA%8EOpenCV%E7%9A%84%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB_%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F26-%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -379,7 +354,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E5%9F%BA%E4%BA%8EOpenCV%E7%9A%84%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB_%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B/" class="post-title-link" itemprop="url">基于OpenCV的人脸识别_人脸检测</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F26-%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式26-享元模式</a>
         </h1>
 
         <div class="post-meta">
@@ -389,7 +364,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:49" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:49+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:56:45" itemprop="dateCreated datePublished" datetime="2019-11-21T01:56:45+08:00">2019-11-21</time>
             </span>
 
           
@@ -403,23 +378,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>1：==简介==<br><strong>人脸检测</strong>指从现实环境中识别出人脸的<strong>位置</strong>；</p>
-<p><strong>人脸识别</strong>基于<strong>人脸检测</strong>，下一步才能辨析人脸的属性，从而判别这个人是谁。</p>
-<p>2：==图像基本概念==<br><strong>帧</strong>：一张图<br><strong>帧数</strong>：一秒钟刷新多少张图片<br><strong>分辨率</strong>：单位大小所能承载的像素，能力为正相关<br><strong>图像插值</strong>：提高图像分辨率<br>OpenCV提供了5种插值方法：<strong>最邻近</strong>、<strong>双线性</strong>、基于像素区域、立方插值及兰索斯插值（加粗的两个时间复杂度低）<br>介绍：引用 <a href="https://blog.csdn.net/spw_1201/article/details/53544014" target="_blank" rel="noopener">图像插值</a><br><strong>灰度图</strong>：<strong>二值图像</strong>的拓展，在黑白两种颜色中取得灰色，黑，白，灰<br><strong>人脸ROI</strong><br>3：==应用==<br>用<strong>Haar级联</strong>来做人脸检测。 Haar级联通过在多个尺度上从图像中提取大量的简单特征来实现。<br>简单特征主要指边、线、矩形特征等，这些特征都非常易于计算，<br>然后通过创建一系列简单的分类器来做训练。<br>这里需要一个cascade_files去训练model。</p>
-<p>先去我的Github取到需要的模型训练的.xml文件即cascade_file，下载到python脚本的文件夹下，下面的人脸检测及五官检测代码就直接可以运行了。<br>如果想看其他方面的人脸识别源码，请移步我的Github。</p>
-<p>==<a href="https://github.com/shaojintian/Face_detection/tree/master==" target="_blank" rel="noopener">https://github.com/shaojintian/Face_detection/tree/master==</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#face_nose&amp;eyes_detection.py</span></span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment">#import Haar files to train face detection model </span></span><br><span class="line"></span><br><span class="line">face_cascade=cv2.CascadeClassifier(<span class="string">'cascade_files/haarcascade_frontalface_alt.xml'</span>)</span><br><span class="line">nose_cascade=cv2.CascadeClassifier(<span class="string">'cascade_files/haarcascade_mcs_nose.xml'</span>)</span><br><span class="line">eye_cascade=cv2.CascadeClassifier(<span class="string">'cascade_files/haarcascade_eye.xml'</span>)</span><br><span class="line"><span class="comment"># check whether haar is done </span></span><br><span class="line"><span class="keyword">if</span> face_cascade.empty():</span><br><span class="line">	<span class="keyword">raise</span> IOError(<span class="string">'Unable to load haarcascade_frontalface_alt'</span>)</span><br><span class="line"><span class="keyword">if</span> nose_cascade.empty():</span><br><span class="line">	<span class="keyword">raise</span> IOError(<span class="string">'Unable to load haarcascade_mcs_nose.xml'</span>)</span><br><span class="line"><span class="keyword">if</span> eye_cascade.empty():</span><br><span class="line">	<span class="keyword">raise</span> IOError(<span class="string">'Unable to load haarcascade_eye.xml'</span>)	</span><br><span class="line"><span class="comment"># initialize camera from PC camera </span></span><br><span class="line"><span class="comment"># parameter 0 -&gt; PC camera</span></span><br><span class="line">camera=cv2.VideoCapture(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#image clearity scale </span></span><br><span class="line"></span><br><span class="line">scale_image=<span class="number">0.6</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># infinite circle to capture images </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">	<span class="comment">#capture current image</span></span><br><span class="line">	<span class="comment">#frame-&gt;帧</span></span><br><span class="line">	ret,frame=camera.read()</span><br><span class="line">	<span class="comment">#每次都调整一下帧的大小</span></span><br><span class="line">	<span class="comment">#interpolation（插值法）：最近邻时间复杂度最小</span></span><br><span class="line">	frame=cv2.resize(frame,<span class="literal">None</span>,fx=scale_image,fy=scale_image,</span><br><span class="line">					interpolation=cv2.INTER_NEAREST)</span><br><span class="line">	<span class="comment">#将图像转为灰度图</span></span><br><span class="line">	gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line">	<span class="comment">#灰度图像上运行人脸检测器-&gt;人脸矩形框</span></span><br><span class="line">		<span class="comment">#1.5-&gt;乘积系数，5-&gt;最小紧邻数量	</span></span><br><span class="line">	face_rects=face_cascade.detectMultiScale(gray,<span class="number">1.5</span>,<span class="number">5</span>)</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">#画出人脸矩形框 </span></span><br><span class="line">	<span class="comment">#nose ,eyes in face_rects</span></span><br><span class="line">	<span class="comment">#3-&gt;框的厚度</span></span><br><span class="line">	<span class="keyword">for</span>(x,y,w,h) <span class="keyword">in</span> face_rects:</span><br><span class="line">		cv2.rectangle(frame,(x,y),(x+w,y+h),(<span class="number">255</span>,<span class="number">128</span>,<span class="number">0</span>),<span class="number">2</span>)</span><br><span class="line">		<span class="comment">#require face ROI information</span></span><br><span class="line">		roi_gray=gray[y:y+h,x:x+w]</span><br><span class="line">		roi_color=frame[y:y+h,x:x+w]</span><br><span class="line"></span><br><span class="line">		eye_rects=eye_cascade.detectMultiScale(roi_gray)</span><br><span class="line">		nose_rects=nose_cascade.detectMultiScale(roi_gray)</span><br><span class="line">		<span class="comment">#draw eye  and nose rectangle</span></span><br><span class="line">		<span class="keyword">for</span>(x_eye,y_eye,w_eye,h_eye) <span class="keyword">in</span> eye_rects:</span><br><span class="line">			center=(int(x_eye+<span class="number">0.5</span>*w_eye),int(y_eye+<span class="number">0.5</span>*h_eye))</span><br><span class="line">			radius=int(<span class="number">0.3</span>*(w_eye+h_eye))</span><br><span class="line">			color=(<span class="number">0</span>,<span class="number">255</span>,<span class="number">255</span>)</span><br><span class="line">			thickness=<span class="number">2</span></span><br><span class="line">			cv2.circle(roi_color,center,radius,color,thickness)</span><br><span class="line">		<span class="keyword">for</span>(x_nose,y_nose,w_nose,h_nose) <span class="keyword">in</span> nose_rects:</span><br><span class="line">			center=(int(x_nose+<span class="number">0.5</span>*w_nose),int(y_nose+<span class="number">0.5</span>*h_nose))</span><br><span class="line">			radius=int(<span class="number">0.3</span>*(w_nose+h_nose))</span><br><span class="line">			color=(<span class="number">0</span>,<span class="number">255</span>,<span class="number">255</span>)</span><br><span class="line">			thickness=<span class="number">2</span></span><br><span class="line">			cv2.circle(roi_color,center,radius,color,thickness)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">#显示帧</span></span><br><span class="line">	cv2.namedWindow(<span class="string">'SJT_cam'</span>,<span class="number">0</span>)<span class="comment">#0-&gt;auto size window</span></span><br><span class="line">	cv2.imshow(<span class="string">'SJT_cam'</span>,frame)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 通过esc退出</span></span><br><span class="line">	<span class="comment">#wait 1ms to check key response</span></span><br><span class="line">	key=cv2.waitKey(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">if</span> key==<span class="number">27</span>:<span class="comment">#27==ESC</span></span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line"><span class="comment">#释放摄像头</span></span><br><span class="line">camera.release()</span><br><span class="line"><span class="comment">#关闭所有窗体</span></span><br><span class="line">cv2.destroyAllWindows()</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-<p><img src="https://img-blog.csdnimg.cn/20181128022321986.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
+          
       
     </div>
 
@@ -438,7 +397,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/deep%20learning_%E6%B7%B1%E5%BA%A6%E5%89%8D%E9%A6%88%E7%BD%91%E7%BB%9C/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F25-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -452,7 +411,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/deep%20learning_%E6%B7%B1%E5%BA%A6%E5%89%8D%E9%A6%88%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">deep learning_深度前馈网络</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F25-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式25-中介者模式</a>
         </h1>
 
         <div class="post-meta">
@@ -462,7 +421,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:48" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:48+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:56:36" itemprop="dateCreated datePublished" datetime="2019-11-21T01:56:36+08:00">2019-11-21</time>
             </span>
 
           
@@ -476,16 +435,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>深度学习是监督学习的一个分支。<br>简单来说就是当线性模型无法解决问题时，引入的一种方法。<br>它综合多种线行模型来从x空间——&gt;学习到h空间，h空间为可用线行模型解决的空间</p>
-<p>深度前馈网络（deep feedforward network)又叫多层感知机，是深度学习最典型的模型。</p>
-<p> 引入一个例子：<br> XOR异或问题</p>
-<p><img src="https://img-blog.csdnimg.cn/20181108013846134.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>当 x1不变时，x2递增，输出结果的趋势相反，即出现了递增，也出现了递减。这不是线性变化的，所以无法用线性模型来分类。<br><img src="https://img-blog.csdnimg.cn/20181108020035803.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>上图两个输出空间，黑；绿<br>引出神经网络核心思想，多线性模型一起工作。<br><img src="https://img-blog.csdnimg.cn/20181108021624255.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h2 id="接下来使用python制作自己的神经网络："><a href="#接下来使用python制作自己的神经网络：" class="headerlink" title="接下来使用python制作自己的神经网络："></a>接下来使用python制作自己的神经网络：</h2><p>构架：<br>1：初始化函数：设定输入层节点，隐藏层节点和输出层节点（上图所示）<br>2：训练：学习给定训练集样本后，优化权重<br>3：查询：给定输入，从输出节点得到输出结果</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line"><span class="comment"># scipy.special for the sigmoid function expit()</span></span><br><span class="line"><span class="keyword">import</span> scipy.special</span><br><span class="line"></span><br><span class="line"><span class="comment"># neural network class definition</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">neuralNetwork</span>:</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># initialise the neural network</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, inputnodes, hiddennodes, outputnodes, learningrate)</span>:</span></span><br><span class="line">        <span class="comment"># set number of nodes in each input, hidden, output layer</span></span><br><span class="line">        self.inodes = inputnodes</span><br><span class="line">        self.hnodes = hiddennodes</span><br><span class="line">        self.onodes = outputnodes</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># link weight matrices, wih and who</span></span><br><span class="line">        <span class="comment"># weights inside the arrays are w_i_j, where link is from node i to node j in the next layer</span></span><br><span class="line">        <span class="comment"># w11 w21</span></span><br><span class="line">        <span class="comment"># w12 w22 etc </span></span><br><span class="line">        self.wih = numpy.random.normal(<span class="number">0.0</span>, pow(self.inodes, <span class="number">-0.5</span>), (self.hnodes, self.inodes))</span><br><span class="line">        self.who = numpy.random.normal(<span class="number">0.0</span>, pow(self.hnodes, <span class="number">-0.5</span>), (self.onodes, self.hnodes))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># learning rate</span></span><br><span class="line">        self.lr = learningrate</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># activation function is the sigmoid function</span></span><br><span class="line">        self.activation_function = <span class="keyword">lambda</span> x: scipy.special.expit(x)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># train the neural network</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, inputs_list, targets_list)</span>:</span></span><br><span class="line">        <span class="comment"># convert inputs list to 2d array</span></span><br><span class="line">        inputs = numpy.array(inputs_list, ndmin=<span class="number">2</span>).T</span><br><span class="line">        targets = numpy.array(targets_list, ndmin=<span class="number">2</span>).T</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># calculate signals into hidden layer</span></span><br><span class="line">        hidden_inputs = numpy.dot(self.wih, inputs)</span><br><span class="line">        <span class="comment"># calculate the signals emerging from hidden layer</span></span><br><span class="line">        hidden_outputs = self.activation_function(hidden_inputs)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># calculate signals into final output layer</span></span><br><span class="line">        final_inputs = numpy.dot(self.who, hidden_outputs)</span><br><span class="line">        <span class="comment"># calculate the signals emerging from final output layer</span></span><br><span class="line">        final_outputs = self.activation_function(final_inputs)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># output layer error is the (target - actual)</span></span><br><span class="line">        output_errors = targets - final_outputs</span><br><span class="line">        <span class="comment"># hidden layer error is the output_errors, split by weights, recombined at hidden nodes</span></span><br><span class="line">        hidden_errors = numpy.dot(self.who.T, output_errors) </span><br><span class="line">        </span><br><span class="line">        <span class="comment"># update the weights for the links between the hidden and output layers</span></span><br><span class="line">        self.who += self.lr * numpy.dot((output_errors * final_outputs * (<span class="number">1.0</span> - final_outputs)), numpy.transpose(hidden_outputs))</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># update the weights for the links between the input and hidden layers</span></span><br><span class="line">        self.wih += self.lr * numpy.dot((hidden_errors * hidden_outputs * (<span class="number">1.0</span> - hidden_outputs)), numpy.transpose(inputs))</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># query the neural network</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query</span><span class="params">(self, inputs_list)</span>:</span></span><br><span class="line">        <span class="comment"># convert inputs list to 2d array</span></span><br><span class="line">        inputs = numpy.array(inputs_list, ndmin=<span class="number">2</span>).T</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># calculate signals into hidden layer</span></span><br><span class="line">        hidden_inputs = numpy.dot(self.wih, inputs)</span><br><span class="line">        <span class="comment"># calculate the signals emerging from hidden layer</span></span><br><span class="line">        hidden_outputs = self.activation_function(hidden_inputs)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># calculate signals into final output layer</span></span><br><span class="line">        final_inputs = numpy.dot(self.who, hidden_outputs)</span><br><span class="line">        <span class="comment"># calculate the signals emerging from final output layer</span></span><br><span class="line">        final_outputs = self.activation_function(final_inputs)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> final_outputs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ ==<span class="string">"__main__"</span>:</span><br><span class="line">    <span class="comment"># number of input, hidden and output nodes</span></span><br><span class="line">    input_nodes =<span class="number">2</span>  </span><br><span class="line">    hidden_nodes = <span class="number">5</span></span><br><span class="line">    output_nodes = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># learning rate is 0.3</span></span><br><span class="line">    learning_rate =  <span class="number">00.3</span></span><br><span class="line">    n = neuralNetwork(input_nodes,hidden_nodes,output_nodes, learning_rate)</span><br><span class="line">    print(n.query([<span class="number">1</span>,<span class="number">1</span>]))</span><br></pre></td></tr></table></figure>
-
-
-
+          
       
     </div>
 
@@ -504,7 +454,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/pytorch%20%E5%85%A5%E9%97%A8%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%92%8C%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%85%A5%E9%97%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F24-%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -518,7 +468,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/pytorch%20%E5%85%A5%E9%97%A8%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%92%8C%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">pytorch 入门之基础和线性模型入门</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F24-%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式24-职责链模式</a>
         </h1>
 
         <div class="post-meta">
@@ -528,7 +478,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:46" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:46+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:56:10" itemprop="dateCreated datePublished" datetime="2019-11-21T01:56:10+08:00">2019-11-21</time>
             </span>
 
           
@@ -542,26 +492,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="一：pytorch基础"><a href="#一：pytorch基础" class="headerlink" title="一：pytorch基础"></a><strong>一：pytorch基础</strong></h1><p>1：张量：Tensor<br>    定义为：多维度的矩阵。<br>    例如：</p>
-<pre><code>0维度：点；    一维：向量；    二维：普通矩阵
-
-有torch.FloatTensor ;  torch.DoubleTensor; torch.IntTrnsor;</code></pre><p>2:变量：Variable<br>    <img src="https://img-blog.csdnimg.cn/2018112209372062.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>3：模组 torch.nn.Module</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch <span class="keyword">as</span> t</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">net_name</span><span class="params">(nn.Module)</span>:</span><span class="comment">#模型</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__int__</span><span class="params">(self,other_arguments)</span>:</span></span><br><span class="line">		super(net_name,self).__int__()</span><br><span class="line">		self.conv1=nn.Conv2d(in_channels,out_channels,kernel_size)<span class="comment">#训练器</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self,x)</span>:</span></span><br><span class="line">		x=self.conv1(x)</span><br><span class="line">		<span class="keyword">return</span> x</span><br><span class="line"><span class="comment">#loss function</span></span><br><span class="line">criterion=nn.CrossEntropyLoss()</span><br><span class="line">loss=criterion(output,target)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="二：多形式回归"><a href="#二：多形式回归" class="headerlink" title="二：多形式回归"></a>二：多形式回归</h2><p>==<strong>1）理论简介</strong>==</p>
-<p>对于一般的线性回归模型，由于该函数拟合出来的是一条直线，所以精度欠佳，我们可以考虑多项式回归来拟            合更多的模型。所谓多项式回归，其本质也是线性回归。也就是说，我们采取的方法是，提高每个属性的次数来增加维度数。比如，请看下面这样的例子：</p>
-<p>如果我们想要拟合方程：</p>
-<p>对于输入变量和输出值，我们只需要增加其平方项、三次方项系数即可。所以，我们可以设置如下参数方程：</p>
-<p>可以看到，上述方程与线性回归方程并没有本质区别。所以我们可以采用线性回归的方式来进行多项式的拟合。下面请看代码部分。</p>
-<p>==2）代码实现==</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch <span class="keyword">as</span> t</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy </span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_features</span><span class="params">(x)</span>:</span></span><br><span class="line">	</span><br><span class="line">	x=x.unsqueeze(<span class="number">1</span>)<span class="comment"># n -&gt; nx1 </span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> t.cat([x ** i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">4</span>)],<span class="number">1</span>) <span class="comment">#nx1--&gt;nx3</span></span><br><span class="line">	<span class="comment">#columns --&gt; x,x^2,x^3</span></span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">#true fx</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> x.mm(W_target)+b_target[<span class="number">0</span>] <span class="comment"># nx1 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#建立（x,f(X)) pairs</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_batch</span><span class="params">(batch_size=<span class="number">32</span>)</span>:</span></span><br><span class="line">	random=t.randn(batch_size)</span><br><span class="line">	<span class="comment"># 32个 == 1x32</span></span><br><span class="line">	random=t.from_numpy(numpy.sort(random))</span><br><span class="line">	x=make_features(random) <span class="comment">#x--&gt;nx3</span></span><br><span class="line"></span><br><span class="line">	y=f(x) <span class="comment">#nx1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> Variable(x),Variable(y)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Define model</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">multi_linear_model</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">		super(multi_linear_model,self).__init__()</span><br><span class="line">		self.poly=nn.Linear(<span class="number">3</span>,<span class="number">1</span>) <span class="comment">#x 三维 y一维</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self,x)</span>:</span></span><br><span class="line">		out=self.poly(x)</span><br><span class="line">		<span class="keyword">return</span> out <span class="comment">#nx1 prediction y</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">	<span class="comment"># true parameter</span></span><br><span class="line">	W_target=t.FloatTensor([<span class="number">0.5</span>,<span class="number">3</span>,<span class="number">2.4</span>]).unsqueeze(<span class="number">1</span>)<span class="comment"># 3-&gt;3x1</span></span><br><span class="line">	b_target=t.FloatTensor([<span class="number">0.9</span>])</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	model =multi_linear_model()</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 定义loss function --&gt; mean square error</span></span><br><span class="line">	criterion=nn.MSELoss()</span><br><span class="line"></span><br><span class="line">	<span class="comment">#优化器-&gt;随机梯度下降 learning rate 0.001</span></span><br><span class="line">	optimizer=t.optim.SGD(model.parameters(),lr=<span class="number">1e-3</span>)</span><br><span class="line"></span><br><span class="line">	epoch=<span class="number">0</span> <span class="comment"># 记录从开始到达模型最优化的训练次数</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">		<span class="comment"># Get true data</span></span><br><span class="line">		batch_x,batch_y=get_batch()</span><br><span class="line">		<span class="comment">#out -&gt; predict y</span></span><br><span class="line">		output=model.forward(batch_x)</span><br><span class="line"></span><br><span class="line">		<span class="comment">#require loss</span></span><br><span class="line">		loss=criterion(output,batch_y)</span><br><span class="line"></span><br><span class="line">		print_loss=loss.item()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="comment">#清0 梯度 </span></span><br><span class="line">		optimizer.zero_grad()</span><br><span class="line">	</span><br><span class="line">		<span class="comment">#反向传播-&gt;计算此时的x的梯度</span></span><br><span class="line">		loss.backward()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="comment">#梯度下降</span></span><br><span class="line">		optimizer.step()</span><br><span class="line">		epoch+=<span class="number">1</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">#达到最优</span></span><br><span class="line">		<span class="keyword">if</span> print_loss&lt;<span class="number">1e-3</span>:<span class="comment">#0.001</span></span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	predict = model(batch_x)</span><br><span class="line">	x = batch_x.numpy()[:, <span class="number">0</span>]</span><br><span class="line">	plt.plot(x, batch_y.numpy(), <span class="string">'rx'</span>)</span><br><span class="line"></span><br><span class="line">	predict = predict.data.numpy()</span><br><span class="line">	plt.plot(x, predict, <span class="string">'b'</span>)</span><br><span class="line">	plt.show()</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20181122093738257.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="多项式回归"></p>
-<p>结果发现拟合的很好，损失小于0.001.</p>
-
+          
       
     </div>
 
@@ -580,7 +511,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Mysql%205.x%20%E5%85%A5%E9%97%A8%20%E5%9F%BA%E4%BA%8E%E3%80%8AMysql%20%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E3%80%8B/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F23-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -594,7 +525,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Mysql%205.x%20%E5%85%A5%E9%97%A8%20%E5%9F%BA%E4%BA%8E%E3%80%8AMysql%20%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E3%80%8B/" class="post-title-link" itemprop="url">Mysql 5.x 入门 基于《Mysql 必知必会》</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F23-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式23-命令模式</a>
         </h1>
 
         <div class="post-meta">
@@ -604,7 +535,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:45" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:45+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:55:50" itemprop="dateCreated datePublished" datetime="2019-11-21T01:55:50+08:00">2019-11-21</time>
             </span>
 
           
@@ -618,19 +549,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>mysql 入门<br>虽然加黑字体在mysql命令行中大小写均可，但应该<strong>大写</strong>，这样更符合规范。</p>
-<h2 id="一：入门及检索语句"><a href="#一：入门及检索语句" class="headerlink" title="一：入门及检索语句"></a>一：入门及检索语句</h2><p>1：创建数据库  -&gt; <strong>create database</strong>  database_name;</p>
-<p>2:  加信息源 -&gt; <strong>source</strong>  文件的绝对路径;</p>
-<p>3：使用数据库 -&gt; <strong>use database</strong> database_name ;</p>
-<p>4: 展示选中库的所有表 -&gt; <strong>show tables;</strong></p>
-<p>5: 展示所有表的其中一个 -&gt; <strong>describe table_name;</strong></p>
-<p>6:选择某表中的某一列 -&gt; <strong>select</strong>  column_name  <strong>from</strong> ** table_name**</p>
-<p>7选择某表中的多列 -&gt; <strong>select</strong>  column_name1 ,  column_name2 <strong>from</strong> **<br>table_name**</p>
-<p>8:选择某表中的所有列 -&gt; <strong>select *  from</strong> table_name ;</p>
-<h2 id="二：排序检索数据"><a href="#二：排序检索数据" class="headerlink" title="二：排序检索数据"></a>二：排序检索数据</h2><p>使用子句<strong>order by</strong><br>1: 按照某一列升序排序（默认为升序）：<br>    <strong>select</strong> column_name<br>    <strong>from</strong> table_name<br>    <strong>order by</strong>column_name;</p>
-<p>2:降序排列：<br>    <strong>select</strong> column_name<br>    <strong>from</strong> table_name<br>    <strong>order by</strong> column_name <strong>DESC</strong>;</p>
-<p>3:按某一列选中最大的item：<br>    <strong>select</strong> column_name<br>    <strong>from</strong> table_name<br>    <strong>order by</strong> column_name <strong>DESC</strong><br>    <strong>LIMIT</strong> 1；//注释：mysql中也是第0个为第一个 LIMIT 1 等价于 LIMIT 0,1</p>
-
+          
       
     </div>
 
@@ -649,7 +568,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F22-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -663,7 +582,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" class="post-title-link" itemprop="url">进程和线程的区别与联系</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F22-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式22-桥接模式</a>
         </h1>
 
         <div class="post-meta">
@@ -673,7 +592,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:44" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:44+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:55:35" itemprop="dateCreated datePublished" datetime="2019-11-21T01:55:35+08:00">2019-11-21</time>
             </span>
 
           
@@ -687,33 +606,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>说进程和线程的区别</p>
-<p>在理解进程和线程概念之前首选要对并发有一定的感性认识，如果服务器同一时间内只能服务于一个客户端，其他客户端都再那里傻等的话，可见其性能的低下估计会被客户骂出翔来，因此并发编程应运而生，并发是网络编程中必须考虑的问题。实现并发的方式有多种：比如多进程、多线程、IO多路复用。</p>
-<p><strong>多进程</strong><br>进程是资源（CPU、内存等）分配的基本单位，它是程序执行时的一个实例。程序运行时系统就会创建一个进程，并为它分配资源，然后把该进程放入进程就绪队列，进程调度器选中它的时候就会为它分配CPU时间，程序开始真正运行。</p>
-<p>Linux系统函数fork()可以在父进程中创建一个子进程，这样的话，在一个进程接到来自客户端新的请求时就可以复制出一个子进程让其来处理，父进程只需负责监控请求的到来，然后创建子进程让其去处理，这样就能做到并发处理。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">print(<span class="string">'当前进程:%s 启动中 ....'</span> % os.getpid())</span><br><span class="line">pid = os.fork()</span><br><span class="line"><span class="keyword">if</span> pid == <span class="number">0</span>:</span><br><span class="line">    print(<span class="string">'子进程:%s,父进程是:%s'</span> % (os.getpid(), os.getppid()))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">'进程:%s 创建了子进程:%s'</span> % (os.getpid(),pid ))</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输出结果：</span><br><span class="line"></span><br><span class="line">当前进程:27223 启动中 ....</span><br><span class="line">进程:27223 创建了子进程:27224</span><br><span class="line">子进程:27224,父进程是:27223</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p>fork函数会返回两次结果，因为操作系统会把当前进程的数据复制一遍，然后程序就分两个进程继续运行后面的代码，fork分别在父进程和子进程中返回，在子进程返回的值pid永远是0，在父进程返回的是子进程的进程id。</p>
-<p><strong>多线程</strong><br>线程是程序执行时的最小单位，它是进程的一个执行流，是CPU调度和分派的基本单位，一个进程可以由很多个线程组成，线程间共享进程的所有资源，每个线程有自己的堆栈和局部变量。线程由CPU独立调度执行，在多CPU环境下就允许多个线程同时运行。同样多线程也可以实现并发操作，每个请求分配一个线程来处理。</p>
-<blockquote>
-<p>线程和进程各自有什么区别和优劣呢？</p>
-</blockquote>
-<ul>
-<li>进程是资源分配的最小单位，线程是程序执行的最小单位。</li>
-<li>进程有自己的独立地址空间，每启动一个进程，系统就会为它分配地址空间，建立数据表来维护代码段、堆栈段和数据段，这种操作非常昂贵。而线程是共享进程中的数据的，使用相同的地址空间，因此CPU切换一个线程的花费远比进程要小很多，同时创建一个线程的开销也比进程要小很多。</li>
-</ul>
-<ul>
-<li><p>线程之间的通信更方便，同一进程下的线程共享全局变量、静态变量等数据，而进程之间的通信需要以通信的方式（IPC)进行。不过如何处理好同步与互斥是编写多线程程序的难点。</p>
-</li>
-<li><p>但是多进程程序更健壮，多线程程序只要有一个线程死掉，整个进程也死掉了，而一个进程死掉并不会对另外一个进程造成影响，因为进程有自己独立的地址空间。</p>
-</li>
-</ul>
-
+          
       
     </div>
 
@@ -732,7 +625,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/CSAPP%E3%80%8AComputer%20System%20A%20Programmer's%20Perspective%E3%80%8B%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F21-%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -746,7 +639,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/CSAPP%E3%80%8AComputer%20System%20A%20Programmer's%20Perspective%E3%80%8B%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">CSAPP《Computer System A Programmer's Perspective》笔记</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F21-%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式21-迭代器模式</a>
         </h1>
 
         <div class="post-meta">
@@ -756,7 +649,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:43" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:43+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:54:52" itemprop="dateCreated datePublished" datetime="2019-11-21T01:54:52+08:00">2019-11-21</time>
             </span>
 
           
@@ -770,8 +663,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>EAIPlus 技术缔造未来</p>
-
+          
       
     </div>
 
@@ -790,7 +682,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E5%8F%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F20-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -804,7 +696,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E5%8F%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">图像处理及计算机视觉入门</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F20-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式20-组合模式</a>
         </h1>
 
         <div class="post-meta">
@@ -814,7 +706,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:42" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:42+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:54:23" itemprop="dateCreated datePublished" datetime="2019-11-21T01:54:23+08:00">2019-11-21</time>
             </span>
 
           
@@ -828,213 +720,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>
-
-<p>因诸多学术理论及概念的原始论文都发表在英文期刊上，因此在尽可能将专业术语翻译成中文的情况下，都会在括号内保留其原始的英文短语以供参考。</p>
-
-<hr>
-
-
-
-<h2 id="目录"><a name="t1"></a>目录</h2>
-
-<ul>
-<li>简介</li>
-<li>方向</li>
-<li>热点</li>
-</ul>
-
-<hr>
-
-
-
-<h2 id="简介"><a name="t2"></a>简介</h2>
-
-<p>计算机视觉（Computer Vision）又称为机器视觉（Machine Vision），顾名思义是一门“教”会计算机如何去“看”世界的学科。在机器学习大热的前景之下，计算机视觉与自然语言处理（Natural Language Process， NLP）及语音识别（Speech Recognition）并列为机器学习方向的三大热点方向。而计算机视觉也由诸如梯度方向直方图（Histogram of Gradient， HOG）以及尺度不变特征变换（Scale-Invariant Feature Transform， SIFT）等传统的手办特征（Hand-Crafted Feature）与浅层模型的组合逐渐转向了以卷积神经网络（Convolutional Neural Network， CNN）为代表的深度学习模型。</p>
-
-<div class="table-box"><table>
-<thead>
-<tr>
-  <th>方式</th>
-  <th align="center">特征提取</th>
-  <th align="right">决策模型</th>
-</tr>
-</thead>
-<tbody><tr>
-  <td>传统方式</td>
-  <td align="center">SIFT，HOG， Raw Pixel …</td>
-  <td align="right">SVM， Random Forest， Linear Regression …</td>
-</tr>
-<tr>
-  <td>深度学习</td>
-  <td align="center">CNN …</td>
-  <td align="right">CNN …</td>
-</tr>
-</tbody></table></div>
-
-
-<p><em>svm（Support Vector Machine） ： 支持向量机</em> <br>
-<em>Random Forest ： 随机森林</em> <br>
-<em>Linear Regression ： 线性回归</em> <br>
-<em>Raw Pixel ： 原始像素</em></p>
-
-<p>传统的计算机视觉对待问题的解决方案基本上都是遵循： 图像预处理 → 提取特征 → 建立模型（分类器/回归器） → 输出 的流程。 而在深度学习中，大多问题都会采用端到端（End to End）的解决思路，即从输入到输出一气呵成。本次计算机视觉的入门系列，将会从浅层学习入手，由浅入深过渡到深度学习方面。</p>
-
-
-
-<h2 id="方向"><a name="t3"></a>方向</h2>
-
-<p>计算机视觉本身又包括了诸多不同的研究方向，比较基础和热门的几个方向主要包括了：物体识别和检测（Object Detection），语义分割（Semantic Segmentation），运动和跟踪（Motion &amp; Tracking），三维重建（3D Reconstruction），视觉问答（Visual Question &amp; Answering），动作识别（Action Recognition）等。</p>
-
-
-
-<h3 id="物体识别和检测"><a name="t4"></a>物体识别和检测</h3>
-
-<p>物体检测一直是计算机视觉中非常基础且重要的一个研究方向，大多数新的算法或深度学习网络结构都首先在物体检测中得以应用如VGG-net， GoogLeNet， ResNet等等，每年在imagenet数据集上面都不断有新的算法涌现，一次次突破历史，创下新的记录，而这些新的算法或网络结构很快就会成为这一年的热点，并被改进应用到计算机视觉中的其它应用中去，可以说很多灌水的文章也应运而生。</p>
-
-<p>物体识别和检测，顾名思义，即给定一张输入图片，算法能够自动找出图片中的常见物体，并将其所属类别及位置输出出来。当然也就衍生出了诸如人脸检测（Face Detection），车辆检测（Viechle Detection）等细分类的检测算法。 <br>
-<img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAi-AAAAJDhhMGQwNGY2LTRiNzYtNDcwOC04YTU1LWI4ZmQ1NDVkOTZhZg.jpg" alt="这里写图片描述" title=""></p>
-
-
-
-<h4 id="近年代表论文">近年代表论文</h4>
-
-<ol>
-<li>He, Kaiming, et al. “<a href="https://arxiv.org/abs/1512.03385" rel="nofollow" target="_blank">Deep residual learning for image recognition</a>.” Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2016.</li>
-<li>Liu, Wei, et al. “<a href="https://arxiv.org/abs/1512.02325" rel="nofollow" target="_blank">SSD: Single shot multibox detector</a>.” European Conference on Computer Vision. Springer International Publishing, 2016.</li>
-<li>Szegedy, Christian, et al. “<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf" rel="nofollow" target="_blank">Going deeper with convolutions</a>.” Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.</li>
-<li>Ren, Shaoqing, et al. “<a href="http://papers.nips.cc/paper/5638-analysis-of-variational-bayesian-latent-dirichlet-allocation-weaker-sparsity-than-map.pdf" rel="nofollow" target="_blank">Faster r-cnn: Towards real-time object detection with region proposal networks</a>.” Advances in neural information processing systems. 2015.</li>
-<li>Simonyan, Karen, and Andrew Zisserman. “<a href="Simonyan,%20Karen,%20and%20Andrew%20Zisserman.%20%22Very%20deep%20convolutional%20networks%20for%20large-scale%20image%20recognition.%22%20arXiv%20preprint%20arXiv:1409.1556%20%282014%29." rel="nofollow" target="_blank">Very deep convolutional networks for large-scale image recognition</a>.” arXiv preprint arXiv:1409.1556 (2014).</li>
-<li>Krizhevsky, Alex, Ilya Sutskever, and Geoffrey E. Hinton. “<a href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf" rel="nofollow" target="_blank">Imagenet classification with deep convolutional neural networks</a>.” Advances in neural information processing systems. 2012.</li>
-</ol>
-
-
-
-<h4 id="数据集">数据集</h4>
-
-<ol>
-<li><a href="http://image-net.org/" rel="nofollow" target="_blank">IMAGENET</a></li>
-<li><a href="http://host.robots.ox.ac.uk/pascal/VOC/" rel="nofollow" target="_blank">PASCAL VOC</a></li>
-<li><a href="http://mscoco.org/" rel="nofollow" target="_blank">MS COCO</a></li>
-<li><a href="http://www.vision.caltech.edu/Image_Datasets/Caltech256/" rel="nofollow" target="_blank">Caltech</a></li>
-</ol>
-
-
-
-<h3 id="语义分割"><a name="t5"></a>语义分割</h3>
-
-<p>语义分割是近年来非常热门的方向，简单来说，它其实可以看做一种特殊的分类——将输入图像的每一个像素点进行归类，用一张图就可以很清晰地描述出来。 <br>
-<img src="https://researchweb.iiit.ac.in/~dineshreddy.n/zerotype/assets/sms.png" alt="这里写图片描述" title=""> <br>
-很清楚地就可以看出，物体检测和识别通常是将物体在原图像上框出，可以说是“宏观”上的物体，而语义分割是从每一个像素上进行分类，图像中的每一个像素都有属于自己的类别。</p>
-
-
-
-<h4 id="近年代表论文-1">近年代表论文</h4>
-
-<ol>
-<li>Long, Jonathan, Evan Shelhamer, and Trevor Darrell. “<a href="https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf" rel="nofollow" target="_blank">Fully convolutional networks for semantic segmentation</a>.” Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.</li>
-<li>Chen, Liang-Chieh, et al. “<a href="https://arxiv.org/pdf/1412.7062.pdf" rel="nofollow" target="_blank">Semantic image segmentation with deep convolutional nets and fully connected crfs</a>.” arXiv preprint arXiv:1412.7062 (2014).</li>
-<li>Noh, Hyeonwoo, Seunghoon Hong, and Bohyung Han. “<a href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Noh_Learning_Deconvolution_Network_ICCV_2015_paper.pdf" rel="nofollow" target="_blank">Learning deconvolution network for semantic segmentation</a>.” Proceedings of the IEEE International Conference on Computer Vision. 2015.</li>
-<li>Zheng, Shuai, et al. “<a href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Zheng_Conditional_Random_Fields_ICCV_2015_paper.pdf" rel="nofollow" target="_blank">Conditional random fields as recurrent neural networks</a>.” Proceedings of the IEEE International Conference on Computer Vision. 2015.</li>
-</ol>
-
-
-
-<h4 id="数据集-1">数据集</h4>
-
-<ol>
-<li><a href="http://host.robots.ox.ac.uk/pascal/VOC/" rel="nofollow" target="_blank">PASCAL VOC</a></li>
-<li><a href="http://mscoco.org/" rel="nofollow" target="_blank">MS COCO</a></li>
-</ol>
-
-
-
-<h3 id="运动和跟踪"><a name="t6"></a>运动和跟踪</h3>
-
-<p>跟踪也属于计算机视觉领域内的基础问题之一，在近年来也得到了非常充足的发展，方法也由过去的非深度算法跨越向了深度学习算法，精度也越来越高，不过实时的深度学习跟踪算法精度一直难以提升，而精度非常高的跟踪算法的速度又十分之慢，因此在实际应用中也很难派上用场。 <br>
-那么什么是跟踪呢？就目前而言，学术界对待跟踪的评判标准主要是在一段给定的视频中，在第一帧给出被跟踪物体的位置及尺度大小，在后续的视频当中，跟踪算法需要从视频中去寻找到被跟踪物体的位置，并适应各类光照变换，运动模糊以及表观的变化等。但实际上跟踪是一个不适定问题（ill posed problem），比如跟踪一辆车，如果从车的尾部开始跟踪，若是车辆在行进过程中表观发生了非常大的变化，如旋转了180度变成了侧面，那么现有的跟踪算法很大的可能性是跟踪不到的，因为它们的模型大多基于第一帧的学习，虽然在随后的跟踪过程中也会更新，但受限于训练样本过少，所以难以得到一个良好的跟踪模型，在被跟踪物体的表观发生巨大变化时，就难以适应了。所以，就目前而言，跟踪算不上是计算机视觉内特别热门的一个研究方向，很多算法都改进自检测或识别算法。 <br>
-<img src="http://www.cvl.isy.liu.se/research/objrec/visualtracking/colvistrack/CN_Tracking_CVPR14_fig.jpg" alt="这里写图片描述" title=""></p>
-
-
-
-<h4 id="近年代表论文-2">近年代表论文</h4>
-
-<ol>
-<li>Nam, Hyeonseob, and Bohyung Han. “<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Nam_Learning_Multi-Domain_Convolutional_CVPR_2016_paper.pdf" rel="nofollow" target="_blank">Learning multi-domain convolutional neural networks for visual tracking</a>.” Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2016.</li>
-<li>Held, David, Sebastian Thrun, and Silvio Savarese. “<a href="https://arxiv.org/pdf/1604.01802.pdf" rel="nofollow" target="_blank">Learning to track at 100 fps with deep regression networks</a>.” European Conference on Computer Vision. Springer International Publishing, 2016.</li>
-<li>Henriques, João F., et al. “<a href="https://arxiv.org/pdf/1404.7584.pdf" rel="nofollow" target="_blank">High-speed tracking with kernelized correlation filters</a>.” IEEE Transactions on Pattern Analysis and Machine Intelligence 37.3 (2015): 583-596.</li>
-<li>Ma, Chao, et al. “<a href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Ma_Hierarchical_Convolutional_Features_ICCV_2015_paper.pdf" rel="nofollow" target="_blank">Hierarchical convolutional features for visual tracking</a>.” Proceedings of the IEEE International Conference on Computer Vision. 2015.</li>
-<li>Bertinetto, Luca, et al. “<a href="https://arxiv.org/pdf/1606.09549.pdf" rel="nofollow" target="_blank">Fully-convolutional siamese networks for object tracking</a>.” European Conference on Computer Vision. Springer International Publishing, 2016.</li>
-<li>Danelljan, Martin, et al. “<a href="https://arxiv.org/pdf/1608.03773.pdf" rel="nofollow" target="_blank">Beyond correlation filters: Learning continuous convolution operators for visual tracking</a>.” European Conference on Computer Vision. Springer International Publishing, 2016.</li>
-<li>Li, Hanxi, Yi Li, and Fatih Porikli. “<a href="https://arxiv.org/pdf/1503.00072.pdf" rel="nofollow" target="_blank">Deeptrack: Learning discriminative feature representations online for robust visual tracking</a>.” IEEE Transactions on Image Processing 25.4 (2016): 1834-1848.</li>
-</ol>
-
-
-
-<h4 id="数据集-2">数据集</h4>
-
-<ol>
-<li><a href="http://cvlab.hanyang.ac.kr/tracker_benchmark/benchmark_v10.html" rel="nofollow" target="_blank">OTB(Object Tracking Benchmark)</a></li>
-<li><a href="http://www.votchallenge.net/" rel="nofollow" target="_blank">VOT(Visual Object Tracking)</a></li>
-</ol>
-
-
-
-<h3 id="视觉问答"><a name="t7"></a>视觉问答</h3>
-
-<p>视觉问答也简称VQA（Visual Question Answering），是近年来非常热门的一个方向，其研究目的旨在根据输入图像，由用户进行提问，而算法自动根据提问内容进行回答。除了问答以外，还有一种算法被称为标题生成算法（Caption Generation），即计算机根据图像自动生成一段描述该图像的文本，而不进行问答。对于这类跨越两种数据形态（如文本和图像）的算法，有时候也可以称之为多模态，或跨模态问题。 <br>
-<img src="https://avisingh599.github.io/images/vqa/sample_results.jpg" alt="这里写图片描述" title=""></p>
-
-
-
-<h4 id="近年代表论文-3">近年代表论文</h4>
-
-<ol>
-<li>Xiong, Caiming, Stephen Merity, and Richard Socher. “<a href="http://www.jmlr.org/proceedings/papers/v48/xiong16.pdf" rel="nofollow" target="_blank">Dynamic memory networks for visual and textual question answering</a>.” arXiv 1603 (2016).</li>
-<li>Wu, Qi, et al. “<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Wu_Ask_Me_Anything_CVPR_2016_paper.pdf" rel="nofollow" target="_blank">Ask me anything: Free-form visual question answering based on knowledge from external sources</a>.” Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2016.</li>
-<li>Zhu, Yuke, et al. “<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhu_Visual7W_Grounded_Question_CVPR_2016_paper.pdf" rel="nofollow" target="_blank">Visual7w: Grounded question answering in images</a>.” Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2016.</li>
-</ol>
-
-
-
-<h4 id="数据集-3">数据集</h4>
-
-<ol>
-<li><a href="http://visualqa.org/" rel="nofollow" target="_blank">VQA</a></li>
-</ol>
-
-
-
-<h2 id="热点"><a name="t8"></a>热点</h2>
-
-<p>随着深度学习的大举侵入，现在几乎所有人工智能方向的研究论文几乎都被深度学习占领了，传统方法已经很难见到了。有时候在深度网络上改进一个非常小的地方，就可以发一篇还不错的论文。并且，随着深度学习的发展，很多领域的现有数据集内的记录都在不断刷新，已经向人类记录步步紧逼，有的方面甚至已经超越了人类的识别能力。那么，下一步的研究热点到底会在什么方向呢？就我个人的一些观点如下：</p>
-
-<ol>
-<li>多模态研究： 目前的许多领域还是仅仅停留在单一的模态上，如单一分物体检测，物体识别等，而众所周知的是现实世界就是有多模态数据构成的，语音，图像，文字等等。 VQA 在近年来兴起的趋势可见，未来几年内，多模态的研究方向还是比较有前景的，如语音和图像结合，图像和文字结合，文字和语音结合等等。</li>
-<li>数据生成： 现在机器学习领域的许多数据还是由现实世界拍摄的视频及图片经过人工标注后用作于训练或测试数据的，标注人员的职业素养和经验，以及多人标注下的规则统一难度在一定程度上也直接影响了模型的最终结果。而利用深度模型自动生成数据已经成为了一个新的研究热点方向，如何使用算法来自动生成数据相信在未来一段时间内都是不错的研究热点。</li>
-<li><p>无监督学习：人脑的在学习过程中有许多时间都是无监督（Un-supervised Learning）的，而现有的算法无论是检测也好识别也好，在训练上都是依赖于人工标注的有监督（Supervised Learning）。如何将机器学习从有监督学习转变向无监督学习，应该是一个比较有挑战性的研究方向，当然这里的无监督学习当然不是指简单的如聚类算法（Clustering）这样的无监督算法。而LeCun也曾说： 如果将人工智能比喻作一块蛋糕的话，有监督学习只能算是蛋糕上的糖霜，而增强学习（Reinforce Learning）则是蛋糕上的樱桃，无监督学习才是真正蛋糕的本体。</p>
-
-<p>最后，想要把握领域内最新的研究成果和动态，还需要多看论文，多写代码。 <br>
-计算机视觉领域内的三大顶级会议有：</p>
-
-<p><strong><em><a href="http://cvpr2017.thecvf.com/" rel="nofollow" target="_blank">Conference on Computer Vision and Pattern Recognition （CVPR）</a></em></strong> <br>
-<strong><em><a href="http://iccv2017.thecvf.com/" rel="nofollow" target="_blank">International Conference on Computer Vision （ICCV）</a></em></strong> <br>
-<strong><em><a href="http://www.eccv2016.org/" rel="nofollow" target="_blank">European Conference on Computer Vision （ECCV）</a></em></strong></p>
-
-<p>较好的会议有以下几个：</p>
-
-<p><strong><em><a href="http://www.wacv16.org/" rel="nofollow" target="_blank">The British Machine Vision Conference （BMVC）</a></em></strong> <br>
-<strong><em><a href="http://2017.ieeeicip.org/" rel="nofollow" target="_blank">International Conference on Image Processing （ICIP）</a></em></strong> <br>
-<strong><em><a href="http://www.wacv16.org/" rel="nofollow" target="_blank">Winter Conference on Applications of Computer Vision （WACV）</a></em></strong> <br>
-<strong><em><a href="http://www.accv2016.org/" rel="nofollow" target="_blank">Asian Conference on Computer Vision (ACCV)</a></em></strong></p></li>
-</ol>
-
-<p>当然，毕竟文章的发表需要历经审稿和出版的阶段，因此当会议论文集出版的时候很可能已经过了小半年了，如果想要了解最新的研究，建议每天都上<a href="https://arxiv.org/list/cs.CV/recent" rel="nofollow" target="_blank">ArXiv</a>的cv板块看看，ArXiv上都是预出版的文章，并不一定最终会被各类会议和期刊接收，所以质量也就良莠不齐，对于没有分辨能力的入门新手而言，还是建议从顶会和顶级期刊上的经典论文入手。</p>
-
-
-
-
-
+          
       
     </div>
 
@@ -1053,7 +739,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/2,3,4sum,Combination%20sum/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F19-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1067,7 +753,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/2,3,4sum,Combination%20sum/" class="post-title-link" itemprop="url">2,3,4sum,Combination sum</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F19-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式19-备忘录模式</a>
         </h1>
 
         <div class="post-meta">
@@ -1077,7 +763,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:40" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:40+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:54:10" itemprop="dateCreated datePublished" datetime="2019-11-21T01:54:10+08:00">2019-11-21</time>
             </span>
 
           
@@ -1091,11 +777,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>3，4sum用双指针</p>
-<p>CombinationSum 用递归</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> algorithms_4th;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.awt.List;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 3sum,4sum,combination sum</span></span><br><span class="line"><span class="comment"> * 双指针法：先排序，sum&lt;target:p1++;sum&gt;target:p2--;移动范围减小--&gt;为了p1,p2碰头</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ksum</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] arr = &#123; <span class="number">1</span>,  <span class="number">5</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">4</span> ,<span class="number">3</span>&#125;;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] sum2(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">		<span class="keyword">int</span> index1, index2;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (map.containsKey(target - arr[i])) &#123;</span><br><span class="line">				index1 = map.get(target - arr[i]) + <span class="number">1</span>;</span><br><span class="line">				index2 = i + <span class="number">1</span>;</span><br><span class="line">				res[<span class="number">0</span>] = Math.min(index1, index2);</span><br><span class="line">				res[<span class="number">1</span>] = Math.max(index1, index2);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// initialize map</span></span><br><span class="line">			map.put(arr[i], i);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; sum3(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">		ArrayList&lt;Integer&gt; list = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">int</span> p1, p2, sum;</span><br><span class="line"></span><br><span class="line">		Arrays.sort(arr);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">			p1 = i + <span class="number">1</span>;</span><br><span class="line">			p2 = arr.length - <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">if</span> (i == <span class="number">0</span> || arr[i] &gt; arr[i - <span class="number">1</span>]) &#123;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">while</span> (p2 &gt; p1) &#123;</span><br><span class="line">					sum = arr[i] + arr[p1] + arr[p2];</span><br><span class="line"></span><br><span class="line">					<span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">						list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">						list.add(arr[i]);</span><br><span class="line">						list.add(arr[p1]);</span><br><span class="line">						list.add(arr[p2]);</span><br><span class="line">						</span><br><span class="line">						res.add(list);</span><br><span class="line">						p1++;</span><br><span class="line">						p2--;</span><br><span class="line">						<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p1] == arr[p1 - <span class="number">1</span>])</span><br><span class="line">							p1++;</span><br><span class="line">						<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p2] == arr[p2 + <span class="number">1</span>])</span><br><span class="line">							p2--;</span><br><span class="line">					&#125; <span class="keyword">else</span> <span class="keyword">if</span>(sum&gt;target)&#123;</span><br><span class="line">						p2--;</span><br><span class="line">					&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">						p1++;</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; sum4(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">		ArrayList&lt;Integer&gt; list = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">int</span> p1, p2, sum;</span><br><span class="line"></span><br><span class="line">		Arrays.sort(arr);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = i+<span class="number">1</span>; j &lt; arr.length; j++) &#123;</span><br><span class="line">				p1 = j + <span class="number">1</span>;</span><br><span class="line">				p2 = arr.length - <span class="number">1</span>;</span><br><span class="line">				<span class="keyword">if</span> (j == <span class="number">0</span> || arr[j] &gt; arr[j - <span class="number">1</span>]) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">while</span> (p2 &gt; p1) &#123;</span><br><span class="line">						sum = arr[i] +arr[j]+ arr[p1] + arr[p2];</span><br><span class="line"></span><br><span class="line">						<span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">							list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">							list.add(arr[i]);</span><br><span class="line">							list.add(arr[j]);</span><br><span class="line">							list.add(arr[p1]);</span><br><span class="line">							list.add(arr[p2]);</span><br><span class="line">							</span><br><span class="line">							res.add(list);</span><br><span class="line">							p1++;</span><br><span class="line">							p2--;</span><br><span class="line">							<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p1] == arr[p1 - <span class="number">1</span>])</span><br><span class="line">								p1++;</span><br><span class="line">							<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p2] == arr[p2 + <span class="number">1</span>])</span><br><span class="line">								p2--;</span><br><span class="line">						&#125; <span class="keyword">else</span> <span class="keyword">if</span>(sum&gt;target)&#123;</span><br><span class="line">							p2--;</span><br><span class="line">						&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">							p1++;</span><br><span class="line">						&#125;</span><br><span class="line"></span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; combinationSum(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">		ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">		<span class="keyword">int</span>[] candidates=arr;</span><br><span class="line">		Arrays.sort(candidates);</span><br><span class="line">		recursive_sum(<span class="number">0</span>,list,target,res,candidates);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">recursive_sum</span><span class="params">(<span class="keyword">int</span> i,ArrayList&lt;Integer&gt; sub_list,<span class="keyword">int</span> target,</span></span></span><br><span class="line"><span class="function"><span class="params">									ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res, <span class="keyword">int</span>[]candidates)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(target==<span class="number">0</span>) &#123;</span><br><span class="line">			res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(sub_list));</span><br><span class="line">			<span class="keyword">return</span> ;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &lt; candidates.length; j++) &#123;               </span><br><span class="line">			<span class="keyword">if</span> (candidates[j]&lt;=target) &#123;</span><br><span class="line">				sub_list.add(candidates[j]);</span><br><span class="line">				</span><br><span class="line">				</span><br><span class="line">				recursive_sum(j, sub_list, target-candidates[j], res,candidates );            </span><br><span class="line">				sub_list.remove(sub_list.size()-<span class="number">1</span>);</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="comment">// int[] res=sum2(10);</span></span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res3 = sum3(<span class="number">7</span>);</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res4 = sum4(<span class="number">10</span>);</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; combination_sum=combinationSum(<span class="number">4</span>);</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"sum3:"</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res3.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">				System.out.print(res3.get(i).get(j) + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"sum4:"</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res4.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">4</span>; j++) &#123;</span><br><span class="line">				System.out.print(res4.get(i).get(j) + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"Combination_sum:"</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; combination_sum.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; combination_sum.get(i).size(); j++) &#123;</span><br><span class="line">				System.out.print(combination_sum.get(i).get(j) + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          
       
     </div>
 
@@ -1114,7 +796,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1158,12 +840,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">

@@ -221,7 +221,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%205%E6%9C%80%E5%A4%A7%E5%9B%9E%E6%96%87%E5%AD%97%E4%B8%B2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F8-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -235,7 +235,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Leetcode%205%E6%9C%80%E5%A4%A7%E5%9B%9E%E6%96%87%E5%AD%97%E4%B8%B2/" class="post-title-link" itemprop="url">Leetcode 5最大回文字串</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F8-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式8-代理模式</a>
         </h1>
 
         <div class="post-meta">
@@ -245,7 +245,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:27" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:27+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:50:42" itemprop="dateCreated datePublished" datetime="2019-11-21T01:50:42+08:00">2019-11-21</time>
             </span>
 
           
@@ -259,11 +259,319 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://img-blog.csdnimg.cn/20190404032343593.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">longestPalindrome</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=s.size();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(s.size() &lt;<span class="number">2</span> ) <span class="keyword">return</span> s;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> left=<span class="number">0</span>,right=<span class="number">0</span>,max_length=<span class="number">1</span>,start=<span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>; i &lt; n;)</span><br><span class="line">        &#123;</span><br><span class="line">          left = i,right =i;</span><br><span class="line">            </span><br><span class="line">          <span class="keyword">while</span>(right&lt;n<span class="number">-1</span> &amp;&amp; s[right]==s[right+<span class="number">1</span>]) </span><br><span class="line">              ++right;</span><br><span class="line">        </span><br><span class="line">          i=right+<span class="number">1</span>;</span><br><span class="line">         </span><br><span class="line">            </span><br><span class="line">          <span class="comment">//从中心扩展</span></span><br><span class="line">          <span class="keyword">while</span>(right &lt;n<span class="number">-1</span> &amp;&amp; left &gt; <span class="number">0</span> &amp;&amp; s[left<span class="number">-1</span>]==s[right+<span class="number">1</span>])</span><br><span class="line">          &#123;</span><br><span class="line">              --left;</span><br><span class="line">              ++right;</span><br><span class="line">             </span><br><span class="line">          &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(max_length &lt; right - left +<span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                max_length = right - left + <span class="number">1</span>;</span><br><span class="line">                start = left;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> s.substr(start,max_length);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+          
+      
+    </div>
 
-<p><img src="https://img-blog.csdnimg.cn/20190404032254882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>此为中心扩展法，自里向外搜索回文子串</p>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F7-%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F7-%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式7-装饰模式</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-21 01:50:21" itemprop="dateCreated datePublished" datetime="2019-11-21T01:50:21+08:00">2019-11-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F6-%E4%BE%9D%E8%B5%96%E5%80%92%E8%BD%AC%E5%8E%9F%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F6-%E4%BE%9D%E8%B5%96%E5%80%92%E8%BD%AC%E5%8E%9F%E5%88%99/" class="post-title-link" itemprop="url">设计模式6-依赖倒转原则</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-21 01:50:04" itemprop="dateCreated datePublished" datetime="2019-11-21T01:50:04+08:00">2019-11-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F5-%E5%BC%80%E6%94%BE-%E5%B0%81%E9%97%AD%E5%8E%9F%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F5-%E5%BC%80%E6%94%BE-%E5%B0%81%E9%97%AD%E5%8E%9F%E5%88%99/" class="post-title-link" itemprop="url">设计模式5-开放-封闭原则</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-21 01:42:29" itemprop="dateCreated datePublished" datetime="2019-11-21T01:42:29+08:00">2019-11-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F4-%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F4-%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/" class="post-title-link" itemprop="url">设计模式4-单一职责原则</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-21 01:42:12" itemprop="dateCreated datePublished" datetime="2019-11-21T01:42:12+08:00">2019-11-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式2-简单工厂模式</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-21 01:39:00" itemprop="dateCreated datePublished" datetime="2019-11-21T01:39:00+08:00">2019-11-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-22 03:38:02" itemprop="dateModified" datetime="2019-11-22T03:38:02+08:00">2019-11-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/design-pattern/" itemprop="url" rel="index">
+                    <span itemprop="name">design pattern</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、简单工厂模式</p>
+<p>简单工厂模式是属于创建型模式，又叫做静态工厂方法(static Factory Method)模式，简单工厂模式是由一个工厂对象决定创建出来哪一种产品类的实例.</p>
+<p>简单工厂模式的实质是由一个工厂类根据传入的参数，动态决定应该创建哪一类产品类(这些产品类继承自一个父类或接口)的实例。打个比方</p>
+<p>假设有一个工厂，他能生产出A、B两种产品。当客户需要产品的时候一定要告诉共产是哪种产品，是A还是B。当新增加一种新产品的时候，那么就要去修改工厂的类。　</p>
+<p>简单工厂模式的核心是，对于一个父类的多个继承子类，工厂对象的工厂函数根据用户输入，自动new出一个子类对象并返回其父类的指针，这样利用父类的指针执行父类的虚函数，就可以动态绑定子类的重写函数，从而实现多态。</p>
+<p>对于一个只拥有加减乘除运算的简单计算器，我们设计一个Operation的父类，并构造加减乘除四个类继承父类重写运算函数GetResult。然后定义工厂类中的工厂函数，其根据用户的输入new出相应的对象实例并返回其父类的指针。</p>
+<p><img src="/images/fac.sim.png" alt="upload successful"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> factory.simple;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Operation <span class="title">createOperate</span><span class="params">(String operate)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Operation ope ;</span><br><span class="line">        <span class="keyword">switch</span> (operate) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">"+"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationAdd();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"-"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationSub();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"*"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationMul();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"/"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationDiv();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"illegal operator"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ope;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/factory/simple" target="_blank" rel="noopener">代码详见此链接</a></p>
 
       
     </div>
@@ -283,7 +591,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/macOS%20%E8%BF%9C%E7%A8%8BSSH%E8%BF%9E%E6%8E%A5%20%20Linux/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -297,7 +605,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/macOS%20%E8%BF%9C%E7%A8%8BSSH%E8%BF%9E%E6%8E%A5%20%20Linux/" class="post-title-link" itemprop="url">macOS 远程SSH连接  Linux</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式1-单例模式</a>
         </h1>
 
         <div class="post-meta">
@@ -307,7 +615,71 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:26" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:26+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:39:00" itemprop="dateCreated datePublished" datetime="2019-11-21T01:39:00+08:00">2019-11-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-22 03:38:21" itemprop="dateModified" datetime="2019-11-22T03:38:21+08:00">2019-11-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E7%AC%AC%E4%BA%94%E5%91%A8report/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E7%AC%AC%E4%BA%94%E5%91%A8report/" class="post-title-link" itemprop="url">第五周report</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:52" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:52+08:00">2019-11-19</time>
             </span>
 
           
@@ -321,8 +693,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>ssh 用户名@ip</p>
-<p>ssh -X 用户名@ip   是调用服务器的GUI界面</p>
+          <p>1：搭建好了pytorch，并入门<br>2：阅览并翻译论文《attentive group recommendation》<br>3：了解了论文里的cold-start problem，Neural Collaborative Filtering，Neural attention network<br>总结：<a href="https://blog.csdn.net/qq_39871498/article/details/83306531" target="_blank" rel="noopener">https://blog.csdn.net/qq_39871498/article/details/83306531</a><br>4：阅读机器学习-周志华（1-3）章节加习题。</p>
 
       
     </div>
@@ -342,7 +713,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/cold-start%20problem%EF%BC%88%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -356,7 +727,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/sklearn%20%E5%B8%B8%E7%94%A8%20%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%BF/" class="post-title-link" itemprop="url">sklearn 常用 分类器皿</a>
+            <a href="/2019/11/19/cold-start%20problem%EF%BC%88%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%EF%BC%89/" class="post-title-link" itemprop="url">cold-start problem（推荐系统）</a>
         </h1>
 
         <div class="post-meta">
@@ -366,7 +737,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:25" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:25+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-19 09:30:51" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:51+08:00">2019-11-19</time>
             </span>
 
           
@@ -380,38 +751,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="KNN-Classifier"><a href="#KNN-Classifier" class="headerlink" title="KNN Classifier"></a>KNN Classifier</h3><p>from sklearn.neighbors import KNeighborsClassifier</p>
-<p>clf = KNeighborsClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Logistic-Regression-Classifier"><a href="#Logistic-Regression-Classifier" class="headerlink" title="Logistic Regression Classifier"></a>Logistic Regression Classifier</h3><p>from sklearn.linear_model import LogisticRegression</p>
-<p>clf = LogisticRegression(penalty=’l2’)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Random-Forest-Classifier"><a href="#Random-Forest-Classifier" class="headerlink" title="Random Forest Classifier"></a>Random Forest Classifier</h3><p>from sklearn.ensemble import RandomForestClassifier</p>
-<p>clf = RandomForestClassifier(n_estimators=8)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Decision-Tree-Classifier"><a href="#Decision-Tree-Classifier" class="headerlink" title="Decision Tree Classifier"></a>Decision Tree Classifier</h3><p>from sklearn import tree</p>
-<p>clf = tree.DecisionTreeClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="GBDT-Gradient-Boosting-Decision-Tree-Classifier"><a href="#GBDT-Gradient-Boosting-Decision-Tree-Classifier" class="headerlink" title="GBDT(Gradient Boosting Decision Tree) Classifier"></a>GBDT(Gradient Boosting Decision Tree) Classifier</h3><p>from sklearn.ensemble import GradientBoostingClassifier</p>
-<p>clf = GradientBoostingClassifier(n_estimators=200)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<p>###AdaBoost Classifier<br>from sklearn.ensemble import  AdaBoostClassifier</p>
-<p>clf = AdaBoostClassifier()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="GaussianNB"><a href="#GaussianNB" class="headerlink" title="GaussianNB"></a>GaussianNB</h3><p>from sklearn.naive_bayes import GaussianNB</p>
-<p>clf = GaussianNB()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Linear-Discriminant-Analysis"><a href="#Linear-Discriminant-Analysis" class="headerlink" title="Linear Discriminant Analysis"></a>Linear Discriminant Analysis</h3><p>from sklearn.discriminant_analysis import LinearDiscriminantAnalysis</p>
-<p>clf = LinearDiscriminantAnalysis()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Quadratic-Discriminant-Analysis"><a href="#Quadratic-Discriminant-Analysis" class="headerlink" title="Quadratic Discriminant Analysis"></a>Quadratic Discriminant Analysis</h3><p>from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis</p>
-<p>clf = QuadraticDiscriminantAnalysis()<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="SVM-Classifier"><a href="#SVM-Classifier" class="headerlink" title="SVM Classifier"></a>SVM Classifier</h3><p>from sklearn.svm import SVC</p>
-<p>clf = SVC(kernel=’rbf’, probability=True)<br>clf.fit(train_x, train_y)</p>
-<hr>
-<h3 id="Multinomial-Naive-Bayes-Classifier"><a href="#Multinomial-Naive-Bayes-Classifier" class="headerlink" title="Multinomial Naive Bayes Classifier"></a>Multinomial Naive Bayes Classifier</h3><p>from sklearn.naive_bayes import MultinomialNB</p>
-<p>clf = MultinomialNB(alpha=0.01)<br>clf.fit(train_x, train_y)</p>
+          <p>冷启动是在群体推荐系统中一个常见的问题。</p>
+<p>简单来说它是推荐过程中没有足够的信息来对用户进行可靠的推荐。</p>
+<p><strong>推荐系统</strong>是基于用户和产品的信息和交互，对信息进行过滤并达到向用户精准推荐其感兴趣的某些信息的一种技术。<br>推荐系统基于用户的个人资料，人—物交互过程及其条目的特征等进行推荐。</p>
+<ul>
+<li><p>如果是基于内容推荐（content—based ），则需要对items建模，分析其特征，将用户以往感兴趣的items与其他所有items比较，找到相似特征的items，来进行推荐。<br>如下图：<br><img src="https://img-blog.csdn.net/2018102314272251?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+</li>
+<li><p>如果是基于协同过滤（collaborative filtering),则不考虑items的特征，只注重人—items的交互过程，利用行为的相似性来进行推荐。<br><img src="https://img-blog.csdn.net/20181023143412925?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<p>由于上述都需要借鉴历史数据，所以会造成冷启动问题。</p>
+<p>==冷启动的三个类型：==</p>
+<ol>
+<li><p>新平台：<br> 例如一个新的网上购物网站，只有各种商品网站，但无用户，无商品购买记录，信息缺乏。</p>
+</li>
+<li><p>新条目：<br>   例如新商品，新书目等等<br>   由于新条目缺乏访问的次数，会导致推荐不准确，并缺少推荐过程，进而继续影响新条目的访问，造成复反馈。这样会导致一个流行偏见问题（popularity bias）</p>
+</li>
+<li><p>新用户：<br> 缺乏访问或购买记录，缺乏人—物交互过程</p>
+</li>
+</ol>
+<p>==改善策略==<br>1:采用混合推荐器：<br>    常用的是组合协同过滤和内容推荐两种推荐器，协同过滤用于处理cold items，内容推荐用于处理warm items</p>
+<p>2用户精准完善注册信息<br>     寻求一个方法让用户注册时就提供足够的信息来支持推荐系统，但是不至于过于繁琐，防止用户注册时抛弃这个产品。</p>
+<p>3：特征映射<br>    用机器学习的方法将内容推荐和协同过滤整合到一个模型</p>
+<p>4：多特征加权<br>    在特征映射的基础下，无论是items的特征还是用户的特征，都根据用户对items对其重要性的感知进行加权</p>
 
       
     </div>
@@ -431,7 +793,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%206%20Z%E5%9E%8B%E5%8F%98%E6%8D%A2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91RGB%E5%B8%B8%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -445,7 +807,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Leetcode%206%20Z%E5%9E%8B%E5%8F%98%E6%8D%A2/" class="post-title-link" itemprop="url">Leetcode 6 Z型变换</a>
+            <a href="/2019/11/19/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91RGB%E5%B8%B8%E7%94%A8/" class="post-title-link" itemprop="url">【转载】RGB常用</a>
         </h1>
 
         <div class="post-meta">
@@ -455,7 +817,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:24" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:24+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-19 09:30:50" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:50+08:00">2019-11-19</time>
             </span>
 
           
@@ -469,389 +831,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://img-blog.csdnimg.cn/20190406183836370.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">convert</span><span class="params">(<span class="built_in">string</span> s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size = s.size();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(numRows &lt;= <span class="number">1</span> )</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> gap = <span class="number">2</span>*numRows <span class="number">-2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span>  new_str = <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; numRows; i++)</span><br><span class="line">       &#123;<span class="comment">//i == row current </span></span><br><span class="line">           </span><br><span class="line">         <span class="keyword">for</span>(<span class="keyword">int</span> j=i ; j&lt; size; j+=gap)</span><br><span class="line">         &#123;</span><br><span class="line">             </span><br><span class="line">             new_str+=s[j];</span><br><span class="line">             </span><br><span class="line">             <span class="keyword">if</span>(i &gt; <span class="number">0</span> &amp;&amp; i &lt; numRows <span class="number">-1</span> )</span><br><span class="line">             &#123;</span><br><span class="line">               <span class="keyword">int</span> t = j + gap <span class="number">-2</span>*i;</span><br><span class="line">                 <span class="keyword">if</span>( t &lt; size)</span><br><span class="line">                new_str+=s[t];</span><br><span class="line">                 </span><br><span class="line">             &#125;</span><br><span class="line">             </span><br><span class="line">             </span><br><span class="line">         &#125;</span><br><span class="line">           </span><br><span class="line">       &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> new_str;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+          <div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                                            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-f76675cdea.css">
+                        <div class="htmledit_views">
+                <p><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_7a2ffd5c0100zii4.html" rel="nofollow" target="_blank">常用颜色的RGB值</a><strong>作者：</strong><a href="http://blog.sina.com.cn/u/2049965404" rel="nofollow" target="_blank">chase</a></p>
 
 
-<p><img src="https://img-blog.csdnimg.cn/20190406183821328.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190406183916423.png" alt="在这里插入图片描述"><br>黑色的位置规律为 +2n-2  用 gap 表示规律，j表示当前黑色位置<br>i表示为当前行<br>红色的位置规律为  j+ gap - 2*i </p>
-<p>两个循环：<br>外循环遍历行数，内循环遍历每一行的操作。</p>
 
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%20%207%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%20%207%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" class="post-title-link" itemprop="url">Leetcode  7整数反转</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:22" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:22+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190406200617644.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">reverse</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//only &lt; 10</span></span><br><span class="line">        <span class="keyword">if</span>(x/<span class="number">10</span> == <span class="number">0</span>) <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">bool</span> flag=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">long</span> xx=x;</span><br><span class="line">        <span class="keyword">if</span>(x&lt;<span class="number">0</span>)</span><br><span class="line">        &#123;   </span><br><span class="line">            xx*=<span class="number">-1</span>;</span><br><span class="line">            flag=<span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> ans =<span class="number">0</span> ;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(xx != <span class="number">0</span> )</span><br><span class="line">        &#123;   <span class="keyword">if</span>(ans*<span class="number">10</span>+xx%<span class="number">10</span> &gt; INT_MAX) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            ans=ans*<span class="number">10</span>+xx%<span class="number">10</span>;</span><br><span class="line">            xx=xx/<span class="number">10</span>;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!flag)</span><br><span class="line">        &#123;</span><br><span class="line">           ans=ans*(<span class="number">-1</span>); </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190406200600678.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>range int [-2^31     ,   2^31 -1]</p>
-<p>like reverse  -2^31   ——–&gt; 2^31   ,that doesn’t work  .</p>
-<p>so we need to use ==long== to store x</p>
-<p>INT_MAX  —&gt;2^31 -1</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%20%20%208%20%20atoi%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B4%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%20%20%208%20%20atoi%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B4%E6%95%B0/" class="post-title-link" itemprop="url">Leetcode   8  atoi  字符串转整数</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:21" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:21+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190406205448509.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">myAtoi</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size =str.size();</span><br><span class="line">        <span class="keyword">long</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span> ,j=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(str[i] == <span class="string">' '</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span>((str[i]&lt;<span class="string">'0'</span> || str[i] &gt; <span class="string">'9'</span>) &amp;&amp; str[i] != <span class="string">'+'</span> &amp;&amp; str[i] != <span class="string">'-'</span>  )&#123;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(str[i]==<span class="string">'-'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            flag=<span class="literal">false</span>;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(str[i]== <span class="string">'+'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(str[i]&gt;=<span class="string">'0'</span> &amp;&amp; str[i] &lt;=<span class="string">'9'</span> &amp;&amp; i &lt;size)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = str[i] - <span class="string">'0'</span>;</span><br><span class="line">            <span class="keyword">if</span>((ans*<span class="number">10</span> + tmp) &gt; INT_MAX ) &#123;</span><br><span class="line">                <span class="keyword">if</span>(flag) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">return</span> INT_MIN;</span><br><span class="line">            &#125;</span><br><span class="line">            ans=ans*<span class="number">10</span>+tmp;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!flag)</span><br><span class="line">        &#123;</span><br><span class="line">            ans*=<span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190406205436655.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2010%20%20regular-expression-matching/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%2010%20%20regular-expression-matching/" class="post-title-link" itemprop="url">Leetcode 10  regular-expression-matching</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:20" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:20+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190406211406181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatch</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sl=s.size(), pl=p.size();</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &gt; dp(sl+<span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(pl+<span class="number">1</span>, <span class="literal">false</span>));</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>]=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;=sl; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>; j&lt;=pl; j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(j&gt;<span class="number">1</span> &amp;&amp; p[j<span class="number">-1</span>]==<span class="string">'*'</span>)</span><br><span class="line">                    dp[i][j] = dp[i][j<span class="number">-2</span>] </span><br><span class="line">                    || (i&gt;<span class="number">0</span> &amp;&amp; (p[j<span class="number">-2</span>]==<span class="string">'.'</span> || s[i- <span class="number">1</span>]==p[j<span class="number">-2</span>])</span><br><span class="line">                     &amp;&amp; dp[i<span class="number">-1</span>][j]);</span><br><span class="line">                <span class="keyword">else</span> dp[i][j] = i&gt;<span class="number">0</span> </span><br><span class="line">                &amp;&amp; (s[i<span class="number">-1</span>]==p[j<span class="number">-1</span>] || p[j<span class="number">-1</span>]==<span class="string">'.'</span>) &amp;&amp; dp[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[sl][pl];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>dynamic programming :<br>time complexity : O(n^2)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2011%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%2011%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/" class="post-title-link" itemprop="url">Leetcode 11盛水最多的容器</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:19" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:19+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190407025819200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>解法一：暴力法</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; height)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> max=<span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>; i&lt; height.size()<span class="number">-1</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            </span><br><span class="line">           <span class="keyword">for</span>(<span class="keyword">int</span> j = i+<span class="number">1</span> ;j&lt;height.size();++j)</span><br><span class="line">           &#123;</span><br><span class="line">               <span class="keyword">int</span> minOfTwo=height[i]&lt;height[j] ? height[i] : height[j];</span><br><span class="line">               </span><br><span class="line">               <span class="keyword">int</span> tem=minOfTwo * (j-i);</span><br><span class="line">               <span class="keyword">if</span>(max&lt;tem) max = tem;</span><br><span class="line">               </span><br><span class="line">           &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190407032113963.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>2：解法2—-贪心</p>
-<p>双指针移动—–&gt;左右双指针，减少的距离换更长的长度</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; height)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>,i=<span class="number">0</span>,j=height.size()<span class="number">-1</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(i&lt;j)</span><br><span class="line">        &#123;   <span class="keyword">int</span> tmp = min(height[i],height[j]) * (j-i);</span><br><span class="line">            ans = max(ans,tmp);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>( height[i] &lt; height[j])</span><br><span class="line">                i++;</span><br><span class="line">            <span class="keyword">else</span> j--;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190407033652832.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2012%20int%20-_%20Rome/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%2012%20int%20-_%20Rome/" class="post-title-link" itemprop="url">Leetcode 12 int -_ Rome</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:18" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:18+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190407033756773.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">intToRoman</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">       <span class="built_in">string</span> str = <span class="string">""</span>;</span><br><span class="line">       <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; number&#123;<span class="number">1000</span>,<span class="number">900</span>,<span class="number">500</span>,<span class="number">400</span>,<span class="number">100</span>,<span class="number">90</span>,<span class="number">50</span>,<span class="number">40</span>,<span class="number">10</span>,<span class="number">9</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">1</span>&#125;;</span><br><span class="line">       <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; rome&#123;<span class="string">"M"</span>,<span class="string">"CM"</span>,<span class="string">"D"</span>,<span class="string">"CD"</span>,<span class="string">"C"</span>,<span class="string">"XC"</span>,<span class="string">"L"</span>,<span class="string">"XL"</span>,<span class="string">"X"</span>,<span class="string">"IX"</span>,<span class="string">"V"</span>,<span class="string">"IV"</span>,<span class="string">"I"</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;number.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span>(num &gt;= number[i] )&#123;</span><br><span class="line">                num-=number[i];</span><br><span class="line">                str+=rome[i];</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(num == <span class="number">0</span>)<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> str;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>1:I<br>2:II<br>3:III<br>4:IV<br>5:V<br>6:VI<br>7:VII<br>8:VIII<br>9:IX<br>10:X<br>so: 5 种 I，IV，V，IX，X<br>各种位数均如上<br>从大到小遍历，如果大于某个数，就对它进行循环递减，Rome字符串递加。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190407041927386.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode13%E7%BD%97%E9%A9%AC%E6%95%B0%E5%AD%97-_int/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode13%E7%BD%97%E9%A9%AC%E6%95%B0%E5%AD%97-_int/" class="post-title-link" itemprop="url">Leetcode13罗马数字-_int</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:16" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:16+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190407042008244.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//C++</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">romanToInt</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">        <span class="built_in">map</span>&lt;<span class="keyword">char</span>,<span class="keyword">int</span>&gt; m&#123;&#123;<span class="string">'M'</span>,<span class="number">1000</span>&#125;,&#123;<span class="string">'D'</span>,<span class="number">500</span>&#125;,&#123;<span class="string">'C'</span>,<span class="number">100</span>&#125;,&#123;<span class="string">'L'</span>,<span class="number">50</span>&#125;,&#123;<span class="string">'X'</span>,<span class="number">10</span>&#125;,&#123; <span class="string">'V'</span>,<span class="number">5</span> &#125;,&#123;<span class="string">'I'</span>,<span class="number">1</span>&#125;&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> ans =<span class="number">0</span> ,j=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(i&lt;s.size()<span class="number">-1</span> &amp;&amp; m[s[i]] &lt; m[s[i+<span class="number">1</span>]])</span><br><span class="line">            &#123;</span><br><span class="line">                ans-=m[s[i]];</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                ans+=m[s[i]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>从左往右遍历字符串，比较前后，如果小的话就先减再加<br>eg：IV  —–&gt;   4  ——&gt; -1 +5 </p>
-<p>这样就可以避免“IV”整体匹配了</p>
-<p><img src="https://img-blog.csdnimg.cn/20190407045704705.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 
       
     </div>
@@ -871,7 +857,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -915,12 +901,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">

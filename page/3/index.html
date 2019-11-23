@@ -221,7 +221,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%8F%8D%E8%BD%AC/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F18-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -235,7 +235,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%8F%8D%E8%BD%AC/" class="post-title-link" itemprop="url">单向链表反转</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F18-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式18-适配器模式</a>
         </h1>
 
         <div class="post-meta">
@@ -245,7 +245,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:39" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:39+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:53:51" itemprop="dateCreated datePublished" datetime="2019-11-21T01:53:51+08:00">2019-11-21</time>
             </span>
 
           
@@ -259,10 +259,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>非递归：<br>算法核心是：后一个节点指向前一个节点，循环实现</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> algorithms_4th;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Linked_list</span> </span>&#123;</span><br><span class="line">	Node first=<span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> v;</span><br><span class="line">		Node next=<span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="function"><span class="keyword">public</span>  <span class="title">Node</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.v=v;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">InsertNode</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (node!=<span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span>(first==<span class="keyword">null</span>) &#123;first=node;<span class="keyword">return</span>;&#125;</span><br><span class="line">			Node nodeTem=first;</span><br><span class="line">			<span class="keyword">while</span>(nodeTem.next!=<span class="keyword">null</span>) &#123;</span><br><span class="line">				nodeTem=nodeTem.next;</span><br><span class="line">			&#125;</span><br><span class="line">			nodeTem.next=node;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ReverseList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(first==<span class="keyword">null</span>)<span class="keyword">return</span>;</span><br><span class="line">		Node cur_node=first;</span><br><span class="line">		Node tem;</span><br><span class="line">		Node pre_node=<span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">while</span>(cur_node!=<span class="keyword">null</span>) &#123;</span><br><span class="line">			tem=cur_node.next;<span class="comment">//store current.next</span></span><br><span class="line">			</span><br><span class="line">			cur_node.next=pre_node;<span class="comment">//back forward</span></span><br><span class="line">			</span><br><span class="line">			pre_node=cur_node;<span class="comment">//next recycle precondition</span></span><br><span class="line">			cur_node=tem;</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		first=pre_node;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		Linked_list list= <span class="keyword">new</span> Linked_list();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			list.InsertNode(<span class="keyword">new</span> Node(i*<span class="number">2</span>));</span><br><span class="line">		&#125;</span><br><span class="line">		Node node=list.first;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.print(node.v+ <span class="string">" "</span>);</span><br><span class="line">			node=node.next;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		list.ReverseList();</span><br><span class="line">		node=list.first;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.print(node.v+ <span class="string">" "</span>);</span><br><span class="line">			node=node.next;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          
       
     </div>
 
@@ -281,7 +278,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E9%9A%8F%E7%AC%94%EF%BC%9ADeeCamp2019%E5%86%AC%E4%BB%A4%E8%90%A5%E9%9D%A2%E8%AF%95/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F17-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -295,7 +292,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E9%9A%8F%E7%AC%94%EF%BC%9ADeeCamp2019%E5%86%AC%E4%BB%A4%E8%90%A5%E9%9D%A2%E8%AF%95/" class="post-title-link" itemprop="url">随笔：DeeCamp2019冬令营面试</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F17-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式17-状态模式</a>
         </h1>
 
         <div class="post-meta">
@@ -305,7 +302,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:38" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:38+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:53:41" itemprop="dateCreated datePublished" datetime="2019-11-21T01:53:41+08:00">2019-11-21</time>
             </span>
 
           
@@ -319,8 +316,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>1：对机器人怎么看：<br>机器人实用主义：创造价值工作，优化，替代大量重复劳动力。<br>缺点：没有感情，无法创新<br>现有技术缺失，很难发展人形全能AI。没必要做全能AI<br>全能全知的AI没有必要，要充分利用人的优势：可计划，创新，社交。<br>2：一句好说为什么录用你！<br>自我驱动能力强，接受新知识能力快，并对AI，ML有浓厚的兴趣，执行力强。</p>
-
+          
       
     </div>
 
@@ -339,7 +335,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%20homework1.6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F16-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -353,7 +349,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%20homework1.6/" class="post-title-link" itemprop="url">编译原理 homework1.6</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F16-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式16-抽象工厂模式</a>
         </h1>
 
         <div class="post-meta">
@@ -363,7 +359,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:37" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:37+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:53:22" itemprop="dateCreated datePublished" datetime="2019-11-21T01:53:22+08:00">2019-11-21</time>
             </span>
 
           
@@ -377,15 +373,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>1.6.1 :w = 13, x = 11, y = 13, z = 11.</p>
-<p>1.6.2:w = 9, x = 7, y = 13, z = 11.</p>
-<p>1.6.3:    Block B1:<br>    declarations:  -&gt;   scope<br>        w                B1-B3-B4<br>        x                B1-B2-B4<br>        y                B1-B5<br>        z                B1-B2-B5</p>
-<p>Block B2:<br>    declarations:  -&gt;   scope<br>        x                B2-B3<br>        z                B2</p>
-<p>Block B3:<br>    declarations:  -&gt;   scope<br>        w                B3<br>        x                B3</p>
-<p>Block B4:<br>    declarations:  -&gt;   scope<br>        w                B4<br>        x                B4</p>
-<p>Block B5:<br>    declarations:  -&gt;   scope<br>        y                B5<br>        z                B5</p>
-<p>1.6.4:</p>
-
+          
       
     </div>
 
@@ -404,7 +392,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/JVM-Garbage%20Collection%20Mechanism/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F15-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -418,7 +406,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/JVM-Garbage%20Collection%20Mechanism/" class="post-title-link" itemprop="url">JVM-Garbage Collection Mechanism</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F15-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式15-观察者模式</a>
         </h1>
 
         <div class="post-meta">
@@ -428,7 +416,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:36" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:36+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:52:57" itemprop="dateCreated datePublished" datetime="2019-11-21T01:52:57+08:00">2019-11-21</time>
             </span>
 
           
@@ -442,8 +430,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>1</p>
-
+          
       
     </div>
 
@@ -462,7 +449,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F14-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -476,7 +463,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式之单例模式</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F14-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式14-建造者模式</a>
         </h1>
 
         <div class="post-meta">
@@ -486,7 +473,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:34" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:34+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:52:48" itemprop="dateCreated datePublished" datetime="2019-11-21T01:52:48+08:00">2019-11-21</time>
             </span>
 
           
@@ -500,11 +487,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>单例模式：<br>确保每一个类只有一个实例</p>
-<p>优点：唯一受控访问<br>缺点：难以扩展</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span>  <span class="keyword">static</span> Singleton instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">	</span><br><span class="line">	 <span class="function"><span class="keyword">private</span>  <span class="keyword">synchronized</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> instance;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          
       
     </div>
 
@@ -523,7 +506,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F13-%E5%A4%96%E8%A7%82%EF%BC%88facade%EF%BC%89%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -537,7 +520,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/" class="post-title-link" itemprop="url">Linux命令（1）常用</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F13-%E5%A4%96%E8%A7%82%EF%BC%88facade%EF%BC%89%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式13-外观（facade）模式</a>
         </h1>
 
         <div class="post-meta">
@@ -547,7 +530,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:33" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:33+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:52:30" itemprop="dateCreated datePublished" datetime="2019-11-21T01:52:30+08:00">2019-11-21</time>
             </span>
 
           
@@ -561,11 +544,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>常见系统命令<br>1：echo  打印字符串或变量<br>2：date 显示日期<br>3：reboot 重启<br>4：poweroff 关机<br>5：wget [网址]   下载网络文件<br>6：ps aux 查看进程状态<br>7：top 查看进程活动与系统负载<br>8:  pidof 查看进程PID值<br>9：kill [PID] 强制终止进程<br>10：killall [服务名] 关闭服务所有进程<br>11:  ifconfig 网络状态与网卡信息<br>12:uname -a  查看系统内核<br>13:uptime 查看系统负载</p>
-<p>工作目录切换命令：<br>1：pwd 显示当前工作目录<br>2：cd 切换目录<br>3：ls 当前目录文件信息</p>
-<p>文本编辑：<br>1：cat  [文件名]  查看小文件<br>2：more  [文件名] 查看大文件<br>3：tr  [a-z] [A-Z]    转换文本所有小写为大写<br>4：wc -l [文件名]  显示文件有多少行 ，[-c]显示字节数<br>5：stat [文件名] 显示文件当前储存信息</p>
-<p>文件目录管理命令：<br>1：touch [文件名]  创建空白文件<br>2：mkdir  [名称]  空白文件夹<br>3：cp  [源文件] [目标文件]  拷贝文件<br>4：mv  [源文件] [目标文件] 重命名或者拷贝文件，但删除源文件<br>5：rm -f  [文件]  删除文件<br>6:     file [文件]  查看文件类型<br>7:  tar -czvf [压缩包名] [文件目录] 压缩目录下文件<br>8：tar -xzvf [压缩包名] -C [目录] 解压文件到指定目录<br>9：grep [信息] [文件名]   列举出当前文件出现要检索信息的整行<br>10: find  [目录]  -name [关键词]   搜索目录下关键词所有的文件</p>
-
+          
       
     </div>
 
@@ -584,7 +563,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%201%20%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F12-%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -598,7 +577,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Leetcode%201%20%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" class="post-title-link" itemprop="url">Leetcode 1 两数之和</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F12-%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/" class="post-title-link" itemprop="url">设计模式12-迪米特法则</a>
         </h1>
 
         <div class="post-meta">
@@ -608,7 +587,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:32" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:32+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:52:09" itemprop="dateCreated datePublished" datetime="2019-11-21T01:52:09+08:00">2019-11-21</time>
             </span>
 
           
@@ -622,10 +601,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; twoSum(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        <span class="built_in">map</span>&lt;<span class="keyword">int</span> ,<span class="keyword">int</span>&gt; m;</span><br><span class="line">        <span class="comment">//(元素，位置)</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size();++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(m.count(target-nums[i]))</span><br><span class="line">            &#123;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">return</span> &#123;i , m[target - nums[i]]&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//放后面避免同一元素计算两次如【3，2】target =6</span></span><br><span class="line">            m[nums[i]]=i;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>map基于红黑树，查找为O（logn）</p>
-
+          
       
     </div>
 
@@ -644,7 +620,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%202%20%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F11-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -658,7 +634,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Leetcode%202%20%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/" class="post-title-link" itemprop="url">Leetcode 2 两数相加</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F11-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式11-模板方法模式</a>
         </h1>
 
         <div class="post-meta">
@@ -668,7 +644,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:31" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:31+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:51:54" itemprop="dateCreated datePublished" datetime="2019-11-21T01:51:54+08:00">2019-11-21</time>
             </span>
 
           
@@ -682,13 +658,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://img-blog.csdnimg.cn/20190404003529978.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">      <span class="keyword">int</span> v1 =<span class="number">0</span> , v2 = <span class="number">0</span>,sum=<span class="number">0</span>,carry=<span class="number">0</span>;  </span><br><span class="line">        </span><br><span class="line">        ListNode* ans = <span class="keyword">new</span> ListNode(<span class="number">-1</span>);</span><br><span class="line">        </span><br><span class="line">        ListNode* now =ans;</span><br><span class="line">        </span><br><span class="line">     <span class="keyword">while</span>( l1 || l2) &#123;</span><br><span class="line">         </span><br><span class="line">         v1 = l1 ? l1-&gt;val : <span class="number">0</span>;</span><br><span class="line">         v2 = l2 ? l2-&gt;val : <span class="number">0</span>;</span><br><span class="line">         </span><br><span class="line">         sum=v1+v2+carry;</span><br><span class="line">         <span class="comment">//更新 carry</span></span><br><span class="line">         carry=<span class="number">0</span>;</span><br><span class="line">         </span><br><span class="line">         <span class="keyword">if</span>(sum &gt;=<span class="number">10</span>)  </span><br><span class="line">         &#123;</span><br><span class="line">             sum-=<span class="number">10</span>;</span><br><span class="line">             carry=<span class="number">1</span>;</span><br><span class="line">             </span><br><span class="line">         &#125;</span><br><span class="line">         </span><br><span class="line">         now-&gt;next = <span class="keyword">new</span> ListNode(sum);</span><br><span class="line">         </span><br><span class="line">         now = now-&gt;next;</span><br><span class="line">         </span><br><span class="line">         <span class="keyword">if</span>(l1 != <span class="literal">NULL</span>)  l1=l1-&gt;next;</span><br><span class="line">         <span class="keyword">if</span>(l2 != <span class="literal">NULL</span>)  l2=l2-&gt;next;</span><br><span class="line">     &#125;</span><br><span class="line">        <span class="comment">//如果此时carry==1，说明还需要往前进一位</span></span><br><span class="line">        <span class="keyword">if</span>(carry) now-&gt;next = <span class="keyword">new</span> ListNode(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> ans-&gt;next;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190404003551848.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>创建一个新链表(-1-&gt;null)</p>
-<p>carry为标识位表示进制是否加1</p>
-
+          
       
     </div>
 
@@ -707,7 +677,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%203%20%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%97%E4%B8%B2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F10-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -721,7 +691,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Leetcode%203%20%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%97%E4%B8%B2/" class="post-title-link" itemprop="url">Leetcode 3 无重复字符的最长字串</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F10-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式10-原型模式</a>
         </h1>
 
         <div class="post-meta">
@@ -731,7 +701,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:30" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:30+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:51:10" itemprop="dateCreated datePublished" datetime="2019-11-21T01:51:10+08:00">2019-11-21</time>
             </span>
 
           
@@ -745,10 +715,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://img-blog.csdnimg.cn/20190404003712354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>,left=<span class="number">-1</span>;</span><br><span class="line">        <span class="comment">//（元素，位置）</span></span><br><span class="line">        <span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; m;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.size();++i)</span><br><span class="line">        &#123;	<span class="comment">//维护一个滑动窗口，【left】【窗口】，left不属于窗口，紧挨窗口最左侧</span></span><br><span class="line">            <span class="keyword">if</span>(m.count(s[i]) &amp;&amp; (m[s[i]] &gt; left))</span><br><span class="line">            &#123;	</span><br><span class="line">                left=m[s[i]];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            m[s[i]] = i;</span><br><span class="line">            </span><br><span class="line">		<span class="comment">//更新ans</span></span><br><span class="line">            ans=max(ans,i-left);</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190404012556482.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
+          
       
     </div>
 
@@ -767,7 +734,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%204%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F9-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -781,7 +748,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/11/19/Leetcode%204%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/" class="post-title-link" itemprop="url">Leetcode 4寻找两个有序数组的中位数</a>
+            <a href="/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F9-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式9-工厂方法模式</a>
         </h1>
 
         <div class="post-meta">
@@ -791,7 +758,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-11-19 09:30:28" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:28+08:00">2019-11-19</time>
+              <time title="创建时间：2019-11-21 01:51:00" itemprop="dateCreated datePublished" datetime="2019-11-21T01:51:00+08:00">2019-11-21</time>
             </span>
 
           
@@ -805,11 +772,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://img-blog.csdnimg.cn/20190404012715887.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums2)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span> &gt; ans;</span><br><span class="line">        </span><br><span class="line">        ans.insert(ans.end(),nums1.begin(),nums1.end());</span><br><span class="line">        ans.insert(ans.end(),nums2.begin(),nums2.end());</span><br><span class="line">        </span><br><span class="line">        sort(ans.begin(),ans.end());</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> size = ans.size();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">double</span> res;</span><br><span class="line">        <span class="keyword">if</span>(size %<span class="number">2</span> ==<span class="number">0</span> )</span><br><span class="line">        &#123;</span><br><span class="line">            res=(ans[size/<span class="number">2</span>]+ans[size/<span class="number">2</span><span class="number">-1</span>])/<span class="number">2.0</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            </span><br><span class="line">            res=ans[size/<span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>取了巧合而已，看一下C++sort（）源码。。。<br><img src="https://img-blog.csdnimg.cn/20190404020008240.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
+          
       
     </div>
 
@@ -828,7 +791,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -872,12 +835,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">

@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>编写一个网络应用程序轮子-gotty</title>
+    <url>/2019/11/23/%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%BD%AE%E5%AD%90-gotty/</url>
+    <content><![CDATA[<h1 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h1><p><img src="/images/gotty/steps.png" alt="upload successful"></p>
+<h1 id="数据结构设计"><a href="#数据结构设计" class="headerlink" title="数据结构设计"></a>数据结构设计</h1><p><img src="/images/gotty/data_designs.png" alt="upload successful"></p>
+]]></content>
+      <categories>
+        <category>gotty</category>
+        <category>middleware</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>设计模式28-访问者模式</title>
+    <url>/2019/11/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F28-%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>idea 普通文件夹 转换成 java module</title>
+    <url>/2019/11/23/Untitled/</url>
+    <content><![CDATA[<p>经常会遇到从GitHub上download的progect在idea里面打开是普通文件夹形式，而并不是我们想要的module形式（文件夹图标右下角有个蓝色的tag），那么如何快速转换成我们想要的module形式呢？</p>
+<p>1、右击project，选择第二项“add framework support”，然后从对话框左侧选择“Maven”，OK即可</p>
+<p>2、设置maven仓库地址：右击file，选择settings，找到maven，设置maven home directory以及后面两项。（图片大小超过限制。。我就不传图了）</p>
+<p>3、OK完成，等加载刷新。</p>
+<hr>
+<p>第二种情况：Remove Module（当你把project下中的一个module删除delete之后，会发现该文件夹右下角的蓝色flag消失了，但文件还在）。。那么如果你想重新把它加入module的话，该如何操作呢？</p>
+<p>1、右击该普通文件夹的父级（即它上一级的module），选择Open Module Settings，之后会弹出一个框</p>
+<p>2、在中间文件夹这一列找到刚刚的父级module，选中后点击列顶部的加号“+”，在弹出框选择“Import Module”，找到要加入module的子级文件夹，点击OK</p>
+<p>3、弹出框，选择“Next”，always，最后一步选择“Select all”，然后点击“Finish”，搞定！</p>
+<p>此时你会发现，消失的蓝色flag又恢复啦！</p>
+]]></content>
+      <categories>
+        <category>idea</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Netty源码分析[一]</title>
+    <url>/2019/11/23/Netty%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%80/</url>
+    <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>参考<a href="https://time.geekbang.org/course/intro/100036701" target="_blank" rel="noopener">极客时间-netty源码剖析</a><br/></p>
+<h2 id="Netty-是什么"><a href="#Netty-是什么" class="headerlink" title="Netty 是什么"></a>Netty 是什么</h2>]]></content>
+      <categories>
+        <category>Netty</category>
+        <category>middleware</category>
+      </categories>
+  </entry>
+  <entry>
     <title>RocketMQ 源码分析[四]：NameServer</title>
     <url>/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E5%9B%9B-%EF%BC%9ANameServer/</url>
     <content><![CDATA[]]></content>
@@ -72,8 +116,123 @@
 ]]></content>
   </entry>
   <entry>
-    <title>设计模式1-单例模式</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <title>设计模式27-解释器模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F27-%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式26-享元模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F26-%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式25-中介者模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F25-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式24-职责链模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F24-%E8%81%8C%E8%B4%A3%E9%93%BE%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式23-命令模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F23-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式22-桥接模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F22-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式21-迭代器模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F21-%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式20-组合模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F20-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式19-备忘录模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F19-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式18-适配器模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F18-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式17-状态模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F17-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式16-抽象工厂模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F16-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式15-观察者模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F15-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式14-建造者模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F14-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式13-外观（facade）模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F13-%E5%A4%96%E8%A7%82%EF%BC%88facade%EF%BC%89%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式12-迪米特法则</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F12-%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式11-模板方法模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F11-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式10-原型模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F10-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式9-工厂方法模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F9-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式8-代理模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F8-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式7-装饰模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F7-%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式6-依赖倒转原则</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F6-%E4%BE%9D%E8%B5%96%E5%80%92%E8%BD%AC%E5%8E%9F%E5%88%99/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式5-开放-封闭原则</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F5-%E5%BC%80%E6%94%BE-%E5%B0%81%E9%97%AD%E5%8E%9F%E5%88%99/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式4-单一职责原则</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F4-%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -96,6 +255,11 @@
       <tags>
         <tag>大话设计模式</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>设计模式1-单例模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>第五周report</title>
