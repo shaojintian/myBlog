@@ -221,6 +221,127 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%20%20%208%20%20atoi%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B4%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Leetcode%20%20%208%20%20atoi%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B4%E6%95%B0/" class="post-title-link" itemprop="url">Leetcode   8  atoi  字符串转整数</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:21" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:21+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190406205448509.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">myAtoi</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size =str.size();</span><br><span class="line">        <span class="keyword">long</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span> ,j=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(str[i] == <span class="string">' '</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span>((str[i]&lt;<span class="string">'0'</span> || str[i] &gt; <span class="string">'9'</span>) &amp;&amp; str[i] != <span class="string">'+'</span> &amp;&amp; str[i] != <span class="string">'-'</span>  )&#123;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(str[i]==<span class="string">'-'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            flag=<span class="literal">false</span>;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(str[i]== <span class="string">'+'</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(str[i]&gt;=<span class="string">'0'</span> &amp;&amp; str[i] &lt;=<span class="string">'9'</span> &amp;&amp; i &lt;size)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = str[i] - <span class="string">'0'</span>;</span><br><span class="line">            <span class="keyword">if</span>((ans*<span class="number">10</span> + tmp) &gt; INT_MAX ) &#123;</span><br><span class="line">                <span class="keyword">if</span>(flag) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">return</span> INT_MIN;</span><br><span class="line">            &#125;</span><br><span class="line">            ans=ans*<span class="number">10</span>+tmp;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(!flag)</span><br><span class="line">        &#123;</span><br><span class="line">            ans*=<span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20190406205436655.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2010%20%20regular-expression-matching/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Leetcode%2010%20%20regular-expression-matching/" class="post-title-link" itemprop="url">Leetcode 10  regular-expression-matching</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:20" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:20+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190406211406181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatch</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sl=s.size(), pl=p.size();</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &gt; dp(sl+<span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(pl+<span class="number">1</span>, <span class="literal">false</span>));</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>]=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;=sl; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>; j&lt;=pl; j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(j&gt;<span class="number">1</span> &amp;&amp; p[j<span class="number">-1</span>]==<span class="string">'*'</span>)</span><br><span class="line">                    dp[i][j] = dp[i][j<span class="number">-2</span>] </span><br><span class="line">                    || (i&gt;<span class="number">0</span> &amp;&amp; (p[j<span class="number">-2</span>]==<span class="string">'.'</span> || s[i- <span class="number">1</span>]==p[j<span class="number">-2</span>])</span><br><span class="line">                     &amp;&amp; dp[i<span class="number">-1</span>][j]);</span><br><span class="line">                <span class="keyword">else</span> dp[i][j] = i&gt;<span class="number">0</span> </span><br><span class="line">                &amp;&amp; (s[i<span class="number">-1</span>]==p[j<span class="number">-1</span>] || p[j<span class="number">-1</span>]==<span class="string">'.'</span>) &amp;&amp; dp[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[sl][pl];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>dynamic programming :<br>time complexity : O(n^2)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2011%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -722,234 +843,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode19%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode19%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9/" class="post-title-link" itemprop="url">Leetcode19删除链表倒数第N个节点</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:09" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:09+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190408171315256.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>1:扫描两次</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeNthFromEnd</span><span class="params">(ListNode* head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(head == <span class="literal">NULL</span> || head-&gt;next ==<span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">            </span><br><span class="line">            ListNode *node = head;</span><br><span class="line">            <span class="keyword">int</span> size=<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span>(node != <span class="literal">NULL</span> &amp;&amp; node-&gt;next != <span class="literal">NULL</span>)&#123;</span><br><span class="line">                node=node-&gt;next;</span><br><span class="line">                ++size;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(n==size) <span class="keyword">return</span> head-&gt;next;</span><br><span class="line">            node=head;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span> ; i&lt;size-n<span class="number">-1</span>;++i)</span><br><span class="line">            &#123;</span><br><span class="line">                node=node-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            node-&gt;next=node-&gt;next-&gt;next;</span><br><span class="line">        </span><br><span class="line">            <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 先记录总共有多少个节点为size个</li>
-<li><input checked="" disabled="" type="checkbox"> 随后找到倒数第n个然后删掉</li>
-</ul>
-<p><img src="https://img-blog.csdnimg.cn/20190408173511470.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>2：扫描一次,双指针，创建一个pre——head节点指向head，<br>倒数第N个之前的那个数字和最后一个数字规律两个相差n步，则和最后一个的next相差n+1步数。<br>找到规律以后往前推，创建快慢指针相差n+1步。<br>当快的为NULL时，则慢指针的NEXT为所要删掉的节点。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeNthFromEnd</span><span class="params">(ListNode* head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head==<span class="literal">NULL</span> ||head-&gt;next==<span class="literal">NULL</span> ) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        ListNode *pre_head =<span class="keyword">new</span> ListNode(<span class="number">-1</span>);</span><br><span class="line">        pre_head-&gt;next =head;</span><br><span class="line">        </span><br><span class="line">        ListNode *p = head;</span><br><span class="line">        ListNode *q =pre_head;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            p=p-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(p != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            p=p-&gt;next;</span><br><span class="line">            q=q-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        q-&gt;next=q-&gt;next-&gt;next;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> pre_head-&gt;next;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190408180901360.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/SSH%20localhost%E4%B8%8Eremote%20host%20%20%E4%BA%92%E7%9B%B8%E4%BC%A0%E9%80%81%E6%96%87%E4%BB%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/SSH%20localhost%E4%B8%8Eremote%20host%20%20%E4%BA%92%E7%9B%B8%E4%BC%A0%E9%80%81%E6%96%87%E4%BB%B6/" class="post-title-link" itemprop="url">SSH localhost与remote host  互相传送文件</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:08" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:08+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <div id="content_views" class="markdown_views">
-                            <!-- flowchart 箭头图标 勿删 -->
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path></svg>
-                            <ul>
-<li><p>安装 SSH(Secure Shell) 服务以提供远程管理服务 <br>
-<code>sudo apt-get install ssh</code></p></li>
-<li><p>SSH 远程登入 Ubuntu 机 <br>
-<code>$ssh username@192.168.0.1</code></p></li>
-<li><p>将 文件/文件夹 从远程 Ubuntu 机拷至本地(scp) <br>
-<code>$scp -r username@192.168.0.1:/home/username/remotefile.txt</code></p></li>
-<li><p>将 文件/文件夹 从本地拷至远程 Ubuntu 机(scp) <br>
-<code>$scp -r localfile.txt username@192.168.0.1:/home/username/</code></p></li>
-<li><p>将 文件/文件夹 从远程 Ubuntu 机拷至本地(rsync)</p></li>
-</ul>
-
-
-
-<pre class="prettyprint" name="code"><code class="hljs ruby has-numbering" onclick="mdcp.copyCode(event)">rsync -v -u -a --delete --rsh=ssh --stats username<span class="hljs-variable">@192</span>.<span class="hljs-number">168.0</span>.<span class="hljs-number">1</span><span class="hljs-symbol">:/home/username/remotefile</span>.txt .<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
-
-<ul>
-<li>将 文件/文件夹 从本地拷至远程 Ubuntu 机(rsync)</li>
-</ul>
-
-<pre class="prettyprint" name="code"><code class="hljs ruby has-numbering" onclick="mdcp.copyCode(event)">rsync -v -u -a --delete --rsh=ssh --stats localfile.txt username<span class="hljs-variable">@192</span>.<span class="hljs-number">168.0</span>.<span class="hljs-number">1</span><span class="hljs-symbol">:/home/username/</span><div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
-
-<p>在 Windows 机上用 SSH 远程登录 Ubuntu 机</p>
-
-<p>下载 <a href="http://www.putty.org/" rel="nofollow" target="_blank">PuTTY</a></p>
-
-<p>如何在 Windows 机上拷贝 文件/文件夹 从/到 远程 Ubuntu 机</p>
-
-<p>下载 <a href="https://filezilla-project.org/" rel="nofollow" target="_blank">FileZilla</a></p>
-
-<p>ssh -X guoshuang@192.168.100.4</p>
-
-<p>支持 SSH 图形界面。也就是说，gedit 打开和另存都是在服务器端操作的。nautilus 打开服务器端的文件管理器。这下就比只用命令行方便多了。不知道 windows 下的 putty 支持不。</p>
-
-<p>ssh -X guoshuang@192.168.100.4 ls</p>
-
-<p>直接在服务器端执行 ls 返回结果到客户端</p>
-
-<p>如何限制通过SSH远程连接的用户帐号</p>
-
-<p>如，假如你启用了SSH服务，那么任何有有效帐号的用户都可以远程连接。这可能会导致一些安全问题，由于有一些远程密码破解工具可以尝试常见的用户名／密码</p>
-
-<p>备份SSH服务的配置文件</p>
-
-<p>sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.ORIGINAL</p>
-
-<p>编辑配置文件</p>
-
-<p>sudo gedit /etc/ssh/sshd_config</p>
-
-<ul>
-<li>将参数 PermitRootLogin 由 yes 更改为 no。 超级用户不能直接通过远程联机。</li>
-<li>添加参数 AllowUsers 设定远程连接的用户名 (用空格来分割) 。</li>
-<li>您也可以使用 DenyUsers for fine-grained selection of users.</li>
-<li>If you enable the openssh server and you have no intention for now to enable remote connections, you may add AllowUsers nosuchuserhere to disable anyone connecting.</li>
-</ul>
-
-<p>SSH 命令</p>
-
-<p>ssh 命令可以用来在远程机器上不经 shell 提示登录而执行命令。它的语法格式是： ssh hostname command。譬如，如果你想在远程主机 penguin.example.net 上执行 ls /usr/share/doc 命令，在 shell 提示下键入下面的命令：</p>
-
-<p>ssh penguin.example.net ls /usr/share/doc</p>
-
-<p>3.2. 使用 scp 命令</p>
-
-<p>　　scp 命令可以用来通过安全、加密的连接在机器间传输文件。它与 rcp 相似。</p>
-
-<p>　　把本地文件传输给远程系统的一般语法是：</p>
-
-<p>　　scp localfile username@tohostname:/newfilename</p>
-
-<p>　　localfile 指定源文件，username@tohostname:/newfilename 指定目标文件。</p>
-
-<p>　　要把本地文件 shadowman 传送到你在 penguin.example.net 上的账号内，在 shell 提示下键入(把 username 替换成你的用户名)：</p>
-
-<p>　　scp shadowman username@penguin.example.net:/home/username</p>
-
-<p>　　这会把本地文件 shadowman 传输给 penguin.example.net 上的 /home/username/shadowman 文件。</p>
-
-<p>　　把远程文件传输给本地系统的一般语法是：</p>
-
-<p>　　scp username@tohostname:/remotefile /newlocalfile</p>
-
-<p>　　remotefile 指定源文件，newlocalfile 指定目标文件。</p>
-
-<p>　　源文件可以由多个文件组成。譬如，要把目录 /downloads 的内容传输到远程机器 penguin.example.net 上现存的 uploads 目录，在 shell 提示下键入下列命令：</p>
-
-<p>　　scp /downloads/* username@penguin.example.net:/uploads/</p>
-
-<p>　　3.3. 使用 sftp 命令</p>
-
-<p>　 　sftp 工具可以用来打开一次安全互动的 FTP 会话。它与 ftp 相似，只不过，它使用安全、加密的连接。它的一般语法是：sftp username@hostname.com。一旦通过 验证，你可以使用一组和使用 FTP 相似的命令。请参阅 sftp 的说明书页(man)来获取这些 命令的列表。要阅读说明书页，在 shell 提示下执行 man sftp 命令。sftp 工具只在 OpenSSH 版本 2.5.0p1 以上才有。</p>
-
-<p>SSH 概念</p>
-
-<p>SSH是指Secure Shell，SSH协议族由IETF（Internet Engineering Task Force）的Network Working Group制定，SSH协议的内容SSH协议是建立在应用层和传输层基础上的安全协议。</p>
-
-<p>传 统的网络服务程序，如FTP、Pop和Telnet其本质上都是不安全的；因为它们在网络上用明文传送数据、用户帐号和用户口令，很容易受到中间人 （man-in-the-middle）攻击方式的攻击。就是存在另一个人或者一台机器冒充真正的服务器接收用户传给服务器的数据，然后再冒充用户把数据 传给真正的服务器。</p>
-
-<p>SSH(Secure Shell)是目前比较可靠的为远程登录会话和其他网络服务提供安全性的协议。利用SSH协议可以有效防止远程管理过程中的信息泄露问题。通过SSH，可以把所有传输的数据进行加密，也能够防止DNS欺骗和IP欺骗。 <br>
-SSH，还有一个额外的好处就是传输的数据是经过压缩的，所以可以加快传输的速度。SSH有很多功能，它既可以代替Telnet，又可以为FTP、Pop、甚至为PPP提供一个安全的”通道”。</p>            </div>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -998,16 +891,16 @@ SSH，还有一个额外的好处就是传输的数据是经过压缩的，所�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

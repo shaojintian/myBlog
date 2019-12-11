@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Linux cat &lt;&lt; EOF instruction</title>
+    <url>/2019/12/12/Linux-cat-EOF-instruction/</url>
+    <content><![CDATA[<h2 id="覆盖"><a href="#覆盖" class="headerlink" title="覆盖"></a>覆盖</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt; filename</span><br><span class="line">表示写入此文件多行数据,并覆盖</span><br></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ cat &lt;&lt; EOF  &gt; ./demo.txt</span><br><span class="line">$ &gt; oneline</span><br><span class="line">$ &gt; secondline</span><br><span class="line">$ &gt; EOF</span><br></pre></td></tr></table></figure>
+<h2 id="追加"><a href="#追加" class="headerlink" title="追加"></a>追加</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt;&gt; filename</span><br><span class="line">表示追加多行数据到此文件</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>k8s-cluster  用三台阿里云服务器部署</title>
+    <url>/2019/12/12/k8s-cluster-%E4%B8%89%E5%8F%B0%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2/</url>
+    <content><![CDATA[<h1 id="k8s-cluster-三台云服务器部署"><a href="#k8s-cluster-三台云服务器部署" class="headerlink" title="k8s-cluster  三台云服务器部署"></a>k8s-cluster  三台云服务器部署</h1><h2 id="server-configuration"><a href="#server-configuration" class="headerlink" title="server configuration"></a>server configuration</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ubuntu 16.04</span><br><span class="line">1cpu </span><br><span class="line">2G internal memory</span><br></pre></td></tr></table></figure>
+
+<h2 id="ips"><a href="#ips" class="headerlink" title="ips"></a>ips</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Master: root@139.196.254.25		   aliyun</span><br><span class="line">Node1: </span><br><span class="line">Node2: root@118.178.180.152        aliyun</span><br><span class="line"></span><br><span class="line">all login secrets are same</span><br></pre></td></tr></table></figure>
+
+<h2 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h2><ol>
+<li><p>add kubeadm install path in apt</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>add k8s list</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></li>
+<li><p>install</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install kubernetes-cni=0.6.0-00</span><br><span class="line">  apt-get install kubelet=1.11.3-00</span><br><span class="line">  apt-get install kubectl=1.11.3-00</span><br><span class="line">  apt-get install kubeadm=1.11.3-00 </span><br><span class="line">  apt-get install docker.io</span><br></pre></td></tr></table></figure>
+<h2 id="config-Master"><a href="#config-Master" class="headerlink" title="config Master"></a>config Master</h2></li>
+<li><p>config kubeadm.yaml</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ mkdir kubeadm  &amp;&amp; cd kubeadm</span><br><span class="line">&amp; cat &lt;&lt; EOF &gt; kubeadm.yaml</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1alpha1</span><br><span class="line">kind: MasterConfiguration</span><br><span class="line">controllerManagerExtraArgs:</span><br><span class="line">  horizontal-pod-autoscaler-use-rest-clients: &quot;true&quot;</span><br><span class="line">  horizontal-pod-autoscaler-sync-period: &quot;10s&quot;</span><br><span class="line">  node-monitor-grace-period: &quot;10s&quot;</span><br><span class="line">apiServerExtraArgs:</span><br><span class="line">  runtime-config: &quot;api/all=true&quot;</span><br><span class="line">kubernetesVersion: &quot;stable-1.11&quot;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></li>
+<li><p>init kubeadm</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ kubeadm init --config kubeadm.yaml</span><br></pre></td></tr></table></figure>
+<font color="red">
+err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://dl.k8s.io/release/stable-1.11.txt: dial tcp 35.201.71.162:443: i/o timeout</font></br></li>
+<li><p>store init result</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sa</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
     <title>Lab3B. Raft 日志压缩及数据快照</title>
     <url>/2019/11/23/Lab3B-Raft-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%BF%AB%E7%85%A7/</url>
     <content><![CDATA[<div class="post-body" itemprop="articleBody">
@@ -1284,6 +1327,11 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
+    <title>设计模式1-单例模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>设计模式2-简单工厂模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<p>1、简单工厂模式</p>
@@ -1303,11 +1351,6 @@
       <tags>
         <tag>大话设计模式</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>设计模式1-单例模式</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>第五周report</title>
