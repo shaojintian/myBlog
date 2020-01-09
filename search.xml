@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>后端面经</title>
+    <url>/2019/12/12/%E5%90%8E%E7%AB%AF%E9%9D%A2%E7%BB%8F/</url>
+    <content><![CDATA[<h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><p><code>leetcode</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">实现一个缓存队列</span><br><span class="line">二叉树的镜像</span><br><span class="line">区间覆盖 例 [1 3] [2 5] [3 6]能否覆盖[2 6]</span><br><span class="line">TOP K问题</span><br><span class="line"></span><br><span class="line">2. Linux相关命令。</span><br></pre></td></tr></table></figure>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">红黑树是什么原理，为什么要用红黑树，不用其他树</span><br></pre></td></tr></table></figure>
+<h1 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><p><code>go里面channel怎么实现？</code></br><br><code>go协程与java线程区别？</code></p>
+<h2 id="内存模型和调优"><a href="#内存模型和调优" class="headerlink" title="内存模型和调优"></a>内存模型和调优</h2><h1 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h1><p>其实多读几遍这个书《深入理解JVM》，JVM那一块就OK了</p>
+<h2 id="基础-1"><a href="#基础-1" class="headerlink" title="基础"></a>基础</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ConcurrentHashMap,HashMap，HashTable</span><br><span class="line"></span><br><span class="line">StringBuilder和StringBuffer有什么区别</span><br><span class="line"></span><br><span class="line">CAS  Compare And Swap</span><br></pre></td></tr></table></figure>
+<h2 id="并发-1"><a href="#并发-1" class="headerlink" title="并发"></a>并发</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">自旋锁，可重入锁，偏向锁，锁粗化</span><br></pre></td></tr></table></figure>
+<h2 id="内存模型和调优-1"><a href="#内存模型和调优-1" class="headerlink" title="内存模型和调优"></a>内存模型和调优</h2><h2 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Java怎么加载类，（加载验证准备解析初始化使用卸载）</span><br><span class="line">双亲委派机制</span><br></pre></td></tr></table></figure>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">垃圾回收算法</span><br></pre></td></tr></table></figure>
+<h2 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Spring的IOC原理，启动流程是什么，怎么加载Bean的</span><br><span class="line"></span><br><span class="line">AOP源码呢，你平时怎么学习Spring的</span><br></pre></td></tr></table></figure>
+
+<h1 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h1><h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><h3 id="熟练SQL的书写：leetocde数据库板块"><a href="#熟练SQL的书写：leetocde数据库板块" class="headerlink" title="熟练SQL的书写：leetocde数据库板块"></a>熟练SQL的书写：<code>leetocde数据库板块</code></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">手写SQL，join</span><br></pre></td></tr></table></figure>
+<h3 id="索引和原理"><a href="#索引和原理" class="headerlink" title="索引和原理"></a>索引和原理</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql的索引：B+树底层实现？B树的底层实现？为什么要用B+树而不用B树？</span><br></pre></td></tr></table></figure>
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">什么是幻读，不可重复读？这些概念是在事务内还是事务外？ 答：事务内</span><br><span class="line">mysql怎么实现可重复读？设置了可重复读隔离级别底层是怎么实现的？ （MVCC）</span><br><span class="line">了解MVCC吗？怎么实现的？什么是快照读？快照读能读取到最新的吗？快照读和当前读的区别？</span><br></pre></td></tr></table></figure>
+<h3 id="innodb和myisam区别"><a href="#innodb和myisam区别" class="headerlink" title="innodb和myisam区别"></a>innodb和myisam区别</h3><h3 id="锁和并发"><a href="#锁和并发" class="headerlink" title="锁和并发"></a>锁和并发</h3><p><code>乐观锁和悲观锁</code></br></p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">主从：读写分离</span><br><span class="line">主备：冗余</span><br><span class="line">主主</span><br><span class="line">分区</span><br><span class="line">双活</span><br><span class="line">灾备</span><br></pre></td></tr></table></figure>
+
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p><code>redis支持哪些数据类型；</code></br><br><code>redis中的字符串类型是怎么实现的；(SDS)</code></br></p>
+<h2 id="Mongodb"><a href="#Mongodb" class="headerlink" title="Mongodb"></a>Mongodb</h2><h1 id="OS"><a href="#OS" class="headerlink" title="OS"></a>OS</h1><h2 id="进线协程"><a href="#进线协程" class="headerlink" title="进线协程"></a>进线协程</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">进程间通信</span><br><span class="line">中断机制</span><br></pre></td></tr></table></figure>
+<p><code>一个进程，有十个线程，其中一个线程fork后，子进程有几个线程</code></br></p>
+<h2 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h2><p><code>select ， poll ，epoll</code></br></p>
+<h2 id="用户空间，内核空间"><a href="#用户空间，内核空间" class="headerlink" title="用户空间，内核空间"></a>用户空间，内核空间</h2><p><code>操作系统的调度算法</code></br></p>
+<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">说下操作系统中页面置换算法</span><br><span class="line">答:先进先出，LRU</span><br><span class="line"></span><br><span class="line">说一下LRU</span><br><span class="line"></span><br><span class="line">CopyOnWrite</span><br></pre></td></tr></table></figure>
+
+<h1 id="network"><a href="#network" class="headerlink" title="network"></a>network</h1><h2 id="OSI模型"><a href="#OSI模型" class="headerlink" title="OSI模型"></a>OSI模型</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">osi模型，各个层有哪些协议</span><br></pre></td></tr></table></figure>
+<h2 id="I-O多路复用：select，poll，epoll"><a href="#I-O多路复用：select，poll，epoll" class="headerlink" title="I/O多路复用：select，poll，epoll"></a>I/O多路复用：select，poll，epoll</h2><h2 id="HTTP，TCP、UDP"><a href="#HTTP，TCP、UDP" class="headerlink" title="HTTP，TCP、UDP"></a>HTTP，TCP、UDP</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http是有状态还是无状态？</span><br><span class="line"></span><br><span class="line">TCP是有状态还是无状态？</span><br><span class="line"></span><br><span class="line">客户端禁用cookie怎么办？ 你说的实现方式安全吗？</span><br><span class="line"></span><br><span class="line">SSL，http和https，https是有状态还是无状态？</span><br><span class="line"></span><br><span class="line">浏览器输入一个地址到看到返回内容中间发生了什么？</span><br><span class="line"></span><br><span class="line">画出TCP的4次挥手过程，为什么需要四次，不能三次吗？</span><br><span class="line">答：当服务端接收到客户端的FIN数据报时，服务端可能还有需要发送的数据，因此FIN与ACK不能合并到一起发送。如果合并到一起发送，就不能确定服务器发送的数据，客户端是否接收到了。</span><br><span class="line"></span><br><span class="line">解释下TIME_WAIT, 为什么取值为2MSL</span><br><span class="line">答：2MSL刚好是数据报进行一个来回的时间，目的是为了确认服务端没有再次发送FIN；</span><br><span class="line"></span><br><span class="line">SSH登录，非对称加密</span><br></pre></td></tr></table></figure>
+<p><code>http与https的区别 ?https中对称加密与非对称加密用在哪？</code></br></p>
+<h2 id="TCP粘包，半包，TCP优化和加速"><a href="#TCP粘包，半包，TCP优化和加速" class="headerlink" title="TCP粘包，半包，TCP优化和加速"></a>TCP粘包，半包，TCP优化和加速</h2><h2 id="session，cookies"><a href="#session，cookies" class="headerlink" title="session，cookies"></a>session，cookies</h2><p><code>多个服务器间共享session的解决方案</code></br><br><code>s</code></p>
+<h2 id="http网络服务器框架"><a href="#http网络服务器框架" class="headerlink" title="http网络服务器框架"></a>http网络服务器框架</h2><h1 id="架构-1"><a href="#架构-1" class="headerlink" title="架构"></a>架构</h1><h2 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h2><h2 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h2><h2 id="可扩展"><a href="#可扩展" class="headerlink" title="可扩展"></a>可扩展</h2><h1 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h1><h2 id="RAFT"><a href="#RAFT" class="headerlink" title="RAFT"></a>RAFT</h2><h2 id="分布式存储"><a href="#分布式存储" class="headerlink" title="分布式存储"></a>分布式存储</h2><h1 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h1><h2 id="服务配置：服务发现，服务注册"><a href="#服务配置：服务发现，服务注册" class="headerlink" title="服务配置：服务发现，服务注册"></a>服务配置：服务发现，服务注册</h2><p><code>一个服务怎么找到另外一个服务？服务之间的通信</code></p>
+<h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><h2 id="service-mesh"><a href="#service-mesh" class="headerlink" title="service mesh"></a>service mesh</h2><h2 id="grpc"><a href="#grpc" class="headerlink" title="grpc"></a>grpc</h2><h1 id="虚拟化-amp-容器"><a href="#虚拟化-amp-容器" class="headerlink" title="虚拟化&amp;容器"></a>虚拟化&amp;容器</h1><h2 id="docker和k8s原理"><a href="#docker和k8s原理" class="headerlink" title="docker和k8s原理"></a>docker和k8s原理</h2><h2 id="k8s的集群搭建"><a href="#k8s的集群搭建" class="headerlink" title="k8s的集群搭建"></a>k8s的集群搭建</h2><h1 id="中台概念"><a href="#中台概念" class="headerlink" title="中台概念"></a>中台概念</h1><h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><p><code>linux常用命令。iftop，netstat，htop，apt，yum，source，corn，docker等等。</code></br></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>JVM[二]:字节码</title>
+    <url>/2019/12/12/JVM-%E4%BA%8C-%E5%AD%97%E8%8A%82%E7%A0%81/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>JVM[一]:类的加载器</title>
+    <url>/2019/12/12/JVM%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E5%99%A8/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>Linux cat &lt;&lt; EOF instruction</title>
     <url>/2019/12/12/Linux-cat-EOF-instruction/</url>
     <content><![CDATA[<h2 id="覆盖"><a href="#覆盖" class="headerlink" title="覆盖"></a>覆盖</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt; filename</span><br><span class="line">表示写入此文件多行数据,并覆盖</span><br></pre></td></tr></table></figure>
@@ -31,7 +76,7 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></li>
 <li><p>install</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install kubernetes-cni=0.6.0-00</span><br><span class="line">  apt-get install kubelet=1.11.3-00</span><br><span class="line">  apt-get install kubectl=1.11.3-00</span><br><span class="line">  apt-get install kubeadm=1.11.3-00 </span><br><span class="line">  apt-get install docker.io</span><br></pre></td></tr></table></figure>
-<h2 id="config-Master"><a href="#config-Master" class="headerlink" title="config Master"></a>config Master</h2></li>
+<h2 id="Config-Master"><a href="#Config-Master" class="headerlink" title="Config Master"></a>Config Master</h2></li>
 <li><p>config kubeadm.yaml</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ mkdir kubeadm  &amp;&amp; cd kubeadm</span><br><span class="line">&amp; cat &lt;&lt; EOF &gt; kubeadm.yaml</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1alpha1</span><br><span class="line">kind: MasterConfiguration</span><br><span class="line">controllerManagerExtraArgs:</span><br><span class="line">  horizontal-pod-autoscaler-use-rest-clients: &quot;true&quot;</span><br><span class="line">  horizontal-pod-autoscaler-sync-period: &quot;10s&quot;</span><br><span class="line">  node-monitor-grace-period: &quot;10s&quot;</span><br><span class="line">apiServerExtraArgs:</span><br><span class="line">  runtime-config: &quot;api/all=true&quot;</span><br><span class="line">kubernetesVersion: &quot;stable-1.11&quot;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></li>
 <li><p>init kubeadm</p>
@@ -1198,15 +1243,6 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
       </tags>
   </entry>
   <entry>
-    <title>设计模式3-策略模式</title>
-    <url>/2019/11/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
-<p>应用场景：</p>
-<p>优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。<br><br>劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。<br></p>
-<p><img src="/images/strategy.png" alt="upload successful"></p>
-]]></content>
-  </entry>
-  <entry>
     <title>设计模式27-解释器模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F27-%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[]]></content>
@@ -1325,6 +1361,15 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
     <title>设计模式4-单一职责原则</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F4-%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</url>
     <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>设计模式3-策略模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
+<p>应用场景：</p>
+<p>优势：类的特性相同，且频繁切换类，且只需要用到单一的算法。<br><br>劣势：加入新类需要重新编译打包，无法将多个类组合使用的情况。<br></p>
+<p><img src="/images/strategy.png" alt="upload successful"></p>
+]]></content>
   </entry>
   <entry>
     <title>设计模式1-单例模式</title>

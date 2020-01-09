@@ -221,6 +221,758 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">并查集入门</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-18 23:05:07 / 修改时间：23:13:49" itemprop="dateCreated datePublished" datetime="2019-11-18T23:05:07+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>写在前面</strong>：<br><br/>话说江湖上散落着各式各样的大侠，有上千个之多。他们没有什么正当职业，整天背着剑在外面走来走去，碰到和自己不是一路人的，就免不了要打一架。但大侠们有一个优点就是讲义气，绝对不打自己的朋友。而且他们信奉“朋友的朋友就是我的朋友”，只要是能通过朋友关系串联起来的，不管拐了多少个弯，都认为是自己人。</p>
+<p>这样一来，江湖上就形成了一个一个的群落，通过两两之间的朋友关系串联起来。而不在同一个群落的人，无论如何都无法通过朋友关系连起来，于是就可以放心往死了打。但是两个原本互不相识的人，如何判断是否属于一个朋友圈呢？</p>
+<p>我们可以在每个朋友圈内推举出一个比较有名望的人，作为该圈子的代表人物，这样，每个圈子就可以这样命名“齐达内朋友之队”“罗纳尔多朋友之队”……两人只要互相对一下自己的队长是不是同一个人，就可以确定敌友关系了。 但是还有问题啊，大侠们只知道自己直接的朋友是谁，很多人压根就不认识队长，要判断自己的队长是谁，只能漫无目的的通过朋友的朋友关系问下去：“你是不是队长？你是不是队长？” 这样一来，队长面子上挂不住了，而且效率太低，还有可能陷入无限循环中。</p>
+<p>于是队长下令，重新组队。队内所有人实行分等级制度，形成树状结构，我队长就是根节点，下面分别是二级队员、三级队员。每个人只要记住自己的上级是谁就行了。遇到判断敌友的时候，只要一层层向上问，直到最高层，就可以在短时间内确定队长是谁了。由于我们关心的只是两个人之间是否连通，至于他们是如何连通的，以及每个圈子内部的结构是怎样的，甚至队长是谁，并不重要。所以我们可以放任队长随意重新组队，只要不搞错敌友关系就好了。于是，门派产生了。</p>
+<p>并查集<br>并查集（Union-find Sets）是一种非常精巧而实用的数据结构，它主要用于处理一些不相交集合的合并问题。一些常见的用途有求连通子图、求最小生成树的 Kruskal 算法和求最近公共祖先（Least Common Ancestors, LCA）等。</p>
+<p>使用并查集时，首先会存在一组不相交的动态集合，一般都会使用一个整数表示集合中的一个元素。</p>
+<p>每个集合可能包含一个或多个元素，并选出集合中的某个元素作为代表，称为集合的代表元。</p>
+<p>每个集合中具体包含了哪些元素是不关心的，具体选择哪个元素作为代表一般也是不关心的。我们关心的是，对于给定的元素，可以很快的找到这个元素所在的集合（的代表），以及合并两个元素所在的集合，而且这些操作的时间复杂度都是常数级的。</p>
+<p>并查集的实现原理也比较简单，就是使用树来表示集合，树的每个节点就表示集合中的一个元素，树根对应的元素就是该集合的代表元，如图 1 所示。</p>
+<p>图1 并查集的树型表示<br>图中有两棵树，分别对应两个集合，其中第一个集合为 ，代表元素是 ；第二个集合为 ，代表元素是 。</p>
+<p>并查集的基本操作有三个：</p>
+<p>makeSet(s)：建立一个新的并查集，其中包含 s 个单元素集合。【初始化】</p>
+<p>unionSet(x, y)：把元素 x 和元素 y 所在的集合合并，要求 x 和 y 所在的集合不相交，如果相交则不合并。【合并】</p>
+<p>find(x)：找到元素 x 所在的集合的代表，该操作也可以用于判断两个元素是否位于同一个集合，只要将它们各自的代表比较一下就可以了。【查找】</p>
+<p>这也就是为什么叫并查集的原因，顾名思义，就是为了进行查和并操作。</p>
+<p>【初始化】<br>树的节点表示集合中的元素，指针表示指向父节点的指针，根节点的指针指向自己，表示其没有父节点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">图<span class="number">2</span> 构造、初始化并查集</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 105</span></span><br><span class="line"><span class="keyword">int</span> parent[N];<span class="comment">// 树型结构的根节点</span></span><br><span class="line"><span class="keyword">int</span> r[N];<span class="comment">// 树的秩 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">//初始化</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span>     <span class="comment">//对n个结点初始化</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        parent[i] = i;     <span class="comment">// 每个结点的上级都是自己</span></span><br><span class="line">        r[i] = <span class="number">0</span>;    <span class="comment">// 每个结点构成的树的秩为0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">【查找】</span><br><span class="line">沿着每个结点的父节点不断向上查找，最终就可以找到该树的根结点，即该集合的代表元素。</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span> <span class="comment">// 查找结点x的根结点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x] == x) <span class="comment">// 递归出口：x的上级为x本身，即x为根结点</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="keyword">return</span> x;      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> find_parent(parent[x]);<span class="comment">// 递归查找</span></span><br><span class="line">&#125;</span><br><span class="line">通过下面的图，我们发现，普通的查找过程相对较麻烦，例如寻找d结点的根节点，我们需要通过才能最终找到。</span><br><span class="line"></span><br><span class="line">但是，如果我们使用路径压缩算法，那么只需要查找一次，就能确定d结点的结点，即。</span><br><span class="line">图<span class="number">3</span> 路径压缩（优化一）</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【递归版本】</span></span><br><span class="line"><span class="comment">// 改进查找算法：完成路径压缩，将x的上级直接变为根结点，那么树的高度就会大大降低</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span> <span class="comment">// 查找结点x的根结点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x] == x) <span class="comment">// 递归出口：x的上级为x本身，即x为根结点</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="keyword">return</span> x;      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> parent[x] = find_parent(parent[x]);<span class="comment">// 递归查找，此代码相当于先找到根结点rootx，然后pre[x]=rootx</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//【路径压缩的另一种写法】</span></span><br><span class="line"><span class="comment">//【个人更偏向于这种写法】 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_parent</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(parent[x]!=x)parent[x]=find_parent(parent[x]);</span><br><span class="line">    <span class="keyword">return</span> parent[x];</span><br><span class="line">&#125; </span><br><span class="line">【合并】</span><br><span class="line">并查集的合并也非常简单，就是将一个集合的树根指向另一个集合的树根。</span><br><span class="line"></span><br><span class="line">图<span class="number">4</span> 并查集的合并</span><br><span class="line"><span class="comment">//【并】</span></span><br><span class="line"><span class="comment">// 朴素合并 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root_x, root_y;</span><br><span class="line">    root_x = find_parent(x);</span><br><span class="line">    root_y = find_parent(y);</span><br><span class="line">    <span class="keyword">if</span>(root_x!=root_y)parent[root_y]=root_x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以采用一种优化方法——按秩合并，注意初始化的时候需要将全部置0。<br>图5 按秩合并（优化二）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【并】</span></span><br><span class="line"><span class="comment">// 按秩合并 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root_x, root_y;</span><br><span class="line">    root_x = find_parent(x);</span><br><span class="line">    root_y = find_parent(y);</span><br><span class="line">    <span class="comment">// 属于同一个集合 </span></span><br><span class="line">    <span class="keyword">if</span>(root_x == root_y)<span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 属于不同集合 </span></span><br><span class="line">    <span class="comment">//令 y的根结点的上级为 root_x</span></span><br><span class="line">    <span class="keyword">if</span>(r[root_x] &gt; r[root_y])parent[root_y] = root_x;         </span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 秩相等，合并之后秩需要加 1 </span></span><br><span class="line">        <span class="keyword">if</span>(r[root_x] == r[root_y])r[root_y]++;</span><br><span class="line">        parent[root_x] = root_y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>并查集的分析与用法：<br>时空复杂度：<br>时间复杂度：<br>同时使用路径压缩、按秩（rank）合并优化的程序每个操作的平均时间仅为，其中是的反函数，是急速增加的阿克曼函数。因为是其反函数，故在十分巨大时还是小于 5。因此，平均运行时间是一个极小的常数。实际上，这是渐近最优算法：Fredman 和 Saks 在 1989 年解释了的平均时间内可以获得任何并查集。</p>
+<p>空间复杂度：<br>（n为元素个数）<br>按秩合并会多一个保存秩的辅助空间，即。</p>
+<p>——《维基百科：并查集》</p>
+<p>用途：<br>判断是否是同一类：<br>这个很简单，给定要判定的两个节点，find_parent()一下就可以了</p>
+<p>判断有多少个类/是否连通：<br>这个就基本上要遍历一下所有的节点，然后再把它们的父亲节点加入到set集合里，然后再统计一下个数即可。</p>
+<p>最小生成树：Kruskal算法</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">树状数组入门</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-18 22:51:04 / 修改时间：23:01:22" itemprop="dateCreated datePublished" datetime="2019-11-18T22:51:04+08:00">2019-11-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <div id="mainContent">
+    <div class="forFlow">
+        <div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+
+<p><a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/xenny/p/9739600.html" target="_blank" rel="noopener">树状数组详解</a></p>
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p><span style="font-size: 14pt;">先来看几个问题吧。</span></p>
+<h2 id="autoid-0-0-0">1.什么是树状数组？</h2>
+<p><span style="font-size: 14pt;">顾名思义，就是用数组来模拟树形结构呗。那么衍生出一个问题，为什么不直接建树？答案是没必要，因为树状数组能处理的问题就没必要建树。和Trie树的构造方式有类似之处。</span></p>
+<h2 id="autoid-0-0-0">2.树状数组可以解决什么问题</h2>
+<p><span style="font-size: 14pt;">可以解决大部分基于区间上的更新以及求和问题。</span></p>
+<h2 id="autoid-0-0-0">3.树状数组和线段树的区别在哪里</h2>
+<p><span style="font-size: 14pt;">树状数组可以解决的问题都可以用线段树解决，这两者的区别在哪里呢？树状数组的系数要少很多，就比如字符串模拟大数可以解决大数问题，也可以解决1+1的问题，但没人会在1+1的问题上用大数模拟。</span></p>
+<h2 id="autoid-0-0-0">4.树状数组的优点和缺点</h2>
+<p><span style="font-size: 14pt;">修改和查询的复杂度都是O(logN)，而且相比线段树系数要少很多，比传统数组要快，而且容易写。</span></p>
+<p><span style="font-size: 14pt;">缺点是遇到复杂的区间问题还是不能解决，功能还是有限。</span></p>
+<hr>
+<h1 id="autoid-0-0-0">一、树状数组介绍<span style="font-size: 14pt;"><br></span></h1>
+<p><span style="font-size: 14pt;">二叉树大家一定都知道，如下图</span></p>
+<p><span style="font-size: 14pt;"><img src="https://img2018.cnblogs.com/blog/1448672/201810/1448672-20181003121208845-81274925.png" alt=""></span></p>
+<p><span style="font-size: 14pt;">如果每个父亲都存的是两个儿子的值，是不是就可以解决这类区间问题了呢。是的没错，但是这样的树形结构，叫做线段树。</span></p>
+<p><span style="font-size: 14pt;">那真的的树形结构是怎样的，和上图类似，但省去了一些节点，以达到用数组建树。</span></p>
+<p><span style="font-size: 14pt;"><img src="https://img2018.cnblogs.com/blog/1448672/201810/1448672-20181003121604644-268531484.png" alt=""></span></p>
+<p><span style="font-size: 14pt;">黑色数组代表原来的数组（下面用A[i]代替），红色结构代表我们的树状数组(下面用C[i]代替)，发现没有，每个位置只有一个方框，令每个位置存的就是子节点的值的和，则有</span></p>
+<ul>
+<li><span style="font-size: 14pt;">C[1] = A[1];</span></li>
+<li><span style="font-size: 14pt;">C[2] = A[1] + A[2];</span></li>
+<li><span style="font-size: 14pt;">C[3] = A[3];</span></li>
+<li><span style="font-size: 14pt;">C[4] = A[1] + A[2] + A[3] + A[4];</span></li>
+<li><span style="font-size: 14pt;">C[5] = A[5];</span></li>
+<li><span style="font-size: 14pt;">C[6] = A[5] + A[6];</span></li>
+<li><span style="font-size: 14pt;">C[7] = A[7];</span></li>
+<li><span style="font-size: 14pt;">C[8] = A[1] + A[2] + A[3] + A[4] + A[5] + A[6] + A[7] + A[8];</span></li>
+
+
+
+</ul>
+<p><span style="font-size: 14pt;">可以发现，这颗树是有规律的</span></p>
+<p><span style="font-size: 14pt;"><strong>C[i] = A[i - 2<sup>k</sup>+1] + A</strong><span style="font-size: 14pt;"><strong>[i - 2<sup>k</sup>+2] + ... + A[i];&nbsp;&nbsp; //k为i的二进制中从最低位到高位连续零的长度</strong></span></span></p>
+<p><span style="font-size: 14pt;"><span style="font-size: 14pt;">例如i = 8(1000)时候，k = 3，可自行验证。<br></span></span></p>
+<p><span style="font-size: 14pt;">这个怎么实现求和呢，比如我们要找前7项和，那么应该是</span><span style="font-size: 14pt;">SUM = C[7] + C[6] + C[4];</span></p>
+<p><span style="font-size: 14pt;">而根据上面的式子，容易的出<strong>SUM<sub>i</sub> = C[i] + C[i-2<sup>k1</sup>] + C[(i - 2<sup>k1</sup>) - 2<sup>k2</sup>] + .....；</strong></span></p>
+<p><span style="font-size: 14pt;">其实树状数组就是一个二进制上面的应用。</span></p>
+<p><span style="font-size: 14pt;">现在新的问题来了2^k该怎么求呢，不难得出2^k = i&amp;(i^(i-1));但这个还是不好求出呀，前辈的智慧就出来了，2^k = i&amp;(-i);</span></p>
+<p><span style="font-size: 14pt;">为什么呢？</span></p>
+<p><span style="font-size: 14pt; color: #008080;">这里利用的负数的存储特性，负数是以补码存储的，对于整数运算 x&amp;(-x)有<br>
+&nbsp; &nbsp; &nbsp; &nbsp;<span style="font-size: 14pt; color: #008080;">●</span> 当x为0时，即 0 &amp; 0，结果为0；<br>
+&nbsp; &nbsp; &nbsp; &nbsp;●当x为奇数时，最后一个比特位为1，取反加1没有进位，故x和-x除最后一位外前面的位正好相反，按位与结果为0。结果为1。<br>
+&nbsp; &nbsp; &nbsp; &nbsp;●当x为偶数，且为2的m次方时，x的二进制表示中只有一位是1（从右往左的第m+1位），其右边有m位0，故x取反加1后，从右到左第有m个0，第m+1位及其左边全是1。这样，x&amp; (-x) 得到的就是x。&nbsp;<br>
+&nbsp; &nbsp; &nbsp; &nbsp;●当x为偶数，却不为2的m次方的形式时，可以写作x= y * (2^k)。其中，y的最低位为1。实际上就是把x用一个奇数左移k位来表示。这时，x的二进制表示最右边有k个0，从右往左第k+1位为1。当对x取反时，最右边的k位0变成1，第k+1位变为0；再加1，最右边的k位就又变成了0，第k+1位因为进位的关系变成了1。左边的位因为没有进位，正好和x原来对应的位上的值相反。二者按位与，得到：第k+1位上为1，左边右边都为0。结果为2^k。<br>
+&nbsp; &nbsp; &nbsp; &nbsp; 总结一下：x&amp;(-x)，当x为0时结果为0；x为奇数时，结果为1；x为偶数时，结果为x中2的最大次方的因子。</span></p>
+<p><span style="font-size: 14pt; color: #000000;">而且这个有一个专门的称呼，叫做lowbit，即取2^k。</span></p>
+<h1 id="autoid-0-0-0"><span style="color: #000000;">二、如何建立树状数组</span></h1>
+<p><span style="color: #000000; font-size: 14pt;">上面已经解释了如何用树状数组求区间和，那么如果我们要更新某一个点的值呢，还是一样的，上面说了<span style="font-size: 14pt;"><strong>C[i] = A[i - 2<sup>k</sup>+1] + A</strong><span style="font-size: 14pt;"><strong>[i - 2<sup>k</sup>+2] + ... + A[i]</strong></span></span>，那么如果我们更新某个A[i]的值，则会影响到所有包含有A[i]位置。如果求A[i]包含哪些位置里呢，同理有</span></p>
+<p><span style="color: #000000; font-size: 14pt;">A[i] 包含于 C[i + 2<sup>k</sup>]、C[(i + 2<sup>k</sup>) + 2<sup>k</sup>]...；</span></p>
+<p>&nbsp;</p>
+<p><span style="color: #000000; font-size: 14pt;">好，现在已经搞清楚了更新和求和，就可以来建树状数组了。如果上面的求和、更新或者lowbit步骤还没搞懂的化，建议再思考弄懂再往下看。</span></p>
+<p><span style="color: #000000; font-size: 14pt;">那么构造一个树状数组则为</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+<pre class="prettyprint prettyprinted" style=""><span style="color: #008080;"><span class="pln"> </span><span class="lit">1</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">2</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> a</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">1005</span></span><span class="pun">],</span><span class="pln">c</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">1005</span></span><span class="pun">];</span><span class="pln"> </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">对应原数组和树状数组</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">3</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">4</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> lowbit</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> x</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">5</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> x</span><span class="pun">&amp;(-</span><span style="color: #000000;"><span class="pln">x</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">6</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">7</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">8</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">void</span></span><span class="pln"> updata</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">,</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> k</span><span class="pun">){</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">在i位置加上k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">9</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&lt;=</span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">10</span></span><span class="pln">         c</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> k</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">11</span></span><span class="pln">         i </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">12</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">13</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">14</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">15</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> getsum</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">){</span><span class="pln">        </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">求A[1 - i]的和</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">16</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">17</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&gt;</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">18</span></span><span class="pln">         res </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> c</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">19</span></span><span class="pln">         i </span><span class="pun">-=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">20</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">21</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span style="color: #000000;"><span class="pln"> res</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">22</span></span><span class="pln"> </span><span class="pun">}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-size: 14pt;">这样就构造了一个树状数组。下面看一道模板题目吧。</span></p>
+<p><span style="font-size: 14pt;">题目链接：<a href="https://vjudge.net/problem/HDU-1166" target="_blank">https://vjudge.net/problem/HDU-1166</a></span></p>
+<p><span style="font-size: 14pt;">直接看代码吧</span></p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+<pre class="prettyprint prettyprinted" style=""><span style="color: #008080;"><span class="pln"> </span><span class="lit">1</span></span><span class="pln"> </span><span class="com">#include</span><span class="pln"> </span><span class="pun">&lt;</span><span class="pln">bits</span><span class="pun">/</span><span class="pln">stdc</span><span class="pun">++.</span><span class="pln">h</span><span class="pun">&gt;</span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">2</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">using</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">namespace</span></span><span style="color: #000000;"><span class="pln"> std</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">3</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">4</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">,</span><span class="pln">m</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">5</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> a</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">],</span><span class="pln">c</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">];</span><span class="pln"> </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">对应原数组和树状数组</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">6</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">7</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> lowbit</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> x</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">8</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> x</span><span class="pun">&amp;(-</span><span style="color: #000000;"><span class="pln">x</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">9</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">10</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">11</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">void</span></span><span class="pln"> updata</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">,</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> k</span><span class="pun">){</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">在i位置加上k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">12</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&lt;=</span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">13</span></span><span class="pln">         c</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> k</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">14</span></span><span class="pln">         i </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">15</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">16</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">17</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">18</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> getsum</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">){</span><span class="pln">        </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">求A[1 - i]的和</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">19</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">20</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&gt;</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">21</span></span><span class="pln">         res </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> c</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">22</span></span><span class="pln">         i </span><span class="pun">-=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">23</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">24</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span style="color: #000000;"><span class="pln"> res</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">25</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">26</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">27</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> main</span><span class="pun">(){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">28</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> t</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">29</span></span><span class="pln">     cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">t</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">30</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">for</span></span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> tot </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">;</span><span class="pln"> tot </span><span class="pun">&lt;=</span><span class="pln"> t</span><span class="pun">;</span><span class="pln"> tot</span><span class="pun">++</span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">31</span></span><span class="pln">         cout </span><span class="pun">&lt;&lt;</span><span class="pln"> </span><span style="color: #800000;"><span class="str">"</span></span><span style="color: #800000;"><span class="str">Case </span></span><span style="color: #800000;"><span class="str">"</span></span><span class="pln"> </span><span class="pun">&lt;&lt;</span><span class="pln"> tot </span><span class="pun">&lt;&lt;</span><span class="pln"> </span><span style="color: #800000;"><span class="str">"</span></span><span style="color: #800000;"><span class="str">:</span></span><span style="color: #800000;"><span class="str">"</span></span><span class="pln"> </span><span class="pun">&lt;&lt;</span><span style="color: #000000;"><span class="pln"> endl</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">32</span></span><span class="pln">         memset</span><span class="pun">(</span><span class="pln">a</span><span class="pun">,</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">,</span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">sizeof</span></span><span style="color: #000000;"><span class="pln"> a</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">33</span></span><span class="pln">         memset</span><span class="pun">(</span><span class="pln">c</span><span class="pun">,</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">,</span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">sizeof</span></span><span style="color: #000000;"><span class="pln"> c</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">34</span></span><span class="pln">         cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">n</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">35</span></span><span class="pln">         </span><span style="color: #0000ff;"><span class="kwd">for</span></span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;=</span><span class="pln"> n</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++</span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">36</span></span><span class="pln">             cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">37</span></span><span class="pln">             updata</span><span class="pun">(</span><span class="pln">i</span><span class="pun">,</span><span class="pln">a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]);</span><span class="pln">   </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">输入初值的时候，也相当于更新了值</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">38</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">        </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">39</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">40</span></span><span class="pln">         </span><span style="color: #0000ff;"><span class="kwd">string</span></span><span style="color: #000000;"><span class="pln"> s</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">41</span></span><span class="pln">         </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> x</span><span class="pun">,</span><span class="pln">y</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">42</span></span><span class="pln">         </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">cin</span><span class="pun">&gt;&gt;</span><span class="pln">s </span><span class="pun">&amp;&amp;</span><span class="pln"> s</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">]</span><span class="pln"> </span><span class="pun">!=</span><span class="pln"> </span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #800000;"><span class="str">E</span></span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">43</span></span><span class="pln">             cin</span><span class="pun">&gt;&gt;</span><span class="pln">x</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">y</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">44</span></span><span class="pln">             </span><span style="color: #0000ff;"><span class="kwd">if</span></span><span class="pun">(</span><span class="pln">s</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #800000;"><span class="str">Q</span></span><span style="color: #800000;"><span class="str">'</span></span><span class="pun">){</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">求和操作</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">45</span></span><span class="pln">                 </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> sum </span><span class="pun">=</span><span class="pln"> getsum</span><span class="pun">(</span><span class="pln">y</span><span class="pun">)</span><span class="pln"> </span><span class="pun">-</span><span class="pln"> getsum</span><span class="pun">(</span><span class="pln">x</span><span class="pun">-</span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">);</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">x-y区间和也就等于1-y区间和减去1-(x-1)区间和</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">46</span></span><span class="pln">                 cout </span><span class="pun">&lt;&lt;</span><span class="pln"> sum </span><span class="pun">&lt;&lt;</span><span style="color: #000000;"><span class="pln"> endl</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">47</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">            </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">48</span></span><span class="pln">             </span><span style="color: #0000ff;"><span class="kwd">else</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">if</span></span><span class="pun">(</span><span class="pln">s</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #800000;"><span class="str">A</span></span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">49</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">                updata</span><span class="pun">(</span><span class="pln">x</span><span class="pun">,</span><span class="pln">y</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">50</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">            </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">51</span></span><span class="pln">             </span><span style="color: #0000ff;"><span class="kwd">else</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">if</span></span><span class="pun">(</span><span class="pln">s</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #800000;"><span class="str">S</span></span><span style="color: #800000;"><span class="str">'</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">52</span></span><span class="pln">                 updata</span><span class="pun">(</span><span class="pln">x</span><span class="pun">,-</span><span class="pln">y</span><span class="pun">);</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">减去操作，即为加上相反数</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">53</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">            </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">54</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">        </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">55</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">56</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">57</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">58</span></span><span class="pln"> </span><span class="pun">}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p><span style="font-size: 14pt;">这就是最简单的点更新区间求和了。</span></p>
+<h1 id="autoid-0-0-0">三、树状数组的几种变式(区间更新，区间查询)</h1>
+<p><span style="font-size: 14pt;">上面介绍的是最普通的单点更新，区间查询，但如果有些时候是区间更新，单点求和怎么半，又或是区间更新，区间求和怎么办。这里将介绍各种情况该怎么写。</span></p>
+<p><span style="font-size: 14pt;">如果上面的单点更新，区间查询还没看懂，建议再思考再往下看。</span></p>
+<h2 id="autoid-0-0-0"><span style="font-size: 14pt;">1.单点更新、单点查询</span></h2>
+<p><span style="font-size: 14pt;">传统数组可做</span></p>
+<h2 id="autoid-0-0-0"><span style="font-size: 14pt;">2.单点更新、区间查询</span></h2>
+<p><span style="font-size: 14pt;">已讲解，详细看上面</span></p>
+<h2 id="autoid-0-0-0"><span style="font-size: 14pt;">3.区间更新、单点查询</span></h2>
+<p><span style="font-size: 14pt;">这就是第一个问题，如果题目是让你把x-y区间内的所有值全部加上k或者减去k，然后查询操作是问某个点的值，这种时候该怎么做呢。如果是像上面的树状数组来说，就必须把x-y区间内每个值都更新，这样的复杂度肯定是不行的，这个时候，就不能再用数据的值建树了，这里我们引入差分，利用差分建树。</span></p>
+<p><span style="font-size: 14pt;">假设我们规定A[0] = 0;</span></p>
+<p><span style="font-size: 14pt;">则有 <strong>A[i] = Σ<sup>i</sup><sub>j = 1</sub>D[j];(D[j] = A[j] - A[j-1])，</strong>即前面i项的差值和，这个有什么用呢？例如对于下面这个数组</span></p>
+<ul>
+<li><span style="font-size: 14pt;">A[] = 1 2 3 5 6 9<br></span></li>
+<li><span style="font-size: 14pt;">D[] = 1 1 1 2 1 3</span></li>
+
+
+</ul>
+<p><span style="font-size: 14pt;">如果我们把[2,5]区间内值加上2，则变成了</span></p>
+<ul>
+<li><span style="font-size: 14pt;">A[] = 1 4 5 7 8 9</span></li>
+<li><span style="font-size: 14pt;">D[] = 1 3 <span style="color: #ff0000;">1 2 1</span> 1</span></li>
+
+
+</ul>
+<p><span style="font-size: 14pt;">发现了没有，当某个区间[x,y]值改变了，区间内的差值是不变的，只有D[x]和D[y+1]的值发生改变，至于为什么我想我就不用解释了吧。</span></p>
+<p><span style="font-size: 14pt;">所以我们就可以利用这个性质对D[]数组建立树状数组，代码为：</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+<pre class="prettyprint prettyprinted" style=""><span style="color: #008080;"><span class="pln"> </span><span class="lit">1</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">,</span><span class="pln">m</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">2</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> a</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="lit">0</span><span class="pun">},</span><span class="pln">c</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">];</span><span class="pln"> </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">对应原数组和树状数组</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">3</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">4</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> lowbit</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> x</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">5</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> x</span><span class="pun">&amp;(-</span><span style="color: #000000;"><span class="pln">x</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">6</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">7</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">8</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">void</span></span><span class="pln"> updata</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">,</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> k</span><span class="pun">){</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">在i位置加上k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">9</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&lt;=</span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">10</span></span><span class="pln">         c</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> k</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">11</span></span><span class="pln">         i </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">12</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">13</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">14</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">15</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> getsum</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">){</span><span class="pln">        </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">求D[1 - i]的和，即A[i]值</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">16</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">17</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&gt;</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">18</span></span><span class="pln">         res </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> c</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">19</span></span><span class="pln">         i </span><span class="pun">-=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">20</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">21</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span style="color: #000000;"><span class="pln"> res</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">22</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">23</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">24</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> main</span><span class="pun">(){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">25</span></span><span class="pln">     cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">n</span><span class="pun">;</span></span><span style="color: #008080;"><span class="lit">27</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">for</span></span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;=</span><span class="pln"> n</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++</span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">28</span></span><span class="pln">         cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">29</span></span><span class="pln">         updata</span><span class="pun">(</span><span class="pln">i</span><span class="pun">,</span><span class="pln">a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">-</span><span class="pln"> a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">-</span><span class="lit">1</span><span class="pun">]);</span><span class="pln">   </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">输入初值的时候，也相当于更新了值</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">31</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">32</span></span><span class="pln">     
+</span><span style="color: #008080;"><span class="lit">33</span></span><span class="pln">     </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">[x,y]区间内加上k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">34</span></span><span class="pln">     updata</span><span class="pun">(</span><span class="pln">x</span><span class="pun">,</span><span class="pln">k</span><span class="pun">);</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">A[x] - A[x-1]增加k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">35</span></span><span class="pln">     updata</span><span class="pun">(</span><span class="pln">y</span><span class="pun">+</span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">,-</span><span class="pln">k</span><span class="pun">);</span><span class="pln">        </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">A[y+1] - A[y]减少k</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">36</span></span><span class="pln">     
+</span><span style="color: #008080;"><span class="lit">37</span></span><span class="pln">     </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">查询i位置的值</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">38</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> sum </span><span class="pun">=</span><span style="color: #000000;"><span class="pln"> getsum</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">39</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">40</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">41</span></span><span class="pln"> </span><span class="pun">}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-size: 14pt;">这样就把，原来要更新一个区间的值变成了只需要更新两个点。也很容易理解吧。</span></p>
+<h2 id="autoid-0-0-0"><span style="font-size: 14pt;">4.区间更新、区间查询</span></h2>
+<p><span style="font-size: 14pt;">上面我们说的差值建树状数组，得到的是某个点的值，那如果我既要区间更新，又要区间查询怎么办。这里我们还是利用差分，由上面可知</span></p>
+<p><span style="font-size: 14pt;">∑<sup>n</sup><sub>i = 1</sub>A[i] =&nbsp;<span style="font-size: 14pt;">∑<sup>n</sup><sub>i = 1</sub></span> <span style="font-size: 14pt;"><span style="font-size: 14pt;">∑<sup>i</sup><sub>j = 1</sub>D[j];</span></span></span></p>
+<p><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 14pt;">则</span></span></span>A[1]+A[2]+...+A[n]</p>
+<p>&nbsp;</p>
+<p>= (D[1]) + (D[1]+D[2]) + ... + (D[1]+D[2]+...+D[n])&nbsp;</p>
+<p>&nbsp;</p>
+<p>= n*D[1] + (n-1)*D[2] +... +D[n]</p>
+<p>&nbsp;</p>
+<p>= n * (D[1]+D[2]+...+D[n]) - (0*D[1]+1*D[2]+...+(n-1)*D[n])</p>
+<p><span style="font-size: 14pt;">所以上式可以变为<span style="font-size: 14pt;">∑<sup>n</sup><sub>i = 1</sub>A[i] = n*<span style="font-size: 14pt;">∑<sup>n</sup><sub>i = 1</sub>D[i] -&nbsp; <span style="font-size: 14pt;"><span style="font-size: 14pt;">∑<sup>n</sup><sub>i = 1</sub>( D[i]*(i-1) );</span></span></span></span></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size: 14pt;">如果你理解前面的都比较轻松的话，这里也就知道要干嘛了，维护两个数状数组，sum1[i] = D[i]，sum2[i] = D[i]*(i-1);</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+<pre class="prettyprint prettyprinted" style=""><span style="color: #008080;"><span class="pln"> </span><span class="lit">1</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">,</span><span class="pln">m</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">2</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> a</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">};</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">3</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> sum1</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">];</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">(D[1] + D[2] + ... + D[n])</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">4</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> sum2</span><span class="pun">[</span><span style="color: #800080;"><span class="lit">50005</span></span><span class="pun">];</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">(1*D[1] + 2*D[2] + ... + n*D[n])</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">5</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="pln"> </span><span class="lit">6</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> lowbit</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> x</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">7</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> x</span><span class="pun">&amp;(-</span><span style="color: #000000;"><span class="pln">x</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">8</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="pln"> </span><span class="lit">9</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">10</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">void</span></span><span class="pln"> updata</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">,</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> k</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">11</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> x </span><span class="pun">=</span><span class="pln"> i</span><span class="pun">;</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">因为x不变，所以得先保存i值</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">12</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&lt;=</span><span style="color: #000000;"><span class="pln"> n</span><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">13</span></span><span class="pln">         sum1</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> k</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">14</span></span><span class="pln">         sum2</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">+=</span><span class="pln"> k </span><span class="pun">*</span><span class="pln"> </span><span class="pun">(</span><span class="pln">x</span><span class="pun">-</span><span style="color: #800080;"><span class="lit">1</span></span><span style="color: #000000;"><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">15</span></span><span class="pln">         i </span><span class="pun">+=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">16</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">17</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">18</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">19</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> getsum</span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i</span><span class="pun">){</span><span class="pln">        </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">求前缀和</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">20</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span class="pun">,</span><span class="pln"> x </span><span class="pun">=</span><span style="color: #000000;"><span class="pln"> i</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">21</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">while</span></span><span class="pun">(</span><span class="pln">i </span><span class="pun">&gt;</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">22</span></span><span class="pln">         res </span><span class="pun">+=</span><span class="pln"> x </span><span class="pun">*</span><span class="pln"> sum1</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">-</span><span style="color: #000000;"><span class="pln"> sum2</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">23</span></span><span class="pln">         i </span><span class="pun">-=</span><span style="color: #000000;"><span class="pln"> lowbit</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">24</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">25</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span style="color: #000000;"><span class="pln"> res</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">26</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">27</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">28</span></span><span class="pln"> </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span style="color: #000000;"><span class="pln"> main</span><span class="pun">(){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">29</span></span><span class="pln">     cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">n</span><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">30</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">for</span></span><span class="pun">(</span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;=</span><span class="pln"> n</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++</span><span style="color: #000000;"><span class="pun">){</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">31</span></span><span class="pln">         cin</span><span class="pun">&gt;&gt;</span><span style="color: #000000;"><span class="pln">a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">32</span></span><span class="pln">         updata</span><span class="pun">(</span><span class="pln">i</span><span class="pun">,</span><span class="pln">a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">-</span><span class="pln"> a</span><span class="pun">[</span><span class="pln">i</span><span class="pun">-</span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">]);</span><span class="pln">   </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">输入初值的时候，也相当于更新了值</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">33</span></span><span class="pln"> </span><span style="color: #000000;"><span class="pln">    </span><span class="pun">}</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">34</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">35</span></span><span class="pln">     </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">[x,y]区间内加上k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">36</span></span><span class="pln">     updata</span><span class="pun">(</span><span class="pln">x</span><span class="pun">,</span><span class="pln">k</span><span class="pun">);</span><span class="pln">    </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">A[x] - A[x-1]增加k</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">37</span></span><span class="pln">     updata</span><span class="pun">(</span><span class="pln">y</span><span class="pun">+</span><span style="color: #800080;"><span class="lit">1</span></span><span class="pun">,-</span><span class="pln">k</span><span class="pun">);</span><span class="pln">        </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">A[y+1] - A[y]减少k</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">38</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">39</span></span><span class="pln">     </span><span style="color: #008000;"><span class="com">//</span></span><span style="color: #008000;"><span class="com">求[x,y]区间和</span></span><span class="pln">
+</span><span style="color: #008080;"><span class="lit">40</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">int</span></span><span class="pln"> sum </span><span class="pun">=</span><span class="pln"> getsum</span><span class="pun">(</span><span class="pln">y</span><span class="pun">)</span><span class="pln"> </span><span class="pun">-</span><span class="pln"> getsum</span><span class="pun">(</span><span class="pln">x</span><span class="pun">-</span><span style="color: #800080;"><span class="lit">1</span></span><span style="color: #000000;"><span class="pun">);</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">41</span></span><span class="pln"> 
+</span><span style="color: #008080;"><span class="lit">42</span></span><span class="pln">     </span><span style="color: #0000ff;"><span class="kwd">return</span></span><span class="pln"> </span><span style="color: #800080;"><span class="lit">0</span></span><span style="color: #000000;"><span class="pun">;</span><span class="pln">
+</span></span><span style="color: #008080;"><span class="lit">43</span></span><span class="pln"> </span><span class="pun">}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" target="_blank" rel="noopener" onclick="copyCnblogsCode(this)" title="复制代码"><img src="//common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p><span style="font-size: 14pt;">再附赠两道模板题目，可以自行写一下以便理解</span></p>
+<p><span style="font-size: 14pt;">区间修改、单点查询模板题目：https://www.luogu.org/problem/show?pid=3368<br></span></p>
+<p><span style="font-size: 14pt;">区间修改、区间查询模板题目：https://vjudge.net/problem/POJ-3468</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size: 14pt;">PS：这里大致归纳了一维树状数组的所有要使用到的东西，二维建树以及更多变式就不说了，具体问题再具体分析。</span></p>
+<hr>
+<p>&nbsp;</p>
+<p><span style="font-size: 14pt;">后记：<span style="font-family: 楷体;">自己看了一下写的不是很好，特别是公式和图，都是用简单的画图和直接写的，没有用编辑器，也不能说我懒吧，毕竟精力有限啦，以后有空还是会去学的，带给大家更好的博客。手敲也不易，希望大家理解，多多支持。</span></span></p>
+<p><span style="font-size: 14pt;"><span style="font-family: 楷体;">不懂问我噢= =</span></span></p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%A5%E9%97%A8-%E4%BE%8B%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/18/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%A5%E9%97%A8-%E4%BE%8B%E9%A2%98/" class="post-title-link" itemprop="url">线段树入门</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-18 22:24:00 / 修改时间：22:32:00" itemprop="dateCreated datePublished" datetime="2019-11-18T22:24:00+08:00">2019-11-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <div class="htmledit_views" id="content_views">
+
+<div style="text-align:center;"><span style="font-size:48px;">线段树从零开始</span></div>
+<div style="text-align:center;"><br></div>
+<div style="text-align:center;"><span style="font-size:18px;">By shaojintian</span></div>
+<div style="text-align:center;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:24px;">一：为什么需要线段树？</span></div>
+<div style="text-align:left;">
+<div class="table-box"><table width="800" cellspacing="1" cellpadding="1" border="1"><tbody><tr><td><span style="font-size:18px;">题目一：<br>
+10000个正整数，编号1到10000，用A[1],A[2],A[10000]表示。<br>
+修改：无<br>
+统计：1.编号从L到R的所有数之和为多少？ 其中1&lt;= L &lt;= R &lt;= 10000.</span></td>
+</tr></tbody></table></div><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">方法一：对于统计L,R ，需要求下标从L到R的所有数的和，从L到R的所有下标记做[L..R],问题就是对A[L..R]进行求和。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">这样求和，对于每个询问，需要将(R-L+1)个数相加。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">方法二：更快的方法是求前缀和,令 S[0]=0, S[k]=A[1..k] ，那么，A[L..R]的和就等于S[R]-S[L-1]，</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">这样，对于每个询问，就只需要做一次减法，大大提高效率。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;">
+<div class="table-box"><table width="800" cellspacing="1" cellpadding="1" border="1"><tbody><tr><td><span style="font-size:18px;">题目二：<br>
+10000个正整数，编号从1到10000，用A[1],A[2],A[10000]表示。<br>
+修改：1.将第L个数增加C （1 &lt;= L &lt;= 10000）<br>
+统计：1.编号从L到R的所有数之和为多少？ 其中1&lt;= L &lt;= R &lt;= 10000.</span></td>
+</tr></tbody></table></div><span style="font-size:18px;"><br>
+再使用方法二的话，假如A[L]+=C之后，S[L],S[L+1],,S[R]都需要增加C,全部都要修改，见下表。<br></span>
+<div style="text-align:center;"><span style="font-size:18px;"><br></span></div>
+</div>
+<div style="text-align:left;">
+<div class="table-box"><table width="800" cellspacing="1" cellpadding="1" border="1" style="text-align:center;"><tbody><tr><td><span style="font-size:18px;"><br></span></td>
+<td><span style="font-size:18px;">方法一</span></td>
+<td><span style="font-size:18px;">方法二</span></td>
+</tr><tr><td><span style="font-size:18px;">A[L]+=C</span></td>
+<td><span style="font-size:18px;">修改1个元素</span></td>
+<td><span style="font-size:18px;">修改R-L+1个元素</span></td>
+</tr><tr><td><span style="font-size:18px;">求和A[L..R]</span></td>
+<td><span style="font-size:18px;">计算R-L+1个元素之和</span></td>
+<td><span style="font-size:18px;">计算两个元素之差</span></td>
+</tr></tbody></table></div><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">从上表可以看出，方法一修改快，求和慢。 方法二求和快，修改慢。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">那有没有一种结构，修改和求和都比较快呢？答案当然是线段树。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:24px;">二：线段树的点修改</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">上面的问题二就是典型的线段树点修改。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">线段树先将区间[1..10000]分成不超过4*10000个子区间，对于每个子区间，记录一段连续数字的和。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">之后，任意给定区间[L,R]，线段树在上述子区间中选择约2*log2(R-L+1)个拼成区间[L,R]。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">如果A[L]+=C ，线段树的子区间中，约有log2(10000)个包含了L，所以需要修改log2(10000)个。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">于是，使用线段树的话，</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">A[L]+=C 需要修改log2(10000) 个元素</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">求和A[L...R]需要修改2*log2(R-L+1) &lt;= 2 * log2(10000) 个元素。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">log2(10000) &lt; 14 所以相对来说线段树的修改和求和都比较快。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><br></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong>问题一：开始的子区间是怎么分的？</strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">首先是讲原始子区间的分解，假定给定区间[L,R]，只要L &lt; R ，线段树就会把它继续分裂成两个区间。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">首先计算 M = (L+R)/2，左子区间为[L,M]，右子区间为[M+1,R]，然后如果子区间不满足条件就递归分解。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">以区间[1..13]的分解为例，分解结果见下图：</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822213352759?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><strong><br></strong></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong>问题二：给定区间【L,R】，如何分解成上述给定的区间？</strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">对于给定区间[2,12]要如何分解成上述区间呢？</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong>分解方法一：自下而上合并——利于理解</strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"></span>
+<div style="font-family:Arial;font-size:14px;line-height:26px;">先考虑树的最下层，将所有在区间[2,12]内的点选中，然后，若相邻的点的直接父节点是同一个，那么就用这个父节点代替这两个节点（父节点在上一层）。这样操作之后，本层最多剩下两个节点。若最左侧被选中的节点是它父节点的右子树，那么这个节点会被剩下。若最右侧被选中的节点是它的父节点的左子树，那么这个节点会被剩下。中间的所有节点都被父节点取代。对最下层处理完之后，考虑它的上一层，继续进行同样的处理。</div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;"><br></div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;">下图为n=13的线段树，区间[2,12]，按照上面的叙述进行操作的过程图：</div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20150909172342229?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><img src="https://img-blog.csdn.net/20150909172350036?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><img src="https://img-blog.csdn.net/20150909172354161?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><img src="https://img-blog.csdn.net/20150909172357585?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><br></div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;">由图可以看出：在n=13的线段树中，[2,12]=[2] + [3,4] + [5,7] + [8,10] + [11,12] 。</div>
+<div style="font-family:Arial;line-height:26px;"><strong><br></strong></div>
+<div style="font-family:Arial;line-height:26px;"><strong><span style="font-size:18px;">分解方法二：自上而下分解——利于计算</span></strong></div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20160822220027137?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;">首先对于区间[1,13]，计算(1+13)/2 = 7，于是将区间[2,12]“切割”成了[2,7]和[8,12]。</div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20160822220059591?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;">其中[2,7]处于节点[1,7]的位置，[2,7] &lt; [1,7] 所以继续分解，计算(1+7)/2 = 4, 于是将[2,7] 切割成[2,4]和[5,7]。</div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20160822220118296?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
+<div style="font-family:Arial;font-size:14px;line-height:26px;">[5,7]处于节点[5,7]的位置，所以不用继续分解，[2,4]处于区间[1,4]的位置，所以继续分解成[2]和[3,4]。</div>
+<img src="https://img-blog.csdn.net/20160822220140874?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
+<div style="text-align:left;">
+<div style="text-align:left;"><span style="font-size:18px;">最后【2】 &lt; 【1,2】，所以计算(1+2)/2=1 ，将【2】用1切割，左侧为空，右侧为【2】</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822220311424?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">当然程序是递归计算的，不是一层一层计算的，上图只表示计算方法，不代表计算顺序。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong>问题三：如何进行区间统计？</strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">假设这13个数为1,2,3,4,1,2,3,4,1,2,3,4,1. 在区间之后标上该区间的数字之和：</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822221733583?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">如果要计算[2,12]的和，按照之前的算法：</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><span style="font-family:Arial;font-size:14px;line-height:26px;">[2,12]=[2] + [3,4] + [5,7] + [8,10] + [11,12]</span></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><span style="font-family:Arial;font-size:14px;line-height:26px;">&nbsp; 29 &nbsp;= 2 + 7 + 6 + 7 + 7</span></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><span style="font-family:Arial;font-size:14px;line-height:26px;">计算5个数的和就可以算出[2,12]的值。</span></span></div>
+<div style="text-align:left;"><br></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong>问题四：如何进行点修改？</strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;">假设把A[6]+=7 ,看看哪些区间需要修改？[6],[5,6],[5,7],[1,7],[1,13]这些区间全部都需要+7.其余所有区间都不用动。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">于是，这颗线段树中，点修改最多修改5个线段树元素（每层一个）。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;">下图中，修改后的元素用蓝色表示。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822222554087?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong>问题五：存储结构是怎样的？</strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+<div style="text-align:left;"><span style="font-size:14px;">线段树是一种二叉树，当然可以像一般的树那样写成结构体，指针什么的。</span></div>
+<div style="text-align:left;"><span style="font-size:14px;">但是它的优点是，它也可以用数组来实现树形结构，可以大大简化代码。</span></div>
+<div style="text-align:left;"><span style="font-size:14px;">数组形式适合在编程竞赛中使用，在已经知道线段树的最大规模的情况下，直接开足够空间的数组，然后在上面建立线段树。<br>
+简单的记法： 足够的空间 = 数组大小n的四倍。 <br>
+实际上足够的空间 =&nbsp; （n向上扩充到最近的2的某个次方）的两倍。<br>
+举例子：假设数组长度为5，就需要5先扩充成8，8*2=16.线段树需要16个元素。如果数组元素为8，那么也需要16个元素。<br>
+所以线段树需要的空间是n的两倍到四倍之间的某个数，一般就开4*n的空间就好，如果空间不够，可以自己算好最大值来省点空间。<br><br></span></div>
+<div style="text-align:left;"><span style="font-size:14px;">怎么用数组来表示一颗二叉树呢？假设某个节点的编号为v,那么它的左子节点编号为2*v，右子节点编号为2*v+1。</span></div>
+<div style="text-align:left;"><span style="font-size:14px;">然后规定根节点为1.这样一颗二叉树就构造完成了。通常2*v在代码中写成 v&lt;&lt;1 。 2*v+1写成 v&lt;&lt;1|1 。</span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong><br></strong></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><strong></strong></span></div>
+<div style="font-family:Arial;font-size:14px;"><span style="font-size:18px;"><strong>问题六：代码中如何实现？</strong></span></div>
+<div style="font-family:Arial;font-size:14px;"><span style="font-size:18px;"></span>
+<p style="line-height:26px;">
+</p>
+<p style="line-height:26px;">
+<strong>(0)定义：</strong></p>
+<div style="line-height:26px;">
+<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
+<div class="bar">
+<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
+<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
+ plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
+<div style="width:27px;z-index:99;">
+</div>
+&nbsp;
+<div style="width:29px;z-index:99;">
+</div>
+&nbsp;<div style="position: absolute; left: 631px; top: 7638px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 7638px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_5" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_5" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=5&amp;width=16&amp;height=16" wmode="transparent"></div></div>
+</div>
+<ol start="1" class="dp-cpp" style="border:none;"><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;"><span class="preprocessor" style="color:#808080;border:none;">#define&nbsp;maxn&nbsp;100007&nbsp;&nbsp;//元素总个数</span><span style="border:none;">&nbsp;&nbsp;</span></span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="border:none;"><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;Sum[maxn&lt;&lt;2];<span>//Sum求和，开四倍空间</span></span><span style="border:none;"></span></span></li><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="border:none;"><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;A[maxn],n;//<span>存原数组下标[1，n]</span></span><span style="color:#000000;border:none;"><br></span></span></li></ol></div>
+</div>
+<p style="line-height:26px;">
+<strong>(1)建树：</strong></p>
+<div style="line-height:26px;">
+<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
+<div class="bar">
+<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
+<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
+ plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
+<div style="width:27px;z-index:99;">
+</div>
+&nbsp;
+<div style="width:29px;z-index:99;">
+</div>
+&nbsp;<div style="position: absolute; left: 631px; top: 7807px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_2" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_2" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 7807px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_6" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_6" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=6&amp;width=16&amp;height=16" wmode="transparent"></div></div>
+</div>
+<ol start="1" class="dp-cpp" style="border:none;color:rgb(92,92,92);"><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;"><span style="border:none;">//PushUp函数更新节点信息，这里是求和</span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;"><span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">void</span><span style="border:none;">&nbsp;PushUp(</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){Sum[rt]=Sum[rt&lt;&lt;1]+Sum[rt&lt;&lt;1|1];}&nbsp;&nbsp;</span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;"><span style="border:none;">//Build函数建立线段树<br></span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;"><span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">void</span><span style="border:none;">&nbsp;Build(</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;l,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;r,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){
+ //[l,r]表示当前节点区间，rt表示当前节点的实际存储位置</span><span style="border:none;">&nbsp;<br></span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(l==r)&nbsp;{</span><span>//<span>若到达叶节点</span></span><span style="border:none;">&nbsp;<br></span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sum[rt]=A[l];<span>//<span>存储A数组的值</span></span><span style="border:none;"><br></span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">;&nbsp;&nbsp;</span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;m=(l+r)&gt;&gt;1;&nbsp;&nbsp;</span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;<span style="border:none;">//左右递归<br></span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;Build(l,m,rt&lt;&lt;1);&nbsp;&nbsp;</span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;Build(m+1,r,rt&lt;&lt;1|1);&nbsp;&nbsp;</span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp; //更新信息<span style="border:none;"><br></span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;PushUp(rt);&nbsp;&nbsp;</span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
+<span style="color:#000000;border:none;">}&nbsp;&nbsp;</span></li></ol></div>
+<br></div>
+<p style="line-height:26px;">
+<strong>(2)点修改：</strong></p>
+<div style="line-height:26px;">假设A[L]+=C:</div>
+<div style="line-height:26px;">
+<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
+<div class="bar">
+<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
+<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
+ plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
+<div style="width:27px;z-index:99;">
+</div>
+&nbsp;
+<div style="width:29px;z-index:99;">
+</div>
+&nbsp;<div style="position: absolute; left: 631px; top: 8260px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_3" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_3" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 8260px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_7" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_7" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=7&amp;width=16&amp;height=16" wmode="transparent"></div></div>
+</div>
+<ol start="1" class="dp-cpp" style="border:none;"><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;"><span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">void</span><span style="border:none;">&nbsp;Update(</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;L,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;C,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;l,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;r,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){//[l,r]表示当前区间，rt是当前节点编号</span><span class="comment" style="border:none;">//l,r表示当前节点区间，rt表示当前节点编号</span><span style="border:none;">&nbsp;&nbsp;</span></span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(l==r){<span style="color:#000140;">//到达叶节点，修改叶节点的值</span></span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sum[rt]+=C;&nbsp;&nbsp;</span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">;&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;m=(l+r)&gt;&gt;1;&nbsp;&nbsp;</span></span></li><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp; &nbsp;</span><span style="border:none;"><span>//根据条件判断往左子树调用还是往右</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(L&nbsp;&lt;=&nbsp;m)&nbsp;Update(L,C,l,m,rt&lt;&lt;1);&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">else</span><span style="border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update(L,C,m+1,r,rt&lt;&lt;1|1);&nbsp;&nbsp;</span></span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;PushUp(rt);</span><span style="border:none;"><span>//子节点的信息更新了，所以本节点也要更新信息</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">} &nbsp;&nbsp;</span></li></ol></div>
+</div>
+<div style="line-height:26px;">
+<p>
+点修改其实可以写的更简单，只需要把一路经过的Sum都+=C就行了，不过上面的代码更加规范，在题目更加复杂的时候，按照格式写更不容易错。</p>
+<p>
+<strong><br></strong></p>
+<p>
+<strong>(3)区间查询（本题为求和）：</strong></p>
+</div>
+<div style="line-height:26px;">询问A[L..R]的和</div>
+<div style="line-height:26px;">注意到，整个函数的递归过程中，L,R是不变的。</div>
+<div style="line-height:26px;">首先如果当前区间[l,r]在[L,R]内部，就直接累加答案</div>
+<div style="line-height:26px;">如果左子区间与[L,R]有重叠，就递归左子树，右子树同理。</div>
+<div style="line-height:26px;">
+<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
+<div class="bar">
+<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
+<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
+ plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
+<div style="width:27px;z-index:99;">
+</div>
+&nbsp;
+<div style="width:29px;z-index:99;">
+</div>
+&nbsp;<div style="position: absolute; left: 631px; top: 8803px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_4" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_4" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=4&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 8803px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_8" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_8" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=8&amp;width=16&amp;height=16" wmode="transparent"></div></div>
+</div>
+<ol start="1" class="dp-cpp" style="border:none;"><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="border:none;"><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;Query(</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;L,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;R,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;l,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;r,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){<span style="color:#000140;">//[L,R]表示操作区间，[l,r]表示当前区间，rt:当前节点编号</span></span><span style="color:#000000;border:none;"></span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(L&nbsp;&lt;=&nbsp;l&nbsp;&amp;&amp;&nbsp;r&nbsp;&lt;=&nbsp;R){&nbsp;&nbsp;</span></span></li><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="border:none;"><span>//在区间内直接返回</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">&nbsp;Sum[rt];&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;m=(l+r)&gt;&gt;1;
+ &nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp; &nbsp; //左子区间:[l,m] 右子区间：[m+1,r] &nbsp;求和区间:[L,R]</span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp; &nbsp;</span><span style="border:none;"><span style="color:#000140;">//累加答案</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;ANS=0;&nbsp;&nbsp;</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(L&nbsp;&lt;=&nbsp;m)&nbsp;ANS+=Query(L,R,l,m,rt&lt;&lt;1);//左子区间与[L,R]有重叠，递归</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(R&nbsp;&gt;&nbsp;&nbsp;m)&nbsp;ANS+=Query(L,R,m+1,r,rt&lt;&lt;1|1);
+ //右子区间与[L,R]有重叠，递归</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">&nbsp;ANS;&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
+<span style="color:#000000;border:none;">} &nbsp;&nbsp;</span></li></ol></div>
+</div>
+</div>
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16">
+</div>
+<div style="text-align:left;"><span style="font-size:14px;"><br></span><br><br></div>
+<div style="text-align:left;"><span style="font-size:18px;"><span style="font-size:24px;">最后：<br><br><span style="font-size:14px;">线段树还有更多的用法，比如区间修改，扫描线，非递归写法等 </span><br></span></span></div>
+<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
+</div>
+<div style="text-align:left;"><br></div>
+                                    </div>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E7%AE%97%E6%B3%95%E5%92%8C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB%E5%92%8C%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -865,234 +1617,6 @@ N为样本总数。 <br>
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9A%848%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9A%848%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">回溯法的8皇后问题</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:06:19" itemprop="dateCreated datePublished" datetime="2019-11-18T21:06:19+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> backtrack;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Queens_demo</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">8</span>];<span class="comment">// 全局或成员变量, 下标表示行, 值表示 queen 存储在哪一列</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">cal8queens</span><span class="params">(<span class="keyword">int</span> row)</span> </span>&#123; <span class="comment">// 调用方式：cal8queens(0);</span></span><br><span class="line">	  <span class="keyword">if</span> (row == <span class="number">8</span>) &#123; <span class="comment">// 8 个棋子都放置好了，打印结果</span></span><br><span class="line">	    printQueens(result);</span><br><span class="line">	    <span class="keyword">return</span>; <span class="comment">// 8 行棋子都放好了，已经没法再往下递归了，所以就 return</span></span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> column = <span class="number">0</span>; column &lt; <span class="number">8</span>; ++column) &#123; <span class="comment">// 每一行都有 8 中放法</span></span><br><span class="line">	    <span class="keyword">if</span> (isOk(row, column)) &#123; <span class="comment">// 有些放法不满足要求</span></span><br><span class="line">	      result[row] = column; <span class="comment">// 第 row 行的棋子放到了 column 列</span></span><br><span class="line">	      cal8queens(row+<span class="number">1</span>); <span class="comment">// 考察下一行</span></span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="keyword">boolean</span> <span class="title">isOk</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> column)</span> </span>&#123;<span class="comment">// 判断 row 行 column 列放置是否合适</span></span><br><span class="line">	  <span class="keyword">int</span> leftup = column - <span class="number">1</span>, rightup = column + <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> i = row-<span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123; <span class="comment">// 逐行往上考察每一行</span></span><br><span class="line">	    <span class="keyword">if</span> (result[i] == column) <span class="keyword">return</span> <span class="keyword">false</span>; <span class="comment">// 第 i 行的 column 列有棋子吗？</span></span><br><span class="line">	    <span class="keyword">if</span> (leftup &gt;= <span class="number">0</span>) &#123; <span class="comment">// 考察左上对角线：第 i 行 leftup 列有棋子吗？</span></span><br><span class="line">	      <span class="keyword">if</span> (result[i] == leftup) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="keyword">if</span> (rightup &lt; <span class="number">8</span>) &#123; <span class="comment">// 考察右上对角线：第 i 行 rightup 列有棋子吗？</span></span><br><span class="line">	      <span class="keyword">if</span> (result[i] == rightup) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    --leftup; ++rightup;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printQueens</span><span class="params">(<span class="keyword">int</span>[] result)</span> </span>&#123; <span class="comment">// 打印出一个二维矩阵</span></span><br><span class="line">		System.out.println(<span class="string">"result:"</span>);</span><br><span class="line">	  <span class="keyword">for</span> (<span class="keyword">int</span> row = <span class="number">0</span>; row &lt; <span class="number">8</span>; ++row) &#123;</span><br><span class="line">	    <span class="keyword">for</span> (<span class="keyword">int</span> column = <span class="number">0</span>; column &lt; <span class="number">8</span>; ++column) &#123;</span><br><span class="line">	      <span class="keyword">if</span> (result[row] == column) System.out.print(<span class="string">"Q "</span>);</span><br><span class="line">	      <span class="keyword">else</span> System.out.print(<span class="string">"* "</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	    System.out.println();</span><br><span class="line">	  &#125;</span><br><span class="line">	  System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		cal8queens(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>每次递归返回都会返回到上一层。</p>
-<p>如果递归不到下一层，就会在当前层继续向后查询。</p>
-<p>只有能填完整后也就是<br><img src="https://img-blog.csdnimg.cn/20190514173324347.png" alt="在这里插入图片描述"><br>就会输出一次结果。</p>
-<p>然后继续根据状态空间树做DFS知道输出所有结果</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5/" class="post-title-link" itemprop="url">阻塞和非阻塞，同步和异步</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:06:11" itemprop="dateCreated datePublished" datetime="2019-11-18T21:06:11+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post" style="height: 2598px; overflow: hidden;">
-            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-f57960eb32.css">
-                              <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-f57960eb32.css">
-          <div class="htmledit_views" id="content_views">
-            <h1 style="margin-top:10px;margin-bottom:10px;padding:0px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t0"></a>阻塞和非阻塞，同步和异步</h1><h2 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:21px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t1"></a>1 例子</h2><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">故事：老王烧开水。</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">出场人物：老张，水壶两把（普通水壶，简称水壶；会响的水壶，简称响水壶）。</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">老王想了想，有好几种等待方式</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">1.老王用水壶煮水，并且<span style="margin:0px;padding:0px;">站在那里</span>，<span style="margin:0px;padding:0px;">不管水开没开，每隔一定时间看看水开了没</span>。－<span style="margin:0px;padding:0px;">同步阻塞</span></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">老王想了想，这种方法不够聪明。</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">2.老王还是用水壶煮水，不再傻傻的站在那里看水开，<span style="margin:0px;padding:0px;">跑去寝室上网</span>，<span style="margin:0px;padding:0px;">但是还是会每隔一段时间过来看看水开了没有，水没有开就走人</span>。－<span style="margin:0px;padding:0px;">同步非阻塞</span></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">老王想了想，现在的方法聪明了些，但是还是不够好。</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">3.老王这次使用高大上的响水壶来煮水，<span style="margin:0px;padding:0px;">站在那里</span>，<span style="margin:0px;padding:0px;">但是不会再每隔一段时间去看水开，而是等水开了，水壶会自动的通知他</span>。－<span style="margin:0px;padding:0px;">异步阻塞</span></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">老王想了想，不会呀，既然水壶可以通知我，那我为什么还要傻傻的站在那里等呢，嗯，得换个方法。</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">4.老王还是使用响水壶煮水，<span style="margin:0px;padding:0px;">跑到客厅上网去</span>，等着响水壶<span style="margin:0px;padding:0px;">自己把水煮熟了以后通知他</span>。－<span style="margin:0px;padding:0px;">异步非阻塞</span></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">老王豁然，这下感觉轻松了很多。</p><hr style="margin-top:0px;margin-bottom:0px;padding:0px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><ul style="margin-bottom:0px;margin-left:30px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;"><p style="margin:10px auto;"><span style="margin:0px;padding:0px;">同步和异步</span></p><p style="margin:10px auto;">同步就是烧开水，需要自己去轮询（每隔一段时间去看看水开了没），异步就是水开了，然后水壶会通知你水已经开了，你可以回来处理这些开水了。<br style="margin:0px;padding:0px;">同步和异步是相对于操作结果来说，会不会等待结果返回。</p></li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;"><p style="margin:10px auto;"><span style="margin:0px;padding:0px;">阻塞和非阻塞</span></p><p style="margin:10px auto;">阻塞就是说在煮水的过程中，你不可以去干其他的事情，非阻塞就是在同样的情况下，可以同时去干其他的事情。阻塞和非阻塞是相对于线程是否被阻塞。</p></li></ul><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">其实，这两者存在本质的区别，它们的修饰对象是不同的。阻塞和非阻塞是指进程访问的数据如果尚未就绪，进程是否需要等待，简单说这相当于函数内部的实现区别，也就是未就绪时是直接返回还是等待就绪。<br style="margin:0px;padding:0px;">而同步和异步是指访问数据的机制,同步一般指主动请求并等待I/O操作完毕的方式,当数据就绪后在读写的时候必须阻塞,异步则指主动请求数据后便可以继续处理其它任务,随后等待I/O,操作完毕的通知,这可以使进程在数据读写时也不阻塞。</p><h2 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:21px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t2"></a>2 详细介绍</h2><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">网络IO的模型大致包括下面几种</p><ul style="margin-bottom:0px;margin-left:30px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;">同步模型（synchronous IO）<ul style="margin-bottom:0px;margin-left:30px;"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;list-style:circle;">阻塞IO（bloking IO）</li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;list-style:circle;">非阻塞IO（non-blocking IO）</li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;list-style:circle;">多路复用IO（multiplexing IO）</li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;list-style:circle;">信号驱动式IO（signal-driven IO）</li></ul></li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;">异步IO（asynchronous IO）<ul style="margin-bottom:0px;margin-left:30px;"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;list-style:circle;">异步IO</li></ul></li></ul><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">网络IO的本质是socket的读取，socket在linux系统被抽象为流，IO可以理解为对流的操作。对于一次IO访问，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间，所以一般会经历两个阶段：</p><ol style="margin-bottom:0px;padding-left:40px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin:0px 0px 1em;padding:0px;">等待所有数据都准备好或者一直在等待数据，有数据的时候将数据拷贝到系统内核；</li><li style="margin:0px 0px 1em;padding:0px;">将内核缓存中数据拷贝到用户进程中；</li></ol><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">对于socket流而言：</p><ol style="margin-bottom:0px;padding-left:40px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin:0px 0px 1em;padding:0px;">等待网络上的数据分组到达，然后被复制到内核的某个缓冲区；</li><li style="margin:0px 0px 1em;padding:0px;">把数据从内核缓冲区复制到应用进程缓冲区中；</li></ol><h3 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:16px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t3"></a>2.1 阻塞IO</h3><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.1.1 介绍</h4><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">这也是最常用的模型，默认情况下所有的套接字都是&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">阻塞</code>&nbsp;的；</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="http://odwv9d2u8.bkt.clouddn.com/17-4-12/26414081-file_1491994457423_13e6d.png" style="padding:0px;border:0px;max-width:700px;" alt=""></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">我们把recvfrom函数视为系统调用，因为我们正区分进程和内核，系统调用一般都会从在应用进程空间中运行切换到内核空间中运行，一段时间后又再切换回来；</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">我们可以从图中看到，应用进程从&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">进行系统调用</code>&nbsp;到&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">复制数据报到应用进程的缓冲区完成</code>&nbsp;的整段时间内是被阻塞的；在这个过程中，要么正确到达，要么系统调用被信号打断；直到数据报被复制到用户进程完成后，用户进程才解除阻塞的状态，当然，这是用户进程自己进行的阻塞；</p><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.1.2 优点和缺点</h4><ul style="margin-bottom:0px;margin-left:30px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;">优点：能够及时返回数据，无延迟；方便调试；</li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;">缺点：需要付出等待的代价；</li></ul><h3 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:16px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t4"></a>2.2 非阻塞IO</h3><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.2.1 介绍</h4><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">非阻塞，当所请求的I/O操作非得把当前进程设置成睡眠才能完成时，不要把当前进程设置成睡眠，而是返回一个错误信息（数据报没有准备好的情况下），此时当前进程可以做其它的事情，不用阻塞；</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="http://odwv9d2u8.bkt.clouddn.com/17-4-12/27967427-file_1491997152954_10575.png" style="padding:0px;border:0px;max-width:700px;" alt=""></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">从图中可以得知，前三次系统调用时都没有数据可以返回，内核均返回一个&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">EWOULDBLOCK</code>，并且不会阻塞当前进程，直到第四次询问内核缓冲区是否有数据的时候，此时内核缓冲区中已经有一个准备好的数据，因此将内核数据复制到用户空间，此时系统调用则返回成功；</p><blockquote style="margin-top:10px;margin-bottom:10px;padding:5px 10px;background:rgb(255,255,255) none;border:2px solid rgb(239,239,239);min-height:35px;line-height:1.6em;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;"><p style="margin:10px auto;">当一个应用进程像这样对一个非阻塞socket循环调用&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">recv/recvfrom</code>&nbsp;时，则称为轮询；应用进程持续轮询内核，以查看某个操作是否就绪，这么做往往消耗大量的CPU时间。</p></blockquote><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.2.2 优点和缺点</h4><ul style="margin-bottom:0px;margin-left:30px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;"><p style="margin:10px auto;">优点：相较于阻塞模型，非阻塞不用再等待任务，而是把时间花费到其它任务上，也就是这个当前线程同时处理多个任务；</p></li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;"><p style="margin:10px auto;">缺点：导致任务完成的响应延迟增大了，因为每隔一段时间才去执行询问的动作，但是任务可能在两个询问动作的时间间隔内完成，这会导致整体数据吞吐量的降低。</p></li></ul><h3 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:16px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t5"></a>2.3 IO多路复用</h3><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.3.1 介绍</h4><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">有了I/O复用，我们就可以调用&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">select或poll</code>，让其阻塞在两个系统调用（1.询问数据是否准备好并且直到数据准备好才返回；2.内核是否把数据全部复制完成到用户进程）中的某一个之上</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="http://odwv9d2u8.bkt.clouddn.com/17-4-12/2193057-file_1491998838696_160a3.png" style="padding:0px;border:0px;max-width:700px;" alt=""></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">图中阻塞于&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">select</code>&nbsp;调用，等待数据报套接字变为可读。当select返回套接字可读这一条件的时候，则调用&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">recvfrom</code>&nbsp;把所读数据报复制到应用进程缓冲区；</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">之前的同步非阻塞方式需要用户进程不停的轮询，但是IO多路复用不需要不停的轮询，而是派别人去帮忙循环查询多个任务的完成状态，UNIX/Linux 下的&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">select、poll、epoll</code>&nbsp;就是干这个的；select调用是内核级别的，select轮询相对非阻塞的轮询的区别在于---前者可以等待多个socket，能实现同时对多个IO端口进行监听，当其中任何一个socket的数据准好了，就能返回进行可读，然后进程再进行recvform系统调用，将数据由内核拷贝到用户进程，当然这个过程是阻塞的。select或poll调用之后，会阻塞进程，与blocking IO阻塞不同在于，此时的select不是等到socket数据全部到达再处理, 而是有了一部分数据（网络上的数据是分组到达的）就会调用用户进程来处理。如何知道有一部分数据到达了呢？监视的事情交给了内核，内核负责数据到达的处理。</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">我认为上面那句话中存在两个重要点：1.对多个socket进行监听，只要任何一个socket数据准备好就返回可读；2.不等一个socket数据全部到达再处理，而是一部分socket的数据到达了就通知用户进程；</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">其实&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">select、poll、epoll</code>&nbsp;的原理就是不断的遍历所负责的所有的socket完成状态，当某个socket有数据到达了，就返回可读并通知用户进程来处理；</p><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.3.2 优点和缺点</h4><ul style="margin-bottom:0px;margin-left:30px;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;">优点：能够同时处理多个连接，系统开销小，系统不需要创建新的额外进程或者线程，也不需要维护这些进程和线程的运行，降低了系统的维护工作量，节省了系统资源。</li><li style="margin-top:0px;margin-bottom:1em;margin-left:0px;padding:0px;">缺点：如果处理的连结数目不高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。（因为阻塞可以保证没有延迟，但是多路复用是处理先存在的数据，所以数据的顺序则不管，导致处理一个完整的任务的时间上有延迟）</li></ul><h4 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:14px;color:rgb(51,51,51);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);">2.3.3 同步非阻塞和多线程＋同步阻塞</h4><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">高并发的程序一般使用同步非阻塞方式而非多线程 + 同步阻塞方式。要理解这一点，首先要扯到并发和并行的区别。比如去某部门办事需要依次去几个窗口，办事大厅里的人数就是并发数，而窗口个数就是并行度。也就是说并发数是指同时进行的任务数（如同时服务的 HTTP 请求），而并行数是可以同时工作的物理资源数量（如 CPU 核数）。通过合理调度任务的不同阶段，并发数可以远远大于并行度，这就是区区几个 CPU 可以支持上万个用户并发请求的奥秘。在这种高并发的情况下，为每个任务（用户请求）创建一个进程或线程的开销非常大。而同步非阻塞方式可以把多个 IO 请求丢到后台去，这就可以在一个进程里服务大量的并发 IO 请求。</p><h3 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:16px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t6"></a>2.4 信号驱动式I/O模型</h3><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="http://odwv9d2u8.bkt.clouddn.com/17-4-12/66043283-file_1492002950669_22bd.png" style="padding:0px;border:0px;max-width:700px;" alt=""></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">首先开启套接字的信号驱动式IO功能，并且通过&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">sigaction</code>&nbsp;系统调用安装一个信号处理函数，该函数调用将立即返回，当前进程没有被阻塞，继续工作；当数据报准备好的时候，内核则为该进程产生&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">SIGIO</code>&nbsp;的信号，随后既可以在信号处理函数中调用&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">recvfrom</code>&nbsp;读取数据报，并且通知主循环数据已经准备好等待处理，也可以通知主循环让它读取数据报；（其实就是一个待读取的通知和待处理的通知）；</p><h3 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:16px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t7"></a>2.5 异步式I/O模型</h3><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="http://odwv9d2u8.bkt.clouddn.com/17-4-12/75136497-file_1492004375006_bcbe.png" style="padding:0px;border:0px;max-width:700px;" alt=""></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);">我们调用&nbsp;<code style="margin:1px 5px;line-height:1.8;vertical-align:middle;padding:0px 5px;font-family:'Courier New', sans-serif;background-color:rgb(245,245,245);border:1px solid rgb(204,204,204);">aio_read</code>&nbsp;函数，给内核传递描述符、缓冲区指针、缓冲区大小和文件偏移，并且告诉内核当整个操作完成时如何通知我们。该函数调用后立即返回，不被阻塞；</p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="https://img-blog.csdn.net/20180508162059790?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NhaXNvbmdjaGVuZ19nb29k/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""><br></p><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"></p><h3 style="margin-top:10px;margin-bottom:10px;padding:0px;font-size:16px;line-height:1.5;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;text-align:left;background-color:rgb(255,255,255);"><a name="t8"></a>2.6 比较</h3><p style="margin:10px auto;color:rgb(0,0,0);font-family:'Helvetica Neue', Helvetica, Verdana, Arial, sans-serif;font-size:14px;text-align:left;background-color:rgb(255,255,255);"><img src="http://odwv9d2u8.bkt.clouddn.com/17-4-12/48821302-file_1492005018721_d9f5.png" style="padding:0px;border:0px;max-width:700px;" alt=""></p>参考文章：https://www.cnblogs.com/George1994/p/6702084.html          </div>
-                  </div>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E6%B5%85%E8%B0%88select%EF%BC%8Cpoll%EF%BC%8Cepoll/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/%E6%B5%85%E8%B0%88select%EF%BC%8Cpoll%EF%BC%8Cepoll/" class="post-title-link" itemprop="url">浅谈select，poll，epoll</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:05:58" itemprop="dateCreated datePublished" datetime="2019-11-18T21:05:58+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <div class="postBody">
-            <div id="cnblogs_post_body" class="blogpost-body"><p>　　<span>  select，poll，epoll都是IO多路复用的机制。I/O多路复用就通过一种机制，可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。<span style="color: #ff0000;"><strong>但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的</strong></span>，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。</span>关于这三种IO多路复用的用法，前面三篇总结写的很清楚，并用服务器回射echo程序进行了测试。连接如下所示：</p>
-<p>select：<a href="http://www.cnblogs.com/Anker/archive/2013/08/14/3258674.html" target="_blank" rel="noopener">http://www.cnblogs.com/Anker/archive/2013/08/14/3258674.html</a></p>
-<p>poll：<a href="http://www.cnblogs.com/Anker/archive/2013/08/15/3261006.html" target="_blank" rel="noopener">http://www.cnblogs.com/Anker/archive/2013/08/15/3261006.html</a></p>
-<p>epoll：<a href="http://www.cnblogs.com/Anker/archive/2013/08/17/3263780.html" target="_blank" rel="noopener">http://www.cnblogs.com/Anker/archive/2013/08/17/3263780.html</a></p>
-<p>　　今天对这三种IO多路复用进行对比，参考网上和书上面的资料，整理如下：</p>
-<p><strong>1、select实现</strong></p>
-<p><span style="color: #0000ff;"><strong>select的调用过程如下所示：</strong></span></p>
-<p><strong><img src="https://images0.cnblogs.com/blog/305504/201308/17201205-8ac47f1f1fcd4773bd4edd947c0bb1f4.png" alt=""></strong></p>
-<p>（1）使用copy_from_user从用户空间拷贝fd_set到内核空间</p>
-<p>（2）注册回调函数__pollwait</p>
-<p>（3）遍历所有fd，调用其对应的poll方法（对于socket，这个poll方法是sock_poll，sock_poll根据情况会调用到tcp_poll,udp_poll或者datagram_poll）</p>
-<p>（4）以tcp_poll为例，其核心实现就是__pollwait，也就是上面注册的回调函数。</p>
-<p>（5）__pollwait的主要工作就是把current（当前进程）挂到设备的等待队列中，不同的设备有不同的等待队列，对于tcp_poll来说，其等待队列是sk-&gt;sk_sleep（注意把进程挂到等待队列中并不代表进程已经睡眠了）。在设备收到一条消息（网络设备）或填写完文件数据（磁盘设备）后，会唤醒设备等待队列上睡眠的进程，这时current便被唤醒了。</p>
-<p>（6）poll方法返回时会返回一个描述读写操作是否就绪的mask掩码，根据这个mask掩码给fd_set赋值。</p>
-<p>（7）如果遍历完所有的fd，还没有返回一个可读写的mask掩码，则会调用schedule_timeout是调用select的进程（也就是current）进入睡眠。当设备驱动发生自身资源可读写后，会唤醒其等待队列上睡眠的进程。如果超过一定的超时时间（schedule_timeout指定），还是没人唤醒，则调用select的进程会重新被唤醒获得CPU，进而重新遍历fd，判断有没有就绪的fd。</p>
-<p>（8）把fd_set从内核空间拷贝到用户空间。</p>
-<p><strong>总结：</strong></p>
-<p><span style="color: #ff0000;"><strong>select的几大缺点：</strong></span></p>
-<p><span style="color: #ff0000;"><strong>（1）每次调用select，都需要把fd集合从用户态拷贝到内核态，这个开销在fd很多时会很大</strong></span></p>
-<p><span style="color: #ff0000;"><strong>（2）同时每次调用select都需要在内核遍历传递进来的所有fd，这个开销在fd很多时也很大</strong></span></p>
-<p><span style="color: #ff0000;"><strong>（3）select支持的文件描述符数量太小了，默认是1024</strong></span></p>
-<p><strong>2 poll实现</strong></p>
-<p>　　poll的实现和select非常相似，只是描述fd集合的方式不同，poll使用pollfd结构而不是select的fd_set结构，其他的都差不多。</p>
-<p>关于select和poll的实现分析，可以参考下面几篇博文：</p>
-<p><a href="http://blog.csdn.net/lizhiguo0532/article/details/6568964#comments" target="_blank" rel="noopener">http://blog.csdn.net/lizhiguo0532/article/details/6568964#comments</a></p>
-<p><a href="http://blog.csdn.net/lizhiguo0532/article/details/6568968" target="_blank" rel="noopener">http://blog.csdn.net/lizhiguo0532/article/details/6568968</a></p>
-<p><a href="http://blog.csdn.net/lizhiguo0532/article/details/6568969" target="_blank" rel="noopener">http://blog.csdn.net/lizhiguo0532/article/details/6568969</a></p>
-<p><a href="http://www.ibm.com/developerworks/cn/linux/l-cn-edntwk/index.html?ca=drs-" target="_blank" rel="noopener">http://www.ibm.com/developerworks/cn/linux/l-cn-edntwk/index.html?ca=drs-</a></p>
-<p><a href="http://linux.chinaunix.net/techdoc/net/2009/05/03/1109887.shtml" target="_blank" rel="noopener">http://linux.chinaunix.net/techdoc/net/2009/05/03/1109887.shtml</a></p>
-<p><strong>3、epoll</strong></p>
-<p>　　epoll既然是对select和poll的改进，就应该能避免上述的三个缺点。那epoll都是怎么解决的呢？在此之前，我们先看一下epoll和select和poll的调用接口上的不同，select和poll都只提供了一个函数——select或者poll函数。而epoll提供了三个函数，epoll_create,epoll_ctl和epoll_wait，epoll_create是创建一个epoll句柄；epoll_ctl是注册要监听的事件类型；epoll_wait则是等待事件的产生。</p>
-<p>　　对于第一个缺点，epoll的解决方案在epoll_ctl函数中。每次注册新的事件到epoll句柄中时（在epoll_ctl中指定EPOLL_CTL_ADD），会把所有的fd拷贝进内核，而不是在epoll_wait的时候重复拷贝。epoll保证了每个fd在整个过程中只会拷贝一次。</p>
-<p>　　对于第二个缺点，epoll的解决方案不像select或poll一样每次都把current轮流加入fd对应的设备等待队列中，而只在epoll_ctl时把current挂一遍（这一遍必不可少）并为每个fd指定一个回调函数，当设备就绪，唤醒等待队列上的等待者时，就会调用这个回调函数，而这个回调函数会把就绪的fd加入一个就绪链表）。epoll_wait的工作实际上就是在这个就绪链表中查看有没有就绪的fd（利用schedule_timeout()实现睡一会，判断一会的效果，和select实现中的第7步是类似的）。</p>
-<p><span>　　对于第三个缺点，epoll没有这个限制，它所支持的FD上限是最大可以打开文件的数目，这个数字一般远大于2048,举个例子,在1GB内存的机器上大约是10万左右，具体数目可以cat /proc/sys/fs/file-max察看,一般来说这个数目和系统内存关系很大。</span></p>
-<p><strong>总结：</strong></p>
-<p>（1）select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用epoll_wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在epoll_wait中进入睡眠的进程。虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间。这就是回调机制带来的性能提升。</p>
-<p>（2）select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内部定义的等待队列）。这也能节省不少的开销。</p>
-<p><strong>参考资料：</strong></p>
-<p><a href="http://www.cnblogs.com/apprentice89/archive/2013/05/09/3070051.html" target="_blank" rel="noopener">http://www.cnblogs.com/apprentice89/archive/2013/05/09/3070051.html</a></p>
-<p><a href="http://www.linuxidc.com/Linux/2012-05/59873p3.htm" target="_blank" rel="noopener">http://www.linuxidc.com/Linux/2012-05/59873p3.htm</a></p>
-<p><a href="http://xingyunbaijunwei.blog.163.com/blog/static/76538067201241685556302/" target="_blank" rel="noopener">http://xingyunbaijunwei.blog.163.com/blog/static/76538067201241685556302/</a></p>
-<p><a href="http://blog.csdn.net/kkxgx/article/details/7717125" target="_blank" rel="noopener">http://blog.csdn.net/kkxgx/article/details/7717125</a></p>
-<p><a href="https://banu.com/blog/2/how-to-use-epoll-a-complete-example-in-c/epoll-example.c" target="_blank" rel="noopener">https://banu.com/blog/2/how-to-use-epoll-a-complete-example-in-c/epoll-example.c</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1141,7 +1665,7 @@ N为样本总数。 <br>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-count">120</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1183,7 +1707,7 @@ N为样本总数。 <br>
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
