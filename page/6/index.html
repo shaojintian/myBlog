@@ -221,6 +221,208 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E7%AC%AC%E4%BA%94%E5%91%A8report/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E7%AC%AC%E4%BA%94%E5%91%A8report/" class="post-title-link" itemprop="url">第五周report</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:52" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:52+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1：搭建好了pytorch，并入门<br>2：阅览并翻译论文《attentive group recommendation》<br>3：了解了论文里的cold-start problem，Neural Collaborative Filtering，Neural attention network<br>总结：<a href="https://blog.csdn.net/qq_39871498/article/details/83306531" target="_blank" rel="noopener">https://blog.csdn.net/qq_39871498/article/details/83306531</a><br>4：阅读机器学习-周志华（1-3）章节加习题。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/cold-start%20problem%EF%BC%88%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/cold-start%20problem%EF%BC%88%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%EF%BC%89/" class="post-title-link" itemprop="url">cold-start problem（推荐系统）</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:51" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:51+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>冷启动是在群体推荐系统中一个常见的问题。</p>
+<p>简单来说它是推荐过程中没有足够的信息来对用户进行可靠的推荐。</p>
+<p><strong>推荐系统</strong>是基于用户和产品的信息和交互，对信息进行过滤并达到向用户精准推荐其感兴趣的某些信息的一种技术。<br>推荐系统基于用户的个人资料，人—物交互过程及其条目的特征等进行推荐。</p>
+<ul>
+<li><p>如果是基于内容推荐（content—based ），则需要对items建模，分析其特征，将用户以往感兴趣的items与其他所有items比较，找到相似特征的items，来进行推荐。<br>如下图：<br><img src="https://img-blog.csdn.net/2018102314272251?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+</li>
+<li><p>如果是基于协同过滤（collaborative filtering),则不考虑items的特征，只注重人—items的交互过程，利用行为的相似性来进行推荐。<br><img src="https://img-blog.csdn.net/20181023143412925?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<p>由于上述都需要借鉴历史数据，所以会造成冷启动问题。</p>
+<p>==冷启动的三个类型：==</p>
+<ol>
+<li><p>新平台：<br> 例如一个新的网上购物网站，只有各种商品网站，但无用户，无商品购买记录，信息缺乏。</p>
+</li>
+<li><p>新条目：<br>   例如新商品，新书目等等<br>   由于新条目缺乏访问的次数，会导致推荐不准确，并缺少推荐过程，进而继续影响新条目的访问，造成复反馈。这样会导致一个流行偏见问题（popularity bias）</p>
+</li>
+<li><p>新用户：<br> 缺乏访问或购买记录，缺乏人—物交互过程</p>
+</li>
+</ol>
+<p>==改善策略==<br>1:采用混合推荐器：<br>    常用的是组合协同过滤和内容推荐两种推荐器，协同过滤用于处理cold items，内容推荐用于处理warm items</p>
+<p>2用户精准完善注册信息<br>     寻求一个方法让用户注册时就提供足够的信息来支持推荐系统，但是不至于过于繁琐，防止用户注册时抛弃这个产品。</p>
+<p>3：特征映射<br>    用机器学习的方法将内容推荐和协同过滤整合到一个模型</p>
+<p>4：多特征加权<br>    在特征映射的基础下，无论是items的特征还是用户的特征，都根据用户对items对其重要性的感知进行加权</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91RGB%E5%B8%B8%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91RGB%E5%B8%B8%E7%94%A8/" class="post-title-link" itemprop="url">【转载】RGB常用</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:50" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:50+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+                                            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-f76675cdea.css">
+                        <div class="htmledit_views">
+                <p><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_7a2ffd5c0100zii4.html" rel="nofollow" target="_blank">常用颜色的RGB值</a><strong>作者：</strong><a href="http://blog.sina.com.cn/u/2049965404" rel="nofollow" target="_blank">chase</a></p>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%9F%BA%E4%BA%8EOpenCV%E7%9A%84%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB_%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -905,190 +1107,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/2,3,4sum,Combination%20sum/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/2,3,4sum,Combination%20sum/" class="post-title-link" itemprop="url">2,3,4sum,Combination sum</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:40" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:40+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>3，4sum用双指针</p>
-<p>CombinationSum 用递归</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> algorithms_4th;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.awt.List;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 3sum,4sum,combination sum</span></span><br><span class="line"><span class="comment"> * 双指针法：先排序，sum&lt;target:p1++;sum&gt;target:p2--;移动范围减小--&gt;为了p1,p2碰头</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ksum</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] arr = &#123; <span class="number">1</span>,  <span class="number">5</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">4</span> ,<span class="number">3</span>&#125;;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] sum2(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">		<span class="keyword">int</span> index1, index2;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (map.containsKey(target - arr[i])) &#123;</span><br><span class="line">				index1 = map.get(target - arr[i]) + <span class="number">1</span>;</span><br><span class="line">				index2 = i + <span class="number">1</span>;</span><br><span class="line">				res[<span class="number">0</span>] = Math.min(index1, index2);</span><br><span class="line">				res[<span class="number">1</span>] = Math.max(index1, index2);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// initialize map</span></span><br><span class="line">			map.put(arr[i], i);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; sum3(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">		ArrayList&lt;Integer&gt; list = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">int</span> p1, p2, sum;</span><br><span class="line"></span><br><span class="line">		Arrays.sort(arr);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">			p1 = i + <span class="number">1</span>;</span><br><span class="line">			p2 = arr.length - <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">if</span> (i == <span class="number">0</span> || arr[i] &gt; arr[i - <span class="number">1</span>]) &#123;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">while</span> (p2 &gt; p1) &#123;</span><br><span class="line">					sum = arr[i] + arr[p1] + arr[p2];</span><br><span class="line"></span><br><span class="line">					<span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">						list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">						list.add(arr[i]);</span><br><span class="line">						list.add(arr[p1]);</span><br><span class="line">						list.add(arr[p2]);</span><br><span class="line">						</span><br><span class="line">						res.add(list);</span><br><span class="line">						p1++;</span><br><span class="line">						p2--;</span><br><span class="line">						<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p1] == arr[p1 - <span class="number">1</span>])</span><br><span class="line">							p1++;</span><br><span class="line">						<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p2] == arr[p2 + <span class="number">1</span>])</span><br><span class="line">							p2--;</span><br><span class="line">					&#125; <span class="keyword">else</span> <span class="keyword">if</span>(sum&gt;target)&#123;</span><br><span class="line">						p2--;</span><br><span class="line">					&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">						p1++;</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; sum4(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">		ArrayList&lt;Integer&gt; list = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">int</span> p1, p2, sum;</span><br><span class="line"></span><br><span class="line">		Arrays.sort(arr);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = i+<span class="number">1</span>; j &lt; arr.length; j++) &#123;</span><br><span class="line">				p1 = j + <span class="number">1</span>;</span><br><span class="line">				p2 = arr.length - <span class="number">1</span>;</span><br><span class="line">				<span class="keyword">if</span> (j == <span class="number">0</span> || arr[j] &gt; arr[j - <span class="number">1</span>]) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">while</span> (p2 &gt; p1) &#123;</span><br><span class="line">						sum = arr[i] +arr[j]+ arr[p1] + arr[p2];</span><br><span class="line"></span><br><span class="line">						<span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">							list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">							list.add(arr[i]);</span><br><span class="line">							list.add(arr[j]);</span><br><span class="line">							list.add(arr[p1]);</span><br><span class="line">							list.add(arr[p2]);</span><br><span class="line">							</span><br><span class="line">							res.add(list);</span><br><span class="line">							p1++;</span><br><span class="line">							p2--;</span><br><span class="line">							<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p1] == arr[p1 - <span class="number">1</span>])</span><br><span class="line">								p1++;</span><br><span class="line">							<span class="keyword">while</span> (p1 &lt; p2 &amp;&amp; arr[p2] == arr[p2 + <span class="number">1</span>])</span><br><span class="line">								p2--;</span><br><span class="line">						&#125; <span class="keyword">else</span> <span class="keyword">if</span>(sum&gt;target)&#123;</span><br><span class="line">							p2--;</span><br><span class="line">						&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">							p1++;</span><br><span class="line">						&#125;</span><br><span class="line"></span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; combinationSum(<span class="keyword">int</span> target) &#123;</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">		ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">		<span class="keyword">int</span>[] candidates=arr;</span><br><span class="line">		Arrays.sort(candidates);</span><br><span class="line">		recursive_sum(<span class="number">0</span>,list,target,res,candidates);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">recursive_sum</span><span class="params">(<span class="keyword">int</span> i,ArrayList&lt;Integer&gt; sub_list,<span class="keyword">int</span> target,</span></span></span><br><span class="line"><span class="function"><span class="params">									ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res, <span class="keyword">int</span>[]candidates)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(target==<span class="number">0</span>) &#123;</span><br><span class="line">			res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(sub_list));</span><br><span class="line">			<span class="keyword">return</span> ;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &lt; candidates.length; j++) &#123;               </span><br><span class="line">			<span class="keyword">if</span> (candidates[j]&lt;=target) &#123;</span><br><span class="line">				sub_list.add(candidates[j]);</span><br><span class="line">				</span><br><span class="line">				</span><br><span class="line">				recursive_sum(j, sub_list, target-candidates[j], res,candidates );            </span><br><span class="line">				sub_list.remove(sub_list.size()-<span class="number">1</span>);</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="comment">// int[] res=sum2(10);</span></span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res3 = sum3(<span class="number">7</span>);</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res4 = sum4(<span class="number">10</span>);</span><br><span class="line">		ArrayList&lt;ArrayList&lt;Integer&gt;&gt; combination_sum=combinationSum(<span class="number">4</span>);</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"sum3:"</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res3.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">				System.out.print(res3.get(i).get(j) + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"sum4:"</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res4.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">4</span>; j++) &#123;</span><br><span class="line">				System.out.print(res4.get(i).get(j) + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"Combination_sum:"</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; combination_sum.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; combination_sum.get(i).size(); j++) &#123;</span><br><span class="line">				System.out.print(combination_sum.get(i).get(j) + <span class="string">" "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%8F%8D%E8%BD%AC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%8F%8D%E8%BD%AC/" class="post-title-link" itemprop="url">单向链表反转</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:39" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:39+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>非递归：<br>算法核心是：后一个节点指向前一个节点，循环实现</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> algorithms_4th;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Linked_list</span> </span>&#123;</span><br><span class="line">	Node first=<span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> v;</span><br><span class="line">		Node next=<span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="function"><span class="keyword">public</span>  <span class="title">Node</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.v=v;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">InsertNode</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (node!=<span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span>(first==<span class="keyword">null</span>) &#123;first=node;<span class="keyword">return</span>;&#125;</span><br><span class="line">			Node nodeTem=first;</span><br><span class="line">			<span class="keyword">while</span>(nodeTem.next!=<span class="keyword">null</span>) &#123;</span><br><span class="line">				nodeTem=nodeTem.next;</span><br><span class="line">			&#125;</span><br><span class="line">			nodeTem.next=node;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ReverseList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(first==<span class="keyword">null</span>)<span class="keyword">return</span>;</span><br><span class="line">		Node cur_node=first;</span><br><span class="line">		Node tem;</span><br><span class="line">		Node pre_node=<span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">while</span>(cur_node!=<span class="keyword">null</span>) &#123;</span><br><span class="line">			tem=cur_node.next;<span class="comment">//store current.next</span></span><br><span class="line">			</span><br><span class="line">			cur_node.next=pre_node;<span class="comment">//back forward</span></span><br><span class="line">			</span><br><span class="line">			pre_node=cur_node;<span class="comment">//next recycle precondition</span></span><br><span class="line">			cur_node=tem;</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		first=pre_node;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		Linked_list list= <span class="keyword">new</span> Linked_list();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			list.InsertNode(<span class="keyword">new</span> Node(i*<span class="number">2</span>));</span><br><span class="line">		&#125;</span><br><span class="line">		Node node=list.first;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.print(node.v+ <span class="string">" "</span>);</span><br><span class="line">			node=node.next;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		list.ReverseList();</span><br><span class="line">		node=list.first;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.print(node.v+ <span class="string">" "</span>);</span><br><span class="line">			node=node.next;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E9%9A%8F%E7%AC%94%EF%BC%9ADeeCamp2019%E5%86%AC%E4%BB%A4%E8%90%A5%E9%9D%A2%E8%AF%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/%E9%9A%8F%E7%AC%94%EF%BC%9ADeeCamp2019%E5%86%AC%E4%BB%A4%E8%90%A5%E9%9D%A2%E8%AF%95/" class="post-title-link" itemprop="url">随笔：DeeCamp2019冬令营面试</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:38" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:38+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1：对机器人怎么看：<br>机器人实用主义：创造价值工作，优化，替代大量重复劳动力。<br>缺点：没有感情，无法创新<br>现有技术缺失，很难发展人形全能AI。没必要做全能AI<br>全能全知的AI没有必要，要充分利用人的优势：可计划，创新，社交。<br>2：一句好说为什么录用你！<br>自我驱动能力强，接受新知识能力快，并对AI，ML有浓厚的兴趣，执行力强。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1132,12 +1155,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">120</span>
+          <span class="site-state-item-count">123</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="baidu-site-verification" content="PKO0plnZfq" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="only a geek">
+<meta property="og:type" content="website">
+<meta property="og:title" content="邵靳天的小站">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;page&#x2F;13&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="only a geek">
+<meta property="og:locale" content="zh-Hans">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/page/13/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <meta name="baidu-site-verification" content="PKO0plnZfq" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，后端开发，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/15/MIT6.828%E2%80%94%E2%80%94Lab1%20Booting%20a%20PC/" class="post-title-link" itemprop="url">MIT6.828——Lab1 Booting a PC</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-15 05:04:00 / 修改时间：05:29:03" itemprop="dateCreated datePublished" datetime="2019-11-15T05:04:00+08:00">2019-11-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OS/" itemprop="url" rel="index">
+                    <span itemprop="name">OS</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>Preface：之前已经做了一部分MIT-6.828了，后来要考托福就搁置了，现在重新捡起来。<br>顺便把所有的博客迁移到我的域名<a href="http://www.shaojintian.cn下" target="_blank" rel="noopener">www.shaojintian.cn下</a></p>
+<p>Sources:xv6 book &amp;&amp; xv6 source codes<br>Exercise1:</p>
+<blockquote>
+<p>看懂x86 的32bit汇编,参见xv6 book附录A</p>
+</blockquote>
+<p>Exercise2:</p>
+<blockquote>
+<p>Use GDB’ssi(Step Instruction) command to trace into the ROM BIOS               for a few more instructions, and try to guess what it might be doing. </p>
+</blockquote>
+<p>答案：依照提示使用GDB si</p>
+<p>Exercise 3. </p>
+<blockquote>
+<p>阅读bootloader的源码，回答问题<br>1：At what point does the processor start executing 32-bit code? What exactly causes the switch from 16- to 32-bit mode?</p>
+</blockquote>
+<p>答案：<br><img src="https://img-blog.csdnimg.cn/20191017140951937.png" alt="在这里插入图片描述"><br>ljmp  to 0x7c32   从i8086-&gt;i386（16bit-&gt;32bit)</p>
+<blockquote>
+<p>2：What is the last instruction of the boot loader executed, and what is the first instruction of the kernel it just loaded?</p>
+</blockquote>
+<p>答案：<br>last instruction:<br>查阅xv6 book, boot loader call bootmain()  to call kernel and run kernel<br>所以去boot.asm 找bootmain的位置<br>然后去找此汇编中bootmain（）最后一条语句为<br>((void (*)(void)) (ELFHDR-&gt;e_entry))();<br>找到此语句汇编的指向为 </p>
+<blockquote>
+<p>call *0x10018</p>
+</blockquote>
+<p>kernel 第一个instruction：</p>
+<p>从boot.asm找到最后一条指令的SI为0x7d6b<br>打上断点</p>
+<p><img src="https://img-blog.csdnimg.cn/201910171434175.png" alt="~/obj/boot/boot.asm"><br><img src="https://img-blog.csdnimg.cn/20191017143350903.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>movw $0x1234, 0x472</p>
+</blockquote>
+<p>反汇编<br>objdump -d obj/kern/kernel 验证了这个结果</p>
+<blockquote>
+<p>3：Where is the first instruction of the kernel?</p>
+</blockquote>
+<p>答案：<br>    0x10000c</p>
+<blockquote>
+<p>4：How does the boot loader decide how many sectors it must read in order to fetch the entire kernel from disk? Where does it find this information?</p>
+</blockquote>
+<p>答案：<br>    xv6 book chapter2  说明kernel是ELF文件<br>    kernel的大小包含在ELF的文件program  header中<br>    <img src="https://img-blog.csdnimg.cn/20191017144600260.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>Exercise 4</strong><br>Download the code for pointers.c, run it, and make sure you understand where all of the printed values come from.</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Machine%20Learning%20%E2%80%94LinearModel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/19/Machine%20Learning%20%E2%80%94LinearModel/" class="post-title-link" itemprop="url">Machine Learning —LinearModel</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-19 09:30:00" itemprop="dateCreated datePublished" datetime="2018-11-19T09:30:00+08:00">2018-11-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-20 21:48:04" itemprop="dateModified" datetime="2019-11-20T21:48:04+08:00">2019-11-20</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h2 id="Machine-Learning-—LinearModel"><a href="#Machine-Learning-—LinearModel" class="headerlink" title="Machine Learning —LinearModel"></a>Machine Learning —LinearModel</h2><p>Supervised Learning:<br>Basic topics are Classification and Regression.</p>
+<p>Classification:</p>
+<p>About linear model, it includes LinearSVC , LogisticRegression(a classifier not a regressor)， GaussianNaiveBayesClassifier (GuNBC), BernoulliNBC, MultinomialNBC , Decision Trees,Random Forests</p>
+<p>First model LinearSVC:</p>
+<p>parameters includes :</p>
+<p>Regularization class: L1 or L2 .<br>L1 norm can decrease the coefficients to zero .But L2 can’t do that. L2 norm only can try to decrease the coefficients to close to zero.</p>
+<p>So L1 norm can select the numbers of features , but L2 can’t.</p>
+<p>Then,L1 style can increase the interpretability of this model,but lose some important features.</p>
+<p>L2 maybe be pollued by meaningless features.</p>
+<p>2.C:(learning rate)</p>
+<p>C is about restrictive ability. If C is small , coefficients and intercept is be restricted to close to zero (whether it can be explicitly zero depends on L1 or L2)</p>
+<p>else if C is high, restrictive ability is low.</p>
+<p>Second model: LinearRegression</p>
+<p>parameters :</p>
+<p>1:Regularization class: L1 or L2 .</p>
+<p>This is the same as above the first line.</p>
+<p>2:alpha(learning rate)</p>
+<p>alpha is opposite to C .If alpha is high , coefficients and intercept is be restricted to close to zero (whether it can be explicitly zero depends on L1 or L2)</p>
+<p>else if alpha is low, restrictive ability is low.</p>
+<p>Third model : Gussian Naive Bayes Classifier</p>
+<p>paramerter:</p>
+<p>1:alpha</p>
+<p>Fourth model : Bernoulli Naive Bayes Classifier</p>
+<p>paramerter:</p>
+<p>1:alpha (controls the complexity of model)</p>
+<p>ability:</p>
+<p>Increase the smoothing performance of model via adding virtual many data points to datasets . Virtual data points contains all positive features .</p>
+<p>When increase the alpha , the model will be smoother. So it will decrease the complexity of model . When decrease it , the model will be more complex.</p>
+<p>Fourth model : Bernoulli Naive Bayes Classifier</p>
+<p>paramerter:</p>
+<p>1:alpha (controls the complexity of model) (It is the same as BernoulliNBC)</p>
+<p>ability:</p>
+<p>Increase the smoothing performance of model via adding virtual many data points to datasets . Virtual data points contains all positive features .</p>
+<p>When increase the alpha , the model will be smoother. So it will decrease the complexity of model . When decrease it , the model will be more complex.</p>
+<p>Fifth model: Decision Trees</p>
+<p>parameters:</p>
+<p>Advantages:</p>
+<p>1: Easily Visualize .</p>
+<p>Generate visualized decision trees to help non-experts to understand this model.</p>
+<p>2:less influence about data or features types</p>
+<p>Due to every feature is been processed separately , so whatever the data type is binary or continuous .</p>
+<p>Disadvantages :</p>
+<p>1:poor generalization ability</p>
+<p>Easy to overfit ,even it has used pre-pruning. Because of it ,we usually to use ensembles of decision trees to decrease this influence based on decision trees(such as Random Forests and Gradient Boosted Decision Trees)</p>
+<p>Sixth model :Random Forests:</p>
+<p>Parameters:</p>
+<p>1:n_estimator</p>
+<p>decide the numbers of decision trees .</p>
+<p>2:max_features</p>
+<p>decide the max numbers of features .</p>
+<p>Preprocessing:</p>
+<p>For dataset:</p>
+<p>Bootstrap Sample(自动采样）：</p>
+<p>To explain it , if we have 100 data nodes ,we select randomly 100 times from this dataset to generate a new dataset which is as big as original dataset , after every time selection ,we don’t reduce the data node from original dataset .Clear?</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/machine%20learning_instruction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/19/machine%20learning_instruction/" class="post-title-link" itemprop="url">machine learning_instruction</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-19 09:30:00" itemprop="dateCreated datePublished" datetime="2018-11-19T09:30:00+08:00">2018-11-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-20 21:48:28" itemprop="dateModified" datetime="2019-11-20T21:48:28+08:00">2019-11-20</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>机器学习简单来说是计算机通过对数据集的学习，对预测集的input找到正确的output。<br>笼统归为三步：<br>1：一系列实现任务的functions 形成 function set<br>2：可以评价这些functions的goodness<br>2：选择一个最佳的function解决task</p>
+<p><img src="https://img-blog.csdn.net/20181020002058750?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+  </div>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span>
+  </nav>
+
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">123</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备19022833号-1 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
