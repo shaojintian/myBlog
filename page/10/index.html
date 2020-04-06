@@ -221,6 +221,363 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode19%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Leetcode19%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9/" class="post-title-link" itemprop="url">Leetcode19删除链表倒数第N个节点</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:09" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:09+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190408171315256.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>1:扫描两次</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeNthFromEnd</span><span class="params">(ListNode* head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(head == <span class="literal">NULL</span> || head-&gt;next ==<span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">            </span><br><span class="line">            ListNode *node = head;</span><br><span class="line">            <span class="keyword">int</span> size=<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span>(node != <span class="literal">NULL</span> &amp;&amp; node-&gt;next != <span class="literal">NULL</span>)&#123;</span><br><span class="line">                node=node-&gt;next;</span><br><span class="line">                ++size;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(n==size) <span class="keyword">return</span> head-&gt;next;</span><br><span class="line">            node=head;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span> ; i&lt;size-n<span class="number">-1</span>;++i)</span><br><span class="line">            &#123;</span><br><span class="line">                node=node-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            node-&gt;next=node-&gt;next-&gt;next;</span><br><span class="line">        </span><br><span class="line">            <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> 先记录总共有多少个节点为size个</li>
+<li><input checked="" disabled="" type="checkbox"> 随后找到倒数第n个然后删掉</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20190408173511470.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>2：扫描一次,双指针，创建一个pre——head节点指向head，<br>倒数第N个之前的那个数字和最后一个数字规律两个相差n步，则和最后一个的next相差n+1步数。<br>找到规律以后往前推，创建快慢指针相差n+1步。<br>当快的为NULL时，则慢指针的NEXT为所要删掉的节点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeNthFromEnd</span><span class="params">(ListNode* head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head==<span class="literal">NULL</span> ||head-&gt;next==<span class="literal">NULL</span> ) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        ListNode *pre_head =<span class="keyword">new</span> ListNode(<span class="number">-1</span>);</span><br><span class="line">        pre_head-&gt;next =head;</span><br><span class="line">        </span><br><span class="line">        ListNode *p = head;</span><br><span class="line">        ListNode *q =pre_head;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            p=p-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(p != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            p=p-&gt;next;</span><br><span class="line">            q=q-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        q-&gt;next=q-&gt;next-&gt;next;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> pre_head-&gt;next;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20190408180901360.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/SSH%20localhost%E4%B8%8Eremote%20host%20%20%E4%BA%92%E7%9B%B8%E4%BC%A0%E9%80%81%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/SSH%20localhost%E4%B8%8Eremote%20host%20%20%E4%BA%92%E7%9B%B8%E4%BC%A0%E9%80%81%E6%96%87%E4%BB%B6/" class="post-title-link" itemprop="url">SSH localhost与remote host  互相传送文件</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:08" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:08+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <div id="content_views" class="markdown_views">
+                            <!-- flowchart 箭头图标 勿删 -->
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path></svg>
+                            <ul>
+<li><p>安装 SSH(Secure Shell) 服务以提供远程管理服务 <br>
+<code>sudo apt-get install ssh</code></p></li>
+<li><p>SSH 远程登入 Ubuntu 机 <br>
+<code>$ssh username@192.168.0.1</code></p></li>
+<li><p>将 文件/文件夹 从远程 Ubuntu 机拷至本地(scp) <br>
+<code>$scp -r username@192.168.0.1:/home/username/remotefile.txt</code></p></li>
+<li><p>将 文件/文件夹 从本地拷至远程 Ubuntu 机(scp) <br>
+<code>$scp -r localfile.txt username@192.168.0.1:/home/username/</code></p></li>
+<li><p>将 文件/文件夹 从远程 Ubuntu 机拷至本地(rsync)</p></li>
+</ul>
+
+
+
+<pre class="prettyprint" name="code"><code class="hljs ruby has-numbering" onclick="mdcp.copyCode(event)">rsync -v -u -a --delete --rsh=ssh --stats username<span class="hljs-variable">@192</span>.<span class="hljs-number">168.0</span>.<span class="hljs-number">1</span><span class="hljs-symbol">:/home/username/remotefile</span>.txt .<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
+
+<ul>
+<li>将 文件/文件夹 从本地拷至远程 Ubuntu 机(rsync)</li>
+</ul>
+
+<pre class="prettyprint" name="code"><code class="hljs ruby has-numbering" onclick="mdcp.copyCode(event)">rsync -v -u -a --delete --rsh=ssh --stats localfile.txt username<span class="hljs-variable">@192</span>.<span class="hljs-number">168.0</span>.<span class="hljs-number">1</span><span class="hljs-symbol">:/home/username/</span><div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
+
+<p>在 Windows 机上用 SSH 远程登录 Ubuntu 机</p>
+
+<p>下载 <a href="http://www.putty.org/" rel="nofollow" target="_blank">PuTTY</a></p>
+
+<p>如何在 Windows 机上拷贝 文件/文件夹 从/到 远程 Ubuntu 机</p>
+
+<p>下载 <a href="https://filezilla-project.org/" rel="nofollow" target="_blank">FileZilla</a></p>
+
+<p>ssh -X guoshuang@192.168.100.4</p>
+
+<p>支持 SSH 图形界面。也就是说，gedit 打开和另存都是在服务器端操作的。nautilus 打开服务器端的文件管理器。这下就比只用命令行方便多了。不知道 windows 下的 putty 支持不。</p>
+
+<p>ssh -X guoshuang@192.168.100.4 ls</p>
+
+<p>直接在服务器端执行 ls 返回结果到客户端</p>
+
+<p>如何限制通过SSH远程连接的用户帐号</p>
+
+<p>如，假如你启用了SSH服务，那么任何有有效帐号的用户都可以远程连接。这可能会导致一些安全问题，由于有一些远程密码破解工具可以尝试常见的用户名／密码</p>
+
+<p>备份SSH服务的配置文件</p>
+
+<p>sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.ORIGINAL</p>
+
+<p>编辑配置文件</p>
+
+<p>sudo gedit /etc/ssh/sshd_config</p>
+
+<ul>
+<li>将参数 PermitRootLogin 由 yes 更改为 no。 超级用户不能直接通过远程联机。</li>
+<li>添加参数 AllowUsers 设定远程连接的用户名 (用空格来分割) 。</li>
+<li>您也可以使用 DenyUsers for fine-grained selection of users.</li>
+<li>If you enable the openssh server and you have no intention for now to enable remote connections, you may add AllowUsers nosuchuserhere to disable anyone connecting.</li>
+</ul>
+
+<p>SSH 命令</p>
+
+<p>ssh 命令可以用来在远程机器上不经 shell 提示登录而执行命令。它的语法格式是： ssh hostname command。譬如，如果你想在远程主机 penguin.example.net 上执行 ls /usr/share/doc 命令，在 shell 提示下键入下面的命令：</p>
+
+<p>ssh penguin.example.net ls /usr/share/doc</p>
+
+<p>3.2. 使用 scp 命令</p>
+
+<p>　　scp 命令可以用来通过安全、加密的连接在机器间传输文件。它与 rcp 相似。</p>
+
+<p>　　把本地文件传输给远程系统的一般语法是：</p>
+
+<p>　　scp localfile username@tohostname:/newfilename</p>
+
+<p>　　localfile 指定源文件，username@tohostname:/newfilename 指定目标文件。</p>
+
+<p>　　要把本地文件 shadowman 传送到你在 penguin.example.net 上的账号内，在 shell 提示下键入(把 username 替换成你的用户名)：</p>
+
+<p>　　scp shadowman username@penguin.example.net:/home/username</p>
+
+<p>　　这会把本地文件 shadowman 传输给 penguin.example.net 上的 /home/username/shadowman 文件。</p>
+
+<p>　　把远程文件传输给本地系统的一般语法是：</p>
+
+<p>　　scp username@tohostname:/remotefile /newlocalfile</p>
+
+<p>　　remotefile 指定源文件，newlocalfile 指定目标文件。</p>
+
+<p>　　源文件可以由多个文件组成。譬如，要把目录 /downloads 的内容传输到远程机器 penguin.example.net 上现存的 uploads 目录，在 shell 提示下键入下列命令：</p>
+
+<p>　　scp /downloads/* username@penguin.example.net:/uploads/</p>
+
+<p>　　3.3. 使用 sftp 命令</p>
+
+<p>　 　sftp 工具可以用来打开一次安全互动的 FTP 会话。它与 ftp 相似，只不过，它使用安全、加密的连接。它的一般语法是：sftp username@hostname.com。一旦通过 验证，你可以使用一组和使用 FTP 相似的命令。请参阅 sftp 的说明书页(man)来获取这些 命令的列表。要阅读说明书页，在 shell 提示下执行 man sftp 命令。sftp 工具只在 OpenSSH 版本 2.5.0p1 以上才有。</p>
+
+<p>SSH 概念</p>
+
+<p>SSH是指Secure Shell，SSH协议族由IETF（Internet Engineering Task Force）的Network Working Group制定，SSH协议的内容SSH协议是建立在应用层和传输层基础上的安全协议。</p>
+
+<p>传 统的网络服务程序，如FTP、Pop和Telnet其本质上都是不安全的；因为它们在网络上用明文传送数据、用户帐号和用户口令，很容易受到中间人 （man-in-the-middle）攻击方式的攻击。就是存在另一个人或者一台机器冒充真正的服务器接收用户传给服务器的数据，然后再冒充用户把数据 传给真正的服务器。</p>
+
+<p>SSH(Secure Shell)是目前比较可靠的为远程登录会话和其他网络服务提供安全性的协议。利用SSH协议可以有效防止远程管理过程中的信息泄露问题。通过SSH，可以把所有传输的数据进行加密，也能够防止DNS欺骗和IP欺骗。 <br>
+SSH，还有一个额外的好处就是传输的数据是经过压缩的，所以可以加快传输的速度。SSH有很多功能，它既可以代替Telnet，又可以为FTP、Pop、甚至为PPP提供一个安全的”通道”。</p>            </div>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Attention%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Attention%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%AE%80%E4%BB%8B/" class="post-title-link" itemprop="url">Attention注意力机制简介</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:07" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:07+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2><a name="t0"></a>一、注意力机制回顾</h2>
+
+<p>简单来说，注意力本质上就是一个经过softmax层输出的向量。</p>
+
+<p>在早期机器翻译应用中，神经网络结构一般如下图，是一个RNN的Encoder-Decoder模型。左边是Encoder，代表输入的sentence。右边代表Decoder，是根据输入sentence对应的翻译。Encoder会通过RNN将最后一个step的隐藏状态向量c作为输出，Deocder利用向量c进行翻译。这样做有一个缺点，翻译时过分依赖于这个将整个sentence压缩成固定输入的向量。输入的sentence有可能包含上百个单词，这么做不可避免会造成信息的丢失，翻译结果也无法准确了。</p>
+
+<p style="text-align:center;"><img alt="" class="has" height="328" src="https://img-blog.csdn.net/20181011165935693?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="716"></p>
+
+<p>注意力机制的引入就是为了解决此问题，注意力机制使得机器翻译中利用原始的sentence信息，减少信息损失。在解码层，生成每个时刻的y，都会利用到x1,x2,x3....，而不再仅仅利用最后时刻的隐藏状态向量。同时注意力机制还能使翻译器zoom in or out（使用局部或全局信息）。</p>
+
+<p>注意力机制听起来很高大上、很神秘，其实它的整个实现只需要一些参数和简单的数学运算。那么注意力机制到底是如何实现的呢？</p>
+
+<p style="text-align:center;"><img alt="" class="has" src="https://img-blog.csdnimg.cn/20190215104836321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=,size_16,color_FFFFFF,t_70"></p>
+
+<p>在基本的Encoder-Decoder模型中，注意力机制在Encoder和Decoder加入了上下文向量context vector，如上图所示，左边蓝色的代表Encoder，红色的代表Decoder。对于Decoder中每个要生成的y，都会生成一个上下文向量。这个上下文向量是由每个输入的words的信息加权求和得到的，其中权重向量就是注意力向量，它代表在此刻生成y时输入的单词的重要程度。最后将上下文向量和此刻的y的信息进行融合作为输出。</p>
+
+<p>构建上下文向量过程也很简单，首先对于一个固定的target word，我们把这个target state跟所有的Encoder的state进行比较，这样对每个state得到了一个score;然后使用softmax对这些score进行归一化，这样就得到了基于target state的条件概率分布。最后，对source的state进行加权求和，得到上下文向量，将上下文向量与target state融合作为最终的输出。</p>
+
+<p>具体流程的数学表达如下：</p>
+
+<p style="text-align:center;"><img alt="" class="has" height="156" src="https://img-blog.csdnimg.cn/2019021510501288.JPG" width="579"></p>
+
+<p>为了理解这个看起来有些复杂的数学公式，我们需要记住三点：</p>
+
+<ol><li>在解码时，对于每个输出的word都需要计算上下文向量。所以，我们会得到一个<img alt="n\ast m" class="mathcode" src="https://private.codecogs.com/gif.latex?n%5Cast%20m">的2D矩阵，&nbsp;<img alt="n" class="mathcode" src="https://private.codecogs.com/gif.latex?n">代表source word数量，<img alt="m" class="mathcode" src="https://private.codecogs.com/gif.latex?m">代表target word数量</li>
+    <li>我们可以通过context vector,target word,attention function&nbsp;<img alt="f" class="mathcode" src="https://private.codecogs.com/gif.latex?f">计算attention vevtor</li>
+    <li>attention mechanism是可以训练的。</li>
+</ol><h2><a name="t1"></a>二、BahdanauAttention与LuongAttention</h2>
+
+<h3><a name="t2"></a>2.1&nbsp;BahdanauAttention</h3>
+
+<p>BahdanauAttention是Bahdanau在论文<a href="https://arxiv.org/pdf/1409.0473.pdf" rel="nofollow" target="_blank">NEURAL MACHINE TRANSLATION BY JOINTLY LEARNING TO ALIGN AND TRANSLATE</a>中提出的，整体Attention结构如下图：</p>
+
+<p style="text-align:center;"><img alt="" class="has" height="492" src="https://img-blog.csdn.net/20180926170405403?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="292"></p>
+
+<p>1）第<img alt="i" class="mathcode" src="https://private.codecogs.com/gif.latex?i">个target word上下文向量<img alt="c_i{}" class="mathcode" src="https://private.codecogs.com/gif.latex?c_i%7B%7D">会根据每个source word的隐向量<img alt="h_j{}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_j%7B%7D">加权求和得到：</p>
+
+<p><img alt="" class="has" height="77" src="https://img-blog.csdn.net/2018092617125253?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="149"></p>
+
+<p>2）对于每个&nbsp;<img alt="h_j{}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_j%7B%7D">的<img alt="a_{ij}" class="mathcode" src="https://private.codecogs.com/gif.latex?a_%7Bij%7D">计算如下</p>
+
+<p><img alt="" class="has" height="106" src="https://img-blog.csdn.net/20180926171933731?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="293"></p>
+
+<p>其中</p>
+
+<p><img alt="" class="has" height="57" src="https://img-blog.csdn.net/20180926172008662?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="217"></p>
+
+<p><img alt="e_{ij}" class="mathcode" src="https://private.codecogs.com/gif.latex?e_%7Bij%7D">是对齐模型，代表位置<img alt="j" class="mathcode" src="https://private.codecogs.com/gif.latex?j">的输入和位置<img alt="i" class="mathcode" src="https://private.codecogs.com/gif.latex?i">的输出匹配程度的分数，这个分数基于RNN的 i-1 位置的隐含状态<img alt="s_{i-1}" class="mathcode" src="https://private.codecogs.com/gif.latex?s_%7Bi-1%7D">和 j 位置的<img alt="h_{j}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_%7Bj%7D">计算得到。</p>
+
+<h3><a name="t3"></a>2.2&nbsp;LuongAttention</h3>
+
+<p>LuongAttention是Luong在论文<a href="https://arxiv.org/pdf/1508.04025.pdf" rel="nofollow" target="_blank">Effective Approaches to Attention-based Neural Machine Translation</a>中提出的。整体结构如下</p>
+
+<p style="text-align:center;"><img alt="" class="has" height="386" src="https://img-blog.csdn.net/20180926173621689?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="428"></p>
+
+<p>&nbsp;与BahdanauAttention整体结构类似，LuongAttention对原结构进行了一些调整，其中Attention向量计算方法如下</p>
+
+<p><img alt="" class="has" height="117" src="https://img-blog.csdn.net/20180926174909188?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="333"></p>
+
+<p>&nbsp;其中与BahdanauAttention机制有以下几点改进：</p>
+
+<ol><li>BahdanauAttention对Encoder和Decoder的双向的RNN的state拼接起来作为输出，LuongAttention仅使用最上层的RNN输出</li>
+    <li>BahdanauAttention的计算流程为 ht−1 → at → ct → ht，它使用前一个位置t-1的state计算t时刻的ht。LuongAttention计算流程为&nbsp; ht → at → ct → h˜t 使用t位置的state当前位置的ht</li>
+    <li>BahdanauAttention只在concat对齐函数上进行了实验，LuongAttention在多种对齐函数进行了实验，下图为LuongAttention设计的三种对齐函数</li>
+</ol><p style="text-align:center;"><img alt="" class="has" height="137" src="https://img-blog.csdn.net/20180926191629666?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA5NjAxNTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width="475"></p>
+
+<h3><a name="t4"></a>2.3 总结&nbsp;</h3>
+
+<p>BahdanauAttention与LuongAttention两种注意力机制大体结构类似，都是基于第一节中的attention框架设计，主要的不同点就是在对齐函数上，在计算第 <img alt="i" class="mathcode" src="https://private.codecogs.com/gif.latex?i">个位置的score，前者是需要使用&nbsp;<img alt="s_{i-1}" class="mathcode" src="https://private.codecogs.com/gif.latex?s_%7Bi-1%7D">和<img alt="h_{j}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_%7Bj%7D">&nbsp;来进行计算，后者使用<img alt="s_{i}" class="mathcode" src="https://private.codecogs.com/gif.latex?s_%7Bi%7D">和<img alt="h_{j}" class="mathcode" src="https://private.codecogs.com/gif.latex?h_%7Bj%7D">计算，这么来看还是后者直观上更合理些，逻辑上也更顺滑。两种机制在不同任务上的性能貌似差距也不是很大，具体的细节还待进一步做实验比较。</p>            </div>
+                      </div>
+    </article>
+</div>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1905,361 +2262,6 @@ UDP是无连接的协议，支持一对一，多对一，多对多的通信，�
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E7%AE%97%E6%B3%95%E5%92%8C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB%E5%92%8C%E6%80%BB%E7%BB%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/%E7%AE%97%E6%B3%95%E5%92%8C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%88%86%E7%B1%BB%E5%92%8C%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">算法和数据结构的分类和总结</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-18 21:35:00 / 修改时间：23:09:07" itemprop="dateCreated datePublished" datetime="2019-11-18T21:35:00+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>ps:我忘了我的blog自带目录，浪费时间撸了目录</p>
-<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
-<li><a href="#数据结构">数据结构</a><ul>
-<li><a href="#队列，栈">队列，栈</a></li>
-<li><a href="#优先队列">优先队列</a></li>
-<li><a href="#并查集">并查集</a></li>
-<li><a href="#树状数组">树状数组</a></li>
-<li><a href="#字典树">字典树</a></li>
-<li><a href="#线段树">线段树</a></li>
-<li><a href="#后缀树组">后缀树组</a></li>
-</ul>
-</li>
-<li><a href="#算法相关的topics">算法相关的topics</a><ul>
-<li><a href="#求最优解">求最优解</a><ul>
-<li><a href="#dp">dp</a></li>
-<li><a href="#贪心">贪心</a><ul>
-<li><a href="#区间贪心">区间贪心</a>   </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#求遍历解">求遍历解</a><ul>
-<li><a href="#DFS">DFS</a></li>
-<li><a href="#BFS">BFS</a></li>
-<li><a href="#回溯">回溯</a></li>
-</ul>
-</li>
-<li><a href="#分治">分治</a><ul>
-<li><a href="#数列分治">数列分治</a></li>
-</ul>
-</li>
-<li><a href="#图论">图论</a><ul>
-<li><a href="#最小生成树">最小生成树</a></li>
-<li><a href="#单源最短路径">单源最短路径</a></li>
-</ul>
-</li>
-<li><a href="#数论">数论</a><ul>
-<li><a href="#辗转相除法">辗转相除法</a></li>
-<li><a href="#素数">素数</a></li>
-<li><a href="#快速幂">快速幂</a></li>
-</ul>
-</li>
-<li><a href="#网络流">网络流</a><ul>
-<li><a href="#最大流与最小割">最大流与最小割</a></li>
-</ul>
-</li>
-<li><a href="#计算几何">计算几何</a><ul>
-<li><a href="#计算几何">极限</a></li>
-</ul>
-</li>
-<li><a href="#字符串">字符串</a><ul>
-<li><a href="#字符串匹配">字符串匹配</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#字符串匹配">other_tricks</a><ul>
-<li><a href="#字符串匹配">尺取</a></li>
-<li><a href="#字符串匹配">反转</a></li>
-<li><a href="#弹性碰撞">弹性碰撞</a><br/>
-<br/>
-<br/>
-
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="队列，栈"><a href="#队列，栈" class="headerlink" title="队列，栈"></a>队列，栈</h3><h3 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h3><h3 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h3><pre><code>常见于不相交集合的查询和合并问题</code></pre><p>具体见<a href="1">union-find入门</a></p>
-<h3 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h3><pre><code>1.简而言之就是用数组来模拟树形结构，避免建树的开销。
-2.主要用于解决区间查询/更新/求和，和线段树的功能基本一致
-与线段树比较：树状数组更简单，但是功能有限，没有线段树全能</code></pre><h3 id="字典树"><a href="#字典树" class="headerlink" title="字典树"></a>字典树</h3><h3 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h3><pre><code>主要用来解决区间查询/修改/更新/求和</code></pre><p>具体见<a href="https://shaojintian.cn/2019/11/18/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%A5%E9%97%A8-%E4%BE%8B%E9%A2%98/" target="_blank" rel="noopener">线段树入门</a></p>
-<h3 id="后缀树组"><a href="#后缀树组" class="headerlink" title="后缀树组"></a>后缀树组</h3><pre><code>主要解决字符串匹配问题</code></pre><p>具体见<a href="1">后缀树组</a></p>
-<br/>
-
-<h2 id="算法相关的topics"><a href="#算法相关的topics" class="headerlink" title="算法相关的topics"></a>算法相关的topics</h2><h3 id="求最优解"><a href="#求最优解" class="headerlink" title="求最优解"></a>求最优解</h3><h4 id="dp"><a href="#dp" class="headerlink" title="dp"></a>dp</h4><pre><code>状态转移方程</code></pre><h4 id="贪心"><a href="#贪心" class="headerlink" title="贪心"></a>贪心</h4><pre><code>贪心选择性质</code></pre><h5 id="区间贪心"><a href="#区间贪心" class="headerlink" title="区间贪心"></a>区间贪心</h5><h3 id="求遍历解"><a href="#求遍历解" class="headerlink" title="求遍历解"></a>求遍历解</h3><h4 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h4><h4 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h4><h4 id="回溯"><a href="#回溯" class="headerlink" title="回溯"></a>回溯</h4><h3 id="分治"><a href="#分治" class="headerlink" title="分治"></a>分治</h3><h4 id="数列分治"><a href="#数列分治" class="headerlink" title="数列分治"></a>数列分治</h4><h3 id="图论"><a href="#图论" class="headerlink" title="图论"></a>图论</h3><h4 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h4><h4 id="单源最短路径"><a href="#单源最短路径" class="headerlink" title="单源最短路径"></a>单源最短路径</h4><h3 id="数论"><a href="#数论" class="headerlink" title="数论"></a>数论</h3><h4 id="辗转相除法"><a href="#辗转相除法" class="headerlink" title="辗转相除法"></a>辗转相除法</h4><h4 id="素数"><a href="#素数" class="headerlink" title="素数"></a>素数</h4><h4 id="快速幂"><a href="#快速幂" class="headerlink" title="快速幂"></a>快速幂</h4><h3 id="网络流"><a href="#网络流" class="headerlink" title="网络流"></a>网络流</h3><h4 id="最大流与最小割"><a href="#最大流与最小割" class="headerlink" title="最大流与最小割"></a>最大流与最小割</h4><h3 id="计算几何"><a href="#计算几何" class="headerlink" title="计算几何"></a>计算几何</h3><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><h4 id="字符串匹配"><a href="#字符串匹配" class="headerlink" title="字符串匹配"></a>字符串匹配</h4><h2 id="other-tricks"><a href="#other-tricks" class="headerlink" title="other_tricks"></a>other_tricks</h2><h3 id="尺取法"><a href="#尺取法" class="headerlink" title="尺取法"></a>尺取法</h3><h3 id="弹性碰撞"><a href="#弹性碰撞" class="headerlink" title="弹性碰撞"></a>弹性碰撞</h3>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Adaboost%E6%8F%90%E5%8D%87%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/Adaboost%E6%8F%90%E5%8D%87%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">Adaboost提升方法</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:07:01" itemprop="dateCreated datePublished" datetime="2019-11-18T21:07:01+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-            <p><strong>相关文章：</strong></p>
-
-  <ul>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79456971" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—C4.5算法（超详细附代码）</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79458331" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—K-Means算法（超详细附代码）</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79483057" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—SVM算法（超详细附代码）</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79484998" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—Apriori算法</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79484421" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—EM算法</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79484929" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—PageRank算法</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79458648" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—K-邻近算法/kNN（超详细附代码）</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79458943" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—朴素贝叶斯算法（超详细附代码）</a></strong></li>
-  <li><strong><a href="http://blog.csdn.net/fuqiuai/article/details/79469412" rel="nofollow" target="_blank">数据挖掘领域十大经典算法之—CART算法（超详细附代码）</a></strong></li>
-  </ul>
-</blockquote>
-
-<h3 id="简介"><a name="t0"></a>简介</h3>
-
-<p>Adaboost算法是一种提升方法，将多个弱分类器，组合成强分类器。 <br>
-AdaBoost，是英文”Adaptive Boosting“（自适应增强）的缩写，由Yoav Freund和Robert Schapire在1995年提出。 <br>
-它的自适应在于：前一个弱分类器分错的样本的权值（样本对应的权值）会得到加强，权值更新后的样本再次被用来训练下一个新的弱分类器。在每轮训练中，用总体（样本总体）训练新的弱分类器，产生新的样本权值、该弱分类器的话语权，一直迭代直到达到预定的错误率或达到指定的最大迭代次数。 <br>
-总体——样本——个体三者间的关系需要搞清除 <br>
-总体N。样本：｛ni｝i从1到M。个体：如n1=（1,2），样本n1中有两个个体。</p>
-
-<h3 id="算法原理"><a name="t1"></a><a target="_blank"></a>算法原理</h3>
-
-<p>（1）初始化训练数据（每个样本）的权值分布：如果有N个样本，则每一个训练的样本点最开始时都被赋予相同的权重：1/N。 <br>
-（2）训练弱分类器。具体训练过程中，如果某个样本已经被准确地分类，那么在构造下一个训练集中，它的权重就被降低；相反，如果某个样本点没有被准确地分类，那么它的权重就得到提高。同时，得到弱分类器对应的话语权。然后，更新权值后的样本集被用于训练下一个分类器，整个训练过程如此迭代地进行下去。 <br>
-（3）将各个训练得到的弱分类器组合成强分类器。各个弱分类器的训练过程结束后，分类误差率小的弱分类器的话语权较大，其在最终的分类函数中起着较大的决定作用，而分类误差率大的弱分类器的话语权较小，其在最终的分类函数中起着较小的决定作用。换言之，误差率低的弱分类器在最终分类器中占的比例较大，反之较小。</p>
-
-<h3 id="算法流程"><a name="t2"></a><a target="_blank"></a>算法流程</h3>
-
-<p><strong>第一步：</strong> <br>
-    初始化训练数据（每个样本）的权值分布。每一个训练样本，初始化时赋予同样的权值w=1/N。N为样本总数。 <br>
-<img src="https://img-blog.csdn.net/20160603094805020" alt="这里写图片描述" title=""> <br>
-D1表示，第一次迭代每个样本的权值。w11表示，第1次迭代时的第一个样本的权值。 <br>
-N为样本总数。 <br>
-<strong>第二步：进行多次迭代，m=1，2….M。m表示迭代次数。</strong> <br>
-    a)使用具有权值分布Dm（m=1,2,3…N)的训练样本集进行学习，得到弱的分类器。 <br>
-    <img src="https://img-blog.csdn.net/20160603095026458" alt="这里写图片描述" title=""> <br>
-    该式子表示，第m次迭代时的弱分类器，将样本x要么分类成-1，要么分类成1.<strong>那么根据什么准则得到弱分类器？</strong> <br>
-    准则：该弱分类器的误差函数最小，也就是分错的样本对应的 权值之和，最小。 <br>
-    <img src="https://img-blog.csdn.net/20160603095211334" alt="这里写图片描述" title=""> <br>
-    b)计算弱分类器Gm（x）的话语权，话语权am表示Gm（x）在最终分类器中的重要程度。其中em，为上步中的εm（误差函数的值） <br>
-    <img src="https://img-blog.csdn.net/20160603095517983" alt="这里写图片描述" title=""> <br>
-    该式是随em减小而增大。即误差率小的分类器，在最终分类器的 重要程度大。 <br>
-    c）更新训练样本集的权值分布。用于下一轮迭代。其中，被误分的样本的权值会增大，被正确分的权值减小。 <br>
-    <img src="https://img-blog.csdn.net/20160603095819805" alt="这里写图片描述" title=""> <br>
-    Dm+1是用于下次迭代时样本的权值，Wm+1,i是下一次迭代时，第i个样本的权值。 <br>
-    其中，yi代表第i个样本对应的类别（1或-1），Gm（xi）表示弱分类器对样本xi的分类（1或-1）。若果分对，yi*Gm（xi）的值为1，反之为-1。其中Zm是归一化因子，使得所有样本对应的权值之和为1. <br>
-    <img src="https://img-blog.csdn.net/20160603100059256" alt="这里写图片描述" title=""> <br>
-    该公式并不难，仔细看看、想想。 <br>
-<strong>第三步</strong>迭代完成后，组合弱分类器。 <br>
-首先，<img src="https://img-blog.csdn.net/20160603100503698" alt="这里写图片描述" title=""> <br>
-然后，加个sign函数，该函数用于求数值的正负。数值大于0，为1。小于0，为-1.等于0，为0.得到最终的强分类器G（x） <br>
-<img src="https://img-blog.csdn.net/20160603100710683" alt="这里写图片描述" title=""></p>
-
-<p><strong>*额外</strong>（关于权值、话语权、弱分类器准则的公式，想深入了解的可以看看。使用的话，知道上面的内容已经足够） <br>
-利用前向分布加法模型（简单说，就是把一起求n个问题，转化为每次求1个问题，再其基础上，求下一个问题，如此迭代n次），adaboost算法可以看成，求式子的最小。tn时样本n对应的正确分类，fm是前m个分类器的结合（这里乘了1/2，因为博主看的文章的am是1/2*log(~~)，这个无所谓，无非是多个1/2少个1/2。 <br>
-<img src="https://img-blog.csdn.net/20160603101055700" alt="这里写图片描述" title=""> <br>
-<img src="https://img-blog.csdn.net/20160603101347421" alt="这里写图片描述" title=""> <br>
-然后，假设前m-1个相关的参数已经确定。通过化简E这个式子，我们可以得到： <br>
-<img src="https://img-blog.csdn.net/20160603101635860" alt="这里写图片描述" title=""> <br>
-其中，是一个常量。 <br>
-<img src="https://img-blog.csdn.net/20160603102223581" alt="这里写图片描述" title=""> <br>
-然后， <br>
-<img src="https://img-blog.csdn.net/20160603101757939" alt="这里写图片描述" title=""> <br>
-其中，Tm是分类正确的样本的权值，Mm是分类错误的样本的权值。式子不算难，自己多看几遍就能理解了。 <br>
-到现在，可以看出，最小化E，其实就是最小化 <br>
-<img src="https://img-blog.csdn.net/20160603102035112" alt="这里写图片描述" title=""> <br>
-这个式子是什么？看看前面，这个就是找弱分类器时的准则！ <br>
-然后得到了弱分类器ym后，我们可以进推导出am和样本的权值。这里给出am的推导过程（手写的，字很烂）其中，ε是<img src="https://img-blog.csdn.net/20160603102537539" alt="这里写图片描述" title=""> <br>
-该图中，最右边的是“+exp（-am/2)*1”，写得太乱（—_—) <br>
-<img src="https://img-blog.csdn.net/20160603102332865" alt="这里写图片描述" title=""> <br>
-最后求出来的am没有1/2,这个无所谓。因为这里定义fm是多乘了个1/2。</p>
-
-
-
-<h3 id="优点"><a name="t3"></a>优点</h3>
-
-<p>（1）精度很高的分类器 <br>
-（2）提供的是框架，可以使用各种方法构建弱分类器 <br>
-（3）简单，不需要做特征筛选 <br>
-（4）不用担心过度拟合</p>
-
-
-
-<h3 id="实际应用"><a name="t4"></a>实际应用</h3>
-
-<p>（1）用于二分类或多分类 <br>
-（2）特征选择 <br>
-（3）分类人物的baseline</p>
-
-
-
-<h3 id="代码"><a name="t5"></a>代码</h3>
-
-<p>代码已在<a href="https://github.com/fuqiuai/lihang_algorithms/blob/master/AdaBoost/AdaBoost_sklearn.py" rel="nofollow" target="_blank">github</a>上实现</p>
-
-
-
-
-<h3 id="运行结果"><a name="t6"></a>运行结果</h3>
-
-<p><img src="https://raw.githubusercontent.com/fuqiuai/lihang_algorithms/master/imgs/Adaboost_sklearn_result_2.png" alt="这里写图片描述" title=""></p>            </div>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/0-1bag/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/0-1bag/" class="post-title-link" itemprop="url">0-1bag</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-18 21:06:55" itemprop="dateCreated datePublished" datetime="2019-11-18T21:06:55+08:00">2019-11-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>DP</p>
-<p>状态转移方程：</p>
-<p>m(i,j) = max(m[i][j] = m[i - 1][j] , m[i - 1][j - weight[i]] + value[i])    (weight[i] &lt;= j)<br>m(i,j)=m[i-1][j] (weight[i] &gt; j)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> V 500</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> weight[<span class="number">20</span> + <span class="number">1</span>];</span><br><span class="line"><span class="keyword">int</span> value[<span class="number">20</span> + <span class="number">1</span>];</span><br><span class="line"><span class="keyword">int</span> f[<span class="number">20</span> + <span class="number">1</span>][V + <span class="number">1</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"请输入物品个数:"</span>;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"请分别输入"</span> &lt;&lt; n &lt;&lt; <span class="string">"个物品的重量和价值:"</span> &lt;&lt; <span class="built_in">endl</span>; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; weight[i] &gt;&gt; value[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"请输入背包容量:"</span>;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; m;<span class="comment">//i==前i个包，1，2，3，····，i.     j=bag capacity </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= m; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (weight[i] &gt; j) &#123;</span><br><span class="line">                f[i][j] = f[i - <span class="number">1</span>][j];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                f[i][j] = max(f[i - <span class="number">1</span>][j] ,f[i - <span class="number">1</span>][j - weight[i]] + value[i]);<span class="comment">//f[1][1] = 5;f[1][2]= 5 , f[1][5] =5</span></span><br><span class="line">                <span class="comment">//f[2][1] = f[1][1] =5 ; </span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"背包能放的最大价值为:"</span> &lt;&lt; f[n][m] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -2308,16 +2310,16 @@ N为样本总数。 <br>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

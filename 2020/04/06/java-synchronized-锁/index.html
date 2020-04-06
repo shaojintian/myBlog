@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="baidu-site-verification" content="PKO0plnZfq" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="邵靳天的小站" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="目录  synchronized修饰方法  synchronized代码块  static静态synchronized方法与synchronized(class)代码块对比  synchron">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java-synchronized +锁">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;06&#x2F;java-synchronized-%E9%94%81&#x2F;index.html">
+<meta property="og:site_name" content="邵靳天的小站">
+<meta property="og:description" content="目录  synchronized修饰方法  synchronized代码块  static静态synchronized方法与synchronized(class)代码块对比  synchron">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20180805165648757?watermark&#x2F;2&#x2F;text&#x2F;aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3RvcGRldmVsb3BlcnI=&#x2F;font&#x2F;5a6L5L2T&#x2F;fontsize&#x2F;400&#x2F;fill&#x2F;I0JBQkFCMA==&#x2F;dissolve&#x2F;70">
+<meta property="og:updated_time" content="2020-04-06T15:36:24.695Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdn.net&#x2F;20180805165648757?watermark&#x2F;2&#x2F;text&#x2F;aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3RvcGRldmVsb3BlcnI=&#x2F;font&#x2F;5a6L5L2T&#x2F;fontsize&#x2F;400&#x2F;fill&#x2F;I0JBQkFCMA==&#x2F;dissolve&#x2F;70">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/06/java-synchronized-%E9%94%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>java-synchronized +锁 | 邵靳天的小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <meta name="baidu-site-verification" content="PKO0plnZfq" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">邵靳天的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">基础设施，后端开发，人工智能</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-eye"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/java-synchronized-%E9%94%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java-synchronized +锁
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-06 23:35:00 / 修改时间：23:36:24" itemprop="dateCreated datePublished" datetime="2020-04-06T23:35:00+08:00">2020-04-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div id="article_content" class="article_content clearfix">
+            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-688b67d66a.css">
+                            <link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/ck_htmledit_views-688b67d66a.css">
+                <div class="htmledit_views" id="content_views">
+                                            <p id="main-toc"><strong>目录</strong></p>
+
+<p id="synchronized%E4%BF%AE%E9%A5%B0%E6%96%B9%E6%B3%95-toc" style="margin-left:40px;"><a href="#synchronized%E4%BF%AE%E9%A5%B0%E6%96%B9%E6%B3%95" rel="nofollow" target="_self">synchronized修饰方法</a></p>
+
+<p id="2.synchronized%E4%BB%A3%E7%A0%81%E5%9D%97-toc" style="margin-left:40px;"><a href="#2.synchronized%E4%BB%A3%E7%A0%81%E5%9D%97" rel="nofollow" target="_self">synchronized代码块</a></p>
+
+<p id="4.%E9%9D%99%E6%80%81synchronized%E6%96%B9%E6%B3%95%E4%B8%8Esynchronized(class)%E4%BB%A3%E7%A0%81%E5%9D%97-toc" style="margin-left:40px;"><a href="#4.%E9%9D%99%E6%80%81synchronized%E6%96%B9%E6%B3%95%E4%B8%8Esynchronized(class)%E4%BB%A3%E7%A0%81%E5%9D%97" rel="nofollow" target="_self">static静态synchronized方法与synchronized(class)代码块对比</a></p>
+
+<p id="5.synchronized%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-toc" style="margin-left:40px;"><a href="#5.synchronized%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" rel="nofollow" target="_self">synchronized底层实现原理</a></p>
+
+<p id="%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81%E5%9D%97-toc" style="margin-left:80px;"><a href="#%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81%E5%9D%97" rel="nofollow" target="_self">同步代码块实现原理</a></p>
+
+<p id="%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95-toc" style="margin-left:80px;"><a href="#%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95" rel="nofollow" target="_self">同步方法实现原理</a></p>
+
+<p id="6.%20%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E7%9A%84%E5%8F%98%E9%87%8F-toc" style="margin-left:40px;"><a href="#6.%20%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E7%9A%84%E5%8F%98%E9%87%8F" rel="nofollow" target="_self">线程私有的变量</a></p>
+
+<p id="7.%20%E9%94%81%E9%87%8D%E5%85%A5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-toc" style="margin-left:40px;"><a href="#7.%20%E9%94%81%E9%87%8D%E5%85%A5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F" rel="nofollow" target="_self">锁重入是什么？如何实现的？</a></p>
+
+<p id="Synchronized%E4%BC%98%E5%8C%96-toc" style="margin-left:40px;"><a href="#Synchronized%E4%BC%98%E5%8C%96" rel="nofollow" target="_self">Synchronized优化</a></p>
+
+<p id="%E8%87%AA%E6%97%8B%E9%94%81-toc" style="margin-left:80px;"><a href="#%E8%87%AA%E6%97%8B%E9%94%81" rel="nofollow" target="_self">自旋锁</a></p>
+
+<p id="%E9%94%81%E6%B6%88%E9%99%A4-toc" style="margin-left:80px;"><a href="#%E9%94%81%E6%B6%88%E9%99%A4" rel="nofollow" target="_self">锁消除</a></p>
+
+<p id="%E9%94%81%E7%B2%97%E5%8C%96-toc" style="margin-left:80px;"><a href="#%E9%94%81%E7%B2%97%E5%8C%96" rel="nofollow" target="_self">锁粗化</a></p>
+
+<p id="%E5%81%8F%E5%90%91%E9%94%81-toc" style="margin-left:80px;"><a href="#%E5%81%8F%E5%90%91%E9%94%81" rel="nofollow" target="_self">偏向锁</a></p>
+
+<p id="轻量级锁-toc" style="margin-left:80px;"><a href="#%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81" rel="nofollow" target="_self">轻量级锁</a></p>
+
+<p id="Synchronized%E5%92%8CReentrantLock%E5%AF%B9%E6%AF%94-toc" style="margin-left:40px;"><a href="#Synchronized%E5%92%8CReentrantLock%E5%AF%B9%E6%AF%94" rel="nofollow" target="_self">Synchronized和ReentrantLock对比</a></p>
+
+<p id="%E7%9B%B8%E5%90%8C%E4%B9%8B%E5%A4%84-toc" style="margin-left:80px;"><a href="#%E7%9B%B8%E5%90%8C%E4%B9%8B%E5%A4%84" rel="nofollow" target="_self">相同之处</a></p>
+
+<p id="%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84-toc" style="margin-left:80px;"><a href="#%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84" rel="nofollow" target="_self">不同之处</a></p>
+
+<hr id="hr-toc"><p>本篇博客主要介绍synchronized关键字的用法及实现原理</p>
+
+<h2 id="synchronized%E4%BF%AE%E9%A5%B0%E6%96%B9%E6%B3%95"><a name="t0"></a><a name="t0"></a>synchronized修饰方法</h2>
+
+<p>更加准确的说法应该是修饰实例方法，而不包括静态方法。关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法当作锁。原因在于，要调用一个实例方法必须要new一个对应的实例对象，通过此实例对象才能访问实例方法。要实现同步，那么不同线程的锁必须是访问的同一个对象。这也是从设计角度来讲，为何notify， wait等和锁相关的方法定义在Object这个类中，而非Thread类中的原因之一。</p>
+
+<p>&nbsp;如果多个线程访问多个对象，则JVM会创建多个锁。</p>
+
+<p>牢记：<strong><span style="color:#f33b45;">只有共享资源的读写访问才需要同步化，如果不是共享资源那么根本就没有必要同步</span>。</strong></p>
+
+<p>例子类 Run</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Run</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-comment">//证明synchronized锁定的是对象</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        MyObject object = <span class="hljs-keyword">new</span> MyObject();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        ThreadA a = <span class="hljs-keyword">new</span> ThreadA(object);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="7"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        a.setName(<span class="hljs-string">"A"</span>);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="8"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        ThreadB b = <span class="hljs-keyword">new</span> ThreadB(object);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="9"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        b.setName(<span class="hljs-string">"B"</span>);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="10"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="11"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        a.start();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="12"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        b.start();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="13"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="14"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="15"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln" style="width:910px"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyObject</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-function"><span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">methodA</span><span class="hljs-params">()</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-comment">//如果不加synchronized则两个线程可同时进入methodA方法。若加入synchronized，则声明的方法一定是排队运行的</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-comment">//public void methodA() {</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">try</span> {</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="7"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">            System.out.println(<span class="hljs-string">"begin methodA threadName="</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="8"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">                    + Thread.currentThread().getName());</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="9"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">            Thread.sleep(<span class="hljs-number">5000</span>);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="10"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">            System.out.println(<span class="hljs-string">"end"</span>);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="11"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        } <span class="hljs-keyword">catch</span> (InterruptedException e) {</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="12"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">            e.printStackTrace();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="13"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="14"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="15"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="16"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>Thread A</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadA</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-keyword">private</span> MyObject object;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ThreadA</span><span class="hljs-params">(MyObject object)</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">super</span>();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="7"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">this</span>.object = object;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="8"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="9"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="10"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-meta">@Override</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="11"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="12"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">super</span>.run();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="13"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        object.methodA();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="14"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="15"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="16"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>Thread B</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-keyword">package</span> com.dr.mutiplethreads.chapter2.synchronizedMethodLockObject;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadB</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-keyword">private</span> MyObject object;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="7"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ThreadB</span><span class="hljs-params">(MyObject object)</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="8"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">super</span>();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="9"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">this</span>.object = object;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="10"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="11"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="12"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-meta">@Override</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="13"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="14"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">super</span>.run();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="15"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        object.methodA();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="16"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="17"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>这个例子当中，共享资源是MyObject的<strong>实例object</strong>, 而object中的方法methodA()是用synchronized修饰的，因此当一个线程执行这个方法时需要先取得对象锁，这里就是要取得object对象。<br>
+&nbsp;</p>
+
+<h2 id="2.synchronized%E4%BB%A3%E7%A0%81%E5%9D%97"><a name="t1"></a><a name="t1"></a>synchronized代码块</h2>
+
+<p>例子：</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-keyword">synchronized</span>(<span class="hljs-keyword">this</span>){</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>当一个线程访问某个对象的一个synchronized同步代码块时，另一个线程仍然可以访问该对象中的<strong>非synchronized</strong>(this)代码块。一半是异步，一半是同步，不在synchronized块中就是异步执行，在synchronized块中就是同步执行。</p>
+
+<p>但是，synchronized持有的锁仍然是调用它的对象。</p>
+
+<p>synchronized(this)代码块锁定的是当前对象。在多个线程持有对象监视器为同一个对象的前提下，同一时间只有一个线程可以执行synchronized(非this对象x)同步代码块中的代码.</p>
+
+<p>但是我们可以把任何对象当作对象监视器，格式 synchronized(非this对象)，作用只有一种:synchronized(非this对象)同步代码块</p>
+
+<h2 id="4.%E9%9D%99%E6%80%81synchronized%E6%96%B9%E6%B3%95%E4%B8%8Esynchronized(class)%E4%BB%A3%E7%A0%81%E5%9D%97"><a name="t2"></a><a name="t2"></a>static静态synchronized方法与synchronized(class)代码块对比</h2>
+
+<p>由于<strong>静态成员不专属于任何一个实例对象（</strong>这句话非常重要，真是因为静态成员本质上并不属于任何一个实例，因此对象锁对于它们是没有意义的，针对静态成员的并发事实上也就是多个线程之间访问同一个静态资源的并发问题<strong>）</strong>，是类成员，因此通过class对象锁可以控制静态 成员的并发操作。需要注意的是如果一个线程A调用一个实例对象的非static synchronized方法，而线程B需要调用这个实例对象所属类的静态 synchronized方法，是允许的，不会发生互斥现象，因为访问静态 synchronized 方法占用的锁是当前类的class对象，而访问非静态 synchronized 方法占用的锁是当前实例对象锁.</p>
+
+<p>&nbsp; &nbsp; 另外，从内存的角度来讲，静态成员所分配的内存空间也并不和任何一个对象的内存空间重叠，而是单独在一块内存里面分配。</p>
+
+<p>synchronized是对类的当前实例进行加锁，防止其他线程同时访问该类的该实例的所有synchronized块，注意这里是“<strong><span style="color:#ff0000;">类的当前实例</span></strong>”，类的两个不同实例就没有这种约束了。那么static synchronized恰好就是要控制类的所有实例的访问了，static synchronized是限制线程同时访问jvm中该类的所有实例同时访问对应的代码快。实际上，在类中某方法或某代码块中有 synchronized，那么在生成一个该类实例后，该类也就有一个监视快，放置线程并发访问该实例synchronized保护快，<strong><span style="color:#ff0000;">而</span><span style="color:#ff0000;">static synchronized</span><span style="color:#ff0000;">则是所有该类的实例公用一个监视快了</span></strong>，也就是两个的区别了,也就是synchronized相当于this.synchronized，而staticsynchronized相当于Something.synchronized.</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> <span class="hljs-function">pulbic class <span class="hljs-title">Something</span><span class="hljs-params">()</span></span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">         <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">isSyncA</span><span class="hljs-params">()</span></span>{}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">         <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-title">voidisSyncB</span><span class="hljs-params">()</span></span>{}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">         <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> synchronizedvoid <span class="hljs-title">cSyncA</span><span class="hljs-params">()</span></span>{}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">         <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> synchronizedvoid <span class="hljs-title">cSyncB</span><span class="hljs-params">()</span></span>{}</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">     }</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>&nbsp;那么，假如有Something类的两个实例a与b，那么下列组方法何以被1个以上线程同时访问呢<br>
+&nbsp;&nbsp; a.&nbsp;&nbsp; x.isSyncA()与x.isSyncB()&nbsp;<br>
+&nbsp;&nbsp; b.&nbsp;&nbsp; x.isSyncA()与y.isSyncA()<br>
+&nbsp;&nbsp; c.&nbsp;&nbsp; x.cSyncA()与y.cSyncB()<br>
+&nbsp;&nbsp; d.&nbsp;&nbsp; x.isSyncA()与Something.cSyncA()<br>
+&nbsp;&nbsp;&nbsp; 这里，很清楚的可以判断：<br>
+&nbsp;&nbsp; a，都是对同一个实例的synchronized域访问，因此不能被同时访问<br>
+&nbsp;&nbsp; b，是针对不同实例的，因此可以同时被访问<br>
+&nbsp;&nbsp; c，因为是staticsynchronized，所以不同实例之间仍然会被限制,相当于Something.isSyncA()与&nbsp;&nbsp; Something.isSyncB()了，因此不能被同时访问。</p>
+
+<p>&nbsp;&nbsp; &nbsp;&nbsp;那么，第d呢?，书上的 答案是可以被同时访问的，答案理由是synchronzied的是实例方法与synchronzied的类方法由于锁定（lock）不同的原因。</p>
+
+<p>结论：</p>
+
+<p>A: synchronized static是某个类的范围，synchronized static cSync{}防止多个线程同时访问这个类中的synchronized static 方法。它可以对类的所有对象实例起作用。</p>
+
+<p>B: synchronized 是某实例的范围，synchronized isSync(){}防止多个线程同时访问这个实例中的synchronized 方法。</p>
+
+<h2 id="5.synchronized%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><a name="t3"></a><a name="t3"></a>synchronized底层实现原理</h2>
+
+<p>要理解synchronized的底层实现原理，需要先了解java对象的内存布局，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。如下：</p>
+
+<p><img alt="" class="has" src="https://img-blog.csdn.net/20180805165648757?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3RvcGRldmVsb3BlcnI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70"></p>
+
+<p>其中，对象头是实现synchronized的锁对象的基础。synchronized使用的锁对象是存储在Java对象头里的，Hotspot虚拟机的对象头主要包括两部分数据：Mark Word（标记字段）、Klass Pointer（类型指针）。其中Klass Point是是对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例，Mark Word用于存储对象自身的运行时数据，它是实现轻量级锁和偏向锁的关键.</p>
+
+<p>由于对象头的信息是与对象自身定义的数据没有关系的额外存储成本，因此考虑到JVM的空间效率，Mark Word 被设计成为一个非固定的数据结构，以便存储更多有效的数据，它会根据对象本身的状态复用自己的存储空间</p>
+
+<p>&nbsp;</p>
+
+<p>synchronized不同的用法在底层的实现上并不完全一样，这一点需要特别注意。</p>
+
+<ol><li>同步代码块使用monitorenter 和 monitorexit 指令来实现同步</li>
+    <li>同步方法并不是由 monitorenter 和 monitorexit 指令来实现同步的，而是由方法调用指令读取运行时常量池中方法的 ACC_SYNCHRONIZED 标志来隐式实现的.</li>
+</ol><h3 id="%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81%E5%9D%97"><a name="t4"></a><a name="t4"></a><span style="color:#000000;">同步代码块实现原理</span></h3>
+
+<p><span style="color:#f33b45;">同步代码块是使用虚拟机的指令monitorenter和monitorexit指令实现的</span><span style="color:#000000;">.&nbsp;<span style="color:#000000;">monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，他将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁.&nbsp; 下面是一个同步代码块的伪代码</span></span></p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">sycnchronized(<span class="hljs-keyword">this</span>){</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;其中monitor的本质是依赖于底层操作系统的Mutex Lock实现,Mutex是操作系统定义信号量的关键字，是操作系统实现同步所使用的技术，操作系统实现线程之间的切换需要从用户态到内核态的切换，切换成本非常高。</span></p>
+
+<p>同步代码块便宜之后的字节码大致如下</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-number">3</span>: monitorenter  <span class="hljs-comment">//进入同步方法</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-comment">//..........省略其他  </span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-number">15</span>: monitorexit   <span class="hljs-comment">//退出同步方法</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-number">16</span>: goto          <span class="hljs-number">24</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-comment">//省略其他.......</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-number">21</span>: monitorexit <span class="hljs-comment">//退出同步方法</span></div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>&nbsp; &nbsp;为了保证在方法异常完成时 monitorenter 和 monitorexit 指令依然可以正确配对执行，编译器会自动产生一个异常处理器，这个异 常处理器声明可处理所有的异常，它的目的就是用来执行 monitorexit 指令。从字节码中也可以看出多了一个monitorexit指令，它&nbsp; 就是异常结束时被执行的释放monitor 的指令。</p>
+
+<h3 id="%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95"><a name="t5"></a><a name="t5"></a><strong>同步方法实现原理</strong></h3>
+
+<p><span style="color:#f33b45;">同步方法则是通过对象头实现的访问标志位为基础实现的</span>。<span style="color:#000000;">synchronized方法会被翻译成普通的方法调用和返回指令如:invokevirtual、areturn指令，在VM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。 下面是一个同步方法的伪代码</span></p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">methodA</span><span class="hljs-params">()</span></span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">}</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>注意在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。详细请看：https://blog.csdn.net/javazejian/article/details/72828483. 其字节码大致如下</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">syncTask</span><span class="hljs-params">()</span></span>;</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    descriptor: ()V</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    <span class="hljs-comment">//方法标识ACC_PUBLIC代表public修饰，ACC_SYNCHRONIZED指明该方法为同步方法</span></div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    flags: ACC_PUBLIC, ACC_SYNCHRONIZED</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    Code:</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">      stack=<span class="hljs-number">3</span>, locals=<span class="hljs-number">1</span>, args_size=<span class="hljs-number">1</span></div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>从字节码中可以看出，synchronized修饰的方法并没有monitorenter指令和monitorexit指令，取得代之的确实是<span style="color:#f33b45;">ACC_SYNCHRONIZED</span>标识，该标识指明了该方法是一个同步方法，JVM通过该ACC_SYNCHRONIZED访问标志来辨别一个方法是否声明为同步方法，从而执行相应的同步调用。这便是synchronized锁在同步代码块和同步方法上实现的基本原理。</p>
+
+<p>&nbsp;</p>
+
+<h2 id="6.%20%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E7%9A%84%E5%8F%98%E9%87%8F"><a name="t6"></a><a name="t6"></a>线程私有的变量</h2>
+
+<p>先上结论：</p>
+
+<ol><li><strong>静态变量：线程非安全。&nbsp;&nbsp;</strong>静态变量即类变量，位于方法区，为所有对象共享，共享一份内存，一旦静态变量被修改，其他对象均对修改可见，故线程非安全。</li>
+    <li><strong>实例变量：单例模式（只有一个对象实例存在）线程非安全，非单例线程安全。&nbsp;</strong>实例变量为对象实例私有，在虚拟机的堆中分配，若在系统中只存在一个此对象的实例，在多线程环境下，“犹如”静态变量那样，被某个线程修改后，其他线程对修改均可见，故线程非安全；如果每个线程执行都是在不同的对象中，那对象与对象之间的实例变量的修改将互不影响，故线程安全。</li>
+    <li><strong>局部变量：线程安全。&nbsp;</strong>每个线程执行时将会把局部变量放在各自栈帧的工作内存中，线程间不共享，故不存在线程安全问题。</li>
+</ol><p>具体分析参考：<a href="https://www.cnblogs.com/firstdream/p/7976871.html" target="_blank" rel="nofollow noopener">https://www.cnblogs.com/firstdream/p/7976871.html</a></p>
+
+<h2 id="7.%20%E9%94%81%E9%87%8D%E5%85%A5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><a name="t7"></a><a name="t7"></a>锁重入是什么？如何实现的？</h2>
+
+<p>锁重入是什么：</p>
+
+<p>锁重入的意思就是当一个线程得到一个对象锁后，再次请求此对象锁时是可以再次得到该对象的锁的。synchronized关键字拥有锁重入的功能，在一个synchronized方法/块内部调用本对象的其他synchronized方法/块时，是永远可以得到锁的，原因是<span style="color:#f33b45;">Java中线程获得对象锁的操作是以线程为单位的，而不是以调用为单位的</span>。同一个线程获得一个对象锁之后，再次访问这个对象的其他同步方法，所需的对象锁没有发生变化。</p>
+
+<p>实现逻辑：</p>
+
+<p>每个锁关联一个线程持有者和一个计数器。当计数器为0时表示该锁没有被任何线程持有，那么任何线程都都可能获得该锁而调用相应方法。当一个线程请求成功后，JVM会记下持有锁的线程，并将计数器计为1。此时其他线程请求该锁，则必须等待。而该持有锁的线程如果再次请求这个锁，就可以再次拿到这个锁，同时计数器会递增。当线程退出一个synchronized方法/块时，计数器会递减，如果计数器为0则释放该锁。</p>
+
+<h2 id="Synchronized%E4%BC%98%E5%8C%96"><a name="t8"></a><a name="t8"></a>Synchronized优化</h2>
+
+<p>jdk1.6对锁的实现引入了大量的优化，如自旋锁、适应性自旋锁、锁消除、锁粗化、偏向锁、轻量级锁等技术来减少锁操作的开销。</p>
+
+<p>锁主要存在四中状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，他们会随着竞争的激烈而逐渐升级。注意锁可以升级不可降级，这种策略是为了提高获得锁和释放锁的效率。</p>
+
+<h3 id="%E8%87%AA%E6%97%8B%E9%94%81"><a name="t9"></a><a name="t9"></a>自旋锁</h3>
+
+<p><span style="color:#f33b45;">所谓自旋锁，就是让该线程等待一段时间，不会被立即挂起，看持有锁的线程是否会很快释放锁</span>。怎么等待呢？执行一段无意义的循环即可（自旋）。</p>
+
+<p>JDK 1.6引入了更加聪明的自旋锁，即自适应自旋锁。所谓自适应就意味着自旋的次数不再是固定的，它是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。它怎么做呢？线程如果自旋成功了，那么下次自旋的次数会更加多，因为虚拟机认为既然上次成功了，那么此次自旋也很有可能会再次成功，那么它就会允许自旋等待持续的次数更多。反之，如果对于某个锁，很少有自旋能够成功的，那么在以后要或者这个锁的时候自旋的次数会减少甚至省略掉自旋过程，以免浪费处理器资源。&nbsp;<br>
+有了自适应自旋锁，随着程序运行和性能监控信息的不断完善，虚拟机对程序锁的状况预测会越来越准确，虚拟机会变得越来越聪明。</p>
+
+<h3 id="%E9%94%81%E6%B6%88%E9%99%A4"><a name="t10"></a><a name="t10"></a>锁消除</h3>
+
+<p>为了保证数据的完整性，我们在进行操作时需要对这部分操作进行同步控制，但是在有些情况下，<span style="color:#f33b45;">JVM检测到不可能存在共享数据竞争，这是JVM会对这些同步锁进行锁消除</span>。锁消除的依据是逃逸分析的数据支持。</p>
+
+<p>如果不存在竞争，为什么还需要加锁呢？所以锁消除可以节省毫无意义的请求锁的时间。变量是否逃逸，对于虚拟机来说需要使用数据流分析来确定，但是对于我们程序员来说这还不清楚么？我们会在明明知道不存在数据竞争的代码块前加上同步吗？但是有时候程序并不是我们所想的那样？我们虽然没有显示使用锁，但是我们在使用一些JDK的内置API时，如StringBuffer、Vector、HashTable等，这个时候会存在隐形的加锁操作。比如StringBuffer的append()方法，Vector的add()方法</p>
+
+<pre class="has" name="code"><code class="language-java hljs"><ol class="hljs-ln"><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="1"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vectorTest</span><span class="hljs-params">()</span></span>{</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="2"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        Vector&lt;String&gt; vector = <span class="hljs-keyword">new</span> Vector&lt;String&gt;();</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="3"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">10</span> ; i++){</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="4"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">            vector.add(i + <span class="hljs-string">""</span>);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="5"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        }</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="6"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line"> </div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="7"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">        System.out.println(vector);</div></div></li><li><div class="hljs-ln-numbers"><div class="hljs-ln-line hljs-ln-n" data-line-number="8"></div></div><div class="hljs-ln-code"><div class="hljs-ln-line">    }</div></div></li></ol></code><div class="hljs-button {2}" data-title="复制" onclick="hljs.copyCode(event)"></div></pre>
+
+<p>在运行这段代码时，JVM可以明显检测到变量vector没有逃逸出方法vectorTest()之外，所以JVM可以大胆地将vector内部的加锁操作消除。</p>
+
+<h3 id="%E9%94%81%E7%B2%97%E5%8C%96"><a name="t11"></a><a name="t11"></a>锁粗化</h3>
+
+<p>我们知道在使用同步锁的时候，需要让同步块的作用范围尽可能小—仅在共享数据的实际作用域中才进行同步，这样做的目的是为了使需要同步的操作数量尽可能缩小，如果存在锁竞争，那么等待锁的线程也能尽快拿到锁</p>
+
+<p>但是如果一系列的连续加锁解锁操作，可能会导致不必要的性能损耗，所以引入锁粗话的概念。</p>
+
+<p>&nbsp;<br>
+锁粗话概念比较好理解，<span style="color:#f33b45;">就是将多个连续的加锁、解锁操作连接在一起，扩展成一个范围更大的锁</span>。如上面实例：vector每次add的时候都需要加锁操作，JVM检测到对同一个对象（vector）连续加锁、解锁操作，会合并一个更大范围的加锁、解锁操作，即加锁解锁操作会移到for循环之外。</p>
+
+<h3 id="%E5%81%8F%E5%90%91%E9%94%81"><a name="t12"></a><a name="t12"></a>偏向锁</h3>
+
+<p>偏向锁是Java 6之后加入的新锁，它是一种针对加锁操作的优化手段，经过研究发现，在大多数情况下，锁不仅不存在多线程竞争，而且总是由同一线程多次获得，因此为了减少同一线程获取锁(会涉及到一些CAS操作,耗时)的代价而引入偏向锁。<span style="color:#f33b45;">偏向锁的核心思想是，如果一个线程获得了锁，那么锁就进入偏向模式，此时Mark Word 的结构也变为偏向锁结构，当这个线程再次请求锁时，无需再做任何同步操作，即获取锁的过程，这样就省去了大量有关锁申请的操作，从而也就提供程序的性能</span>。所以，对于没有锁竞争的场合，偏向锁有很好的优化效果，毕竟极有可能连续多次是同一个线程申请相同的锁。但是对于锁竞争比较激烈的场合，偏向锁就失效了，因为这样场合极有可能每次申请锁的线程都是不相同的，因此这种场合下不应该使用偏向锁，否则会得不偿失，需要注意的是，偏向锁失败后，并不会立即膨胀为重量级锁，而是先升级为轻量级锁。</p>
+
+<p>偏向锁的释放采用了一种只有竞争才会释放锁的机制，线程是不会主动去释放偏向锁，需要等待其他线程来竞争</p>
+
+<h3 id="轻量级锁"><a name="t13"></a><a name="t13"></a>轻量级锁</h3>
+
+<p>倘若偏向锁失败，虚拟机并不会立即升级为重量级锁，它还会尝试使用一种称为轻量级锁的优化手段(1.6之后加入的)，此时Mark Word 的结构也变为轻量级锁的结构。<span style="color:#f33b45;">轻量级锁能够提升程序性能的依据是“对绝大部分的锁，在整个同步周期内都不存在竞争”，注意这是经验数据</span>。需要了解的是，轻量级锁所适应的场景是线程交替执行同步块的场合，如果存在同一时间访问同一锁的场合，就会导致轻量级锁膨胀为重量级锁</p>
+
+<p>引入轻量级锁的主要目的是在多没有多线程竞争的前提下，减少传统的重量级锁使用操作系统互斥量产生的性能消。</p>
+
+<h2 id="Synchronized%E5%92%8CReentrantLock%E5%AF%B9%E6%AF%94"><a name="t14"></a><a name="t14"></a>Synchronized和ReentrantLock对比</h2>
+
+<h3 id="%E7%9B%B8%E5%90%8C%E4%B9%8B%E5%A4%84"><a name="t15"></a><a name="t15"></a>相同之处</h3>
+
+<p><span style="color:#f33b45;">都是加锁方式同步，而且都是阻塞式的同步</span>，也就是说当如果一个线程获得了对象锁，进入了同步块，其他访问该同步块的线程都必须阻塞在同步块外面等待。</p>
+
+<p>synchronized 与Lock<strong>都是可重入锁</strong>，同一个线程再次进入同步代码的时候.可以使用自己已经获取到的锁。</p>
+
+<h3 id="%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84"><a name="t16"></a><a name="t16"></a>不同之处</h3>
+
+<p>对于Synchronized来说，它是java语言的关键字，是原生语法层面的互斥，需要jvm实现</p>
+
+<p>而ReentrantLock它是JDK 1.5之后提供的API层面的互斥锁，需要lock()和unlock()方法配合try/finally语句块来完成. ReentrantLock是一个类。lock()和unlock()方法是借助Unsafe类实现的.</p>
+
+<p>Synchronized是悲观锁机制，独占锁。而Locks.ReentrantLock是，每次不加锁而是假设没有冲突而去完成某项操作，如果因为冲突失败就重试，直到成功为止。</p>
+
+<p>ReentrantLock类提供了一些高级功：</p>
+
+<ol><li>等待可中断，持有锁的线程长期不释放的时候，正在等待的线程可以选择放弃等待，这相当于Synchronized来说可以避免出现死锁的情况。</li>
+    <li>公平锁，多个线程等待同一个锁时，必须按照申请锁的时间顺序获得锁，Synchronized锁非公平锁，ReentrantLock默认的构造函数是创建的非公平锁，可以通过参数true设为公平锁，但公平锁表现的性能不是很好。</li>
+    <li>锁绑定多个条件，一个ReentrantLock对象可以同时绑定对个对象。</li>
+</ol><p>ReentrantLock适用场景</p>
+
+<ol><li>某个线程在等待一个锁的控制权的这段时间需要中断</li>
+    <li>需要分开处理一些wait-notify，ReentrantLock里面的Condition应用，能够控制notify哪个线程，锁可以绑定多个条件。</li>
+    <li>具有公平锁功能，每个到来的线程都将排队等候。</li>
+</ol>                                    
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/04/06/hashtable-java/" rel="next" title="hashtable-java">
+                  <i class="fa fa-chevron-left"></i> hashtable-java
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2020/04/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%B1%87%E6%80%BB%E8%B4%B4/" rel="prev" title="设计模式汇总贴">
+                  设计模式汇总贴 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized%E4%BF%AE%E9%A5%B0%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">synchronized修饰方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2.synchronized%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text">synchronized代码块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4.%E9%9D%99%E6%80%81synchronized%E6%96%B9%E6%B3%95%E4%B8%8Esynchronized(class)%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text">static静态synchronized方法与synchronized(class)代码块对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5.synchronized%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">synchronized底层实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">4.1.</span> <span class="nav-text">同步代码块实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">同步方法实现原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6.%20%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">5.</span> <span class="nav-text">线程私有的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7.%20%E9%94%81%E9%87%8D%E5%85%A5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="nav-number">6.</span> <span class="nav-text">锁重入是什么？如何实现的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Synchronized%E4%BC%98%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">Synchronized优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-number">7.1.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E6%B6%88%E9%99%A4"><span class="nav-number">7.2.</span> <span class="nav-text">锁消除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E7%B2%97%E5%8C%96"><span class="nav-number">7.3.</span> <span class="nav-text">锁粗化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%8F%E5%90%91%E9%94%81"><span class="nav-number">7.4.</span> <span class="nav-text">偏向锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轻量级锁"><span class="nav-number">7.5.</span> <span class="nav-text">轻量级锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Synchronized%E5%92%8CReentrantLock%E5%AF%B9%E6%AF%94"><span class="nav-number">8.</span> <span class="nav-text">Synchronized和ReentrantLock对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%90%8C%E4%B9%8B%E5%A4%84"><span class="nav-number">8.1.</span> <span class="nav-text">相同之处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84"><span class="nav-number">8.2.</span> <span class="nav-text">不同之处</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shao Jintian</p>
+  <div class="site-description" itemprop="description">only a geek</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备19022833号-1 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Jintian</span>
+</div>
+  <div class="powered-by">由 <a href="http://beian.miit.gov.cn/" class="theme-link" rel="noopener" target="_blank">hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

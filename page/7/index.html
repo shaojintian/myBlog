@@ -221,6 +221,216 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Mysql%205.x%20%E5%85%A5%E9%97%A8%20%E5%9F%BA%E4%BA%8E%E3%80%8AMysql%20%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Mysql%205.x%20%E5%85%A5%E9%97%A8%20%E5%9F%BA%E4%BA%8E%E3%80%8AMysql%20%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A%E3%80%8B/" class="post-title-link" itemprop="url">Mysql 5.x 入门 基于《Mysql 必知必会》</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:45" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:45+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>mysql 入门<br>虽然加黑字体在mysql命令行中大小写均可，但应该<strong>大写</strong>，这样更符合规范。</p>
+<h2 id="一：入门及检索语句"><a href="#一：入门及检索语句" class="headerlink" title="一：入门及检索语句"></a>一：入门及检索语句</h2><p>1：创建数据库  -&gt; <strong>create database</strong>  database_name;</p>
+<p>2:  加信息源 -&gt; <strong>source</strong>  文件的绝对路径;</p>
+<p>3：使用数据库 -&gt; <strong>use database</strong> database_name ;</p>
+<p>4: 展示选中库的所有表 -&gt; <strong>show tables;</strong></p>
+<p>5: 展示所有表的其中一个 -&gt; <strong>describe table_name;</strong></p>
+<p>6:选择某表中的某一列 -&gt; <strong>select</strong>  column_name  <strong>from</strong> ** table_name**</p>
+<p>7选择某表中的多列 -&gt; <strong>select</strong>  column_name1 ,  column_name2 <strong>from</strong> **<br>table_name**</p>
+<p>8:选择某表中的所有列 -&gt; <strong>select *  from</strong> table_name ;</p>
+<h2 id="二：排序检索数据"><a href="#二：排序检索数据" class="headerlink" title="二：排序检索数据"></a>二：排序检索数据</h2><p>使用子句<strong>order by</strong><br>1: 按照某一列升序排序（默认为升序）：<br>    <strong>select</strong> column_name<br>    <strong>from</strong> table_name<br>    <strong>order by</strong>column_name;</p>
+<p>2:降序排列：<br>    <strong>select</strong> column_name<br>    <strong>from</strong> table_name<br>    <strong>order by</strong> column_name <strong>DESC</strong>;</p>
+<p>3:按某一列选中最大的item：<br>    <strong>select</strong> column_name<br>    <strong>from</strong> table_name<br>    <strong>order by</strong> column_name <strong>DESC</strong><br>    <strong>LIMIT</strong> 1；//注释：mysql中也是第0个为第一个 LIMIT 1 等价于 LIMIT 0,1</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" class="post-title-link" itemprop="url">进程和线程的区别与联系</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:44" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:44+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>说进程和线程的区别</p>
+<p>在理解进程和线程概念之前首选要对并发有一定的感性认识，如果服务器同一时间内只能服务于一个客户端，其他客户端都再那里傻等的话，可见其性能的低下估计会被客户骂出翔来，因此并发编程应运而生，并发是网络编程中必须考虑的问题。实现并发的方式有多种：比如多进程、多线程、IO多路复用。</p>
+<p><strong>多进程</strong><br>进程是资源（CPU、内存等）分配的基本单位，它是程序执行时的一个实例。程序运行时系统就会创建一个进程，并为它分配资源，然后把该进程放入进程就绪队列，进程调度器选中它的时候就会为它分配CPU时间，程序开始真正运行。</p>
+<p>Linux系统函数fork()可以在父进程中创建一个子进程，这样的话，在一个进程接到来自客户端新的请求时就可以复制出一个子进程让其来处理，父进程只需负责监控请求的到来，然后创建子进程让其去处理，这样就能做到并发处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">print(<span class="string">'当前进程:%s 启动中 ....'</span> % os.getpid())</span><br><span class="line">pid = os.fork()</span><br><span class="line"><span class="keyword">if</span> pid == <span class="number">0</span>:</span><br><span class="line">    print(<span class="string">'子进程:%s,父进程是:%s'</span> % (os.getpid(), os.getppid()))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">'进程:%s 创建了子进程:%s'</span> % (os.getpid(),pid ))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输出结果：</span><br><span class="line"></span><br><span class="line">当前进程:27223 启动中 ....</span><br><span class="line">进程:27223 创建了子进程:27224</span><br><span class="line">子进程:27224,父进程是:27223</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>fork函数会返回两次结果，因为操作系统会把当前进程的数据复制一遍，然后程序就分两个进程继续运行后面的代码，fork分别在父进程和子进程中返回，在子进程返回的值pid永远是0，在父进程返回的是子进程的进程id。</p>
+<p><strong>多线程</strong><br>线程是程序执行时的最小单位，它是进程的一个执行流，是CPU调度和分派的基本单位，一个进程可以由很多个线程组成，线程间共享进程的所有资源，每个线程有自己的堆栈和局部变量。线程由CPU独立调度执行，在多CPU环境下就允许多个线程同时运行。同样多线程也可以实现并发操作，每个请求分配一个线程来处理。</p>
+<blockquote>
+<p>线程和进程各自有什么区别和优劣呢？</p>
+</blockquote>
+<ul>
+<li>进程是资源分配的最小单位，线程是程序执行的最小单位。</li>
+<li>进程有自己的独立地址空间，每启动一个进程，系统就会为它分配地址空间，建立数据表来维护代码段、堆栈段和数据段，这种操作非常昂贵。而线程是共享进程中的数据的，使用相同的地址空间，因此CPU切换一个线程的花费远比进程要小很多，同时创建一个线程的开销也比进程要小很多。</li>
+</ul>
+<ul>
+<li><p>线程之间的通信更方便，同一进程下的线程共享全局变量、静态变量等数据，而进程之间的通信需要以通信的方式（IPC)进行。不过如何处理好同步与互斥是编写多线程程序的难点。</p>
+</li>
+<li><p>但是多进程程序更健壮，多线程程序只要有一个线程死掉，整个进程也死掉了，而一个进程死掉并不会对另外一个进程造成影响，因为进程有自己独立的地址空间。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/CSAPP%E3%80%8AComputer%20System%20A%20Programmer's%20Perspective%E3%80%8B%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/CSAPP%E3%80%8AComputer%20System%20A%20Programmer's%20Perspective%E3%80%8B%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">CSAPP《Computer System A Programmer's Perspective》笔记</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:43" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:43+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>EAIPlus 技术缔造未来</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E5%8F%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -843,190 +1053,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Linux%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89%E5%B8%B8%E7%94%A8/" class="post-title-link" itemprop="url">Linux命令（1）常用</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:33" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:33+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>常见系统命令<br>1：echo  打印字符串或变量<br>2：date 显示日期<br>3：reboot 重启<br>4：poweroff 关机<br>5：wget [网址]   下载网络文件<br>6：ps aux 查看进程状态<br>7：top 查看进程活动与系统负载<br>8:  pidof 查看进程PID值<br>9：kill [PID] 强制终止进程<br>10：killall [服务名] 关闭服务所有进程<br>11:  ifconfig 网络状态与网卡信息<br>12:uname -a  查看系统内核<br>13:uptime 查看系统负载</p>
-<p>工作目录切换命令：<br>1：pwd 显示当前工作目录<br>2：cd 切换目录<br>3：ls 当前目录文件信息</p>
-<p>文本编辑：<br>1：cat  [文件名]  查看小文件<br>2：more  [文件名] 查看大文件<br>3：tr  [a-z] [A-Z]    转换文本所有小写为大写<br>4：wc -l [文件名]  显示文件有多少行 ，[-c]显示字节数<br>5：stat [文件名] 显示文件当前储存信息</p>
-<p>文件目录管理命令：<br>1：touch [文件名]  创建空白文件<br>2：mkdir  [名称]  空白文件夹<br>3：cp  [源文件] [目标文件]  拷贝文件<br>4：mv  [源文件] [目标文件] 重命名或者拷贝文件，但删除源文件<br>5：rm -f  [文件]  删除文件<br>6:     file [文件]  查看文件类型<br>7:  tar -czvf [压缩包名] [文件目录] 压缩目录下文件<br>8：tar -xzvf [压缩包名] -C [目录] 解压文件到指定目录<br>9：grep [信息] [文件名]   列举出当前文件出现要检索信息的整行<br>10: find  [目录]  -name [关键词]   搜索目录下关键词所有的文件</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%201%20%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%201%20%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" class="post-title-link" itemprop="url">Leetcode 1 两数之和</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:32" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:32+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; twoSum(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        <span class="built_in">map</span>&lt;<span class="keyword">int</span> ,<span class="keyword">int</span>&gt; m;</span><br><span class="line">        <span class="comment">//(元素，位置)</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size();++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(m.count(target-nums[i]))</span><br><span class="line">            &#123;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">return</span> &#123;i , m[target - nums[i]]&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//放后面避免同一元素计算两次如【3，2】target =6</span></span><br><span class="line">            m[nums[i]]=i;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>map基于红黑树，查找为O（logn）</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%202%20%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/19/Leetcode%202%20%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/" class="post-title-link" itemprop="url">Leetcode 2 两数相加</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-19 09:30:31" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:31+08:00">2019-11-19</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://img-blog.csdnimg.cn/20190404003529978.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">      <span class="keyword">int</span> v1 =<span class="number">0</span> , v2 = <span class="number">0</span>,sum=<span class="number">0</span>,carry=<span class="number">0</span>;  </span><br><span class="line">        </span><br><span class="line">        ListNode* ans = <span class="keyword">new</span> ListNode(<span class="number">-1</span>);</span><br><span class="line">        </span><br><span class="line">        ListNode* now =ans;</span><br><span class="line">        </span><br><span class="line">     <span class="keyword">while</span>( l1 || l2) &#123;</span><br><span class="line">         </span><br><span class="line">         v1 = l1 ? l1-&gt;val : <span class="number">0</span>;</span><br><span class="line">         v2 = l2 ? l2-&gt;val : <span class="number">0</span>;</span><br><span class="line">         </span><br><span class="line">         sum=v1+v2+carry;</span><br><span class="line">         <span class="comment">//更新 carry</span></span><br><span class="line">         carry=<span class="number">0</span>;</span><br><span class="line">         </span><br><span class="line">         <span class="keyword">if</span>(sum &gt;=<span class="number">10</span>)  </span><br><span class="line">         &#123;</span><br><span class="line">             sum-=<span class="number">10</span>;</span><br><span class="line">             carry=<span class="number">1</span>;</span><br><span class="line">             </span><br><span class="line">         &#125;</span><br><span class="line">         </span><br><span class="line">         now-&gt;next = <span class="keyword">new</span> ListNode(sum);</span><br><span class="line">         </span><br><span class="line">         now = now-&gt;next;</span><br><span class="line">         </span><br><span class="line">         <span class="keyword">if</span>(l1 != <span class="literal">NULL</span>)  l1=l1-&gt;next;</span><br><span class="line">         <span class="keyword">if</span>(l2 != <span class="literal">NULL</span>)  l2=l2-&gt;next;</span><br><span class="line">     &#125;</span><br><span class="line">        <span class="comment">//如果此时carry==1，说明还需要往前进一位</span></span><br><span class="line">        <span class="keyword">if</span>(carry) now-&gt;next = <span class="keyword">new</span> ListNode(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> ans-&gt;next;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/20190404003551848.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>创建一个新链表(-1-&gt;null)</p>
-<p>carry为标识位表示进制是否加1</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1075,16 +1101,16 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
