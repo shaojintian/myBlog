@@ -1437,11 +1437,6 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>设计模式1-单例模式</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>设计模式2-简单工厂模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<p>1、简单工厂模式</p>
@@ -1461,6 +1456,11 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
       <tags>
         <tag>大话设计模式</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>设计模式1-单例模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>第五周report</title>
