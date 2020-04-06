@@ -221,6 +221,68 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode%2018/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/Leetcode%2018/" class="post-title-link" itemprop="url">Leetcode 18</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 09:30:10" itemprop="dateCreated datePublished" datetime="2019-11-19T09:30:10+08:00">2019-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190408170718909.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5ODcxNDk4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; fourSum(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">       </span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; ans;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(nums.size() &lt;<span class="number">4</span>) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        sort(nums.begin(),nums.end());<span class="comment">//find consistent duplications</span></span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size()<span class="number">-3</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[i] &gt; target &amp;&amp; nums[i] &gt;<span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(i&gt;<span class="number">0</span> &amp;&amp; nums[i]==nums[i<span class="number">-1</span>] ) <span class="keyword">continue</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span> fixed = target - nums[i];</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.size()<span class="number">-2</span>;j++)</span><br><span class="line">            &#123;   <span class="comment">//no duplications</span></span><br><span class="line">                <span class="keyword">if</span>(j &gt; i+<span class="number">1</span> &amp;&amp;  nums[j] == nums[j<span class="number">-1</span>])<span class="keyword">continue</span>;  </span><br><span class="line">                <span class="keyword">int</span> k=j+<span class="number">1</span>,l=nums.size()<span class="number">-1</span>;</span><br><span class="line">                <span class="keyword">while</span>(k&lt;l)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">int</span> tmp = nums[j]+nums[k]+nums[l];</span><br><span class="line">                    <span class="keyword">if</span>(tmp == fixed)</span><br><span class="line">                    &#123;</span><br><span class="line">                        ans.push_back(&#123;nums[i],nums[j],nums[k],nums[l]&#125;);</span><br><span class="line">                        </span><br><span class="line">                        <span class="keyword">while</span>(k&lt;l &amp;&amp; nums[k]==nums[k+<span class="number">1</span>]) ++k;</span><br><span class="line">                        <span class="keyword">while</span>(k&lt;l &amp;&amp; nums[l]==nums[l<span class="number">-1</span>]) --l;</span><br><span class="line">                        --l;</span><br><span class="line">                        ++k;</span><br><span class="line">                        </span><br><span class="line">                    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(tmp &gt; fixed ) --l;</span><br><span class="line">                    <span class="keyword">else</span> ++k;</span><br><span class="line">                    </span><br><span class="line">                    </span><br><span class="line">                    </span><br><span class="line">                    </span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>4sum  和3sum原理一致</p>
+<p>都是（n-2）层循环+双指针</p>
+<p>注意每层循环都要比较是否fixed的数字有重复，有重复就continue<br>eg：==“if(j &gt; i+1 &amp;&amp;  nums[j] == nums[j-1])continue;  ”==<br>int j=i-1;<br>j&gt;i+1 是因为第1个j没有 j-1，第一个数字没有前一位数。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/Leetcode19%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1941,327 +2003,6 @@ UDP是无连接的协议，支持一对一，多对一，多对多的通信，�
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%A5%E9%97%A8-%E4%BE%8B%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/18/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%A5%E9%97%A8-%E4%BE%8B%E9%A2%98/" class="post-title-link" itemprop="url">线段树入门</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-18 22:24:00 / 修改时间：22:32:00" itemprop="dateCreated datePublished" datetime="2019-11-18T22:24:00+08:00">2019-11-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <div class="htmledit_views" id="content_views">
-
-<div style="text-align:center;"><span style="font-size:48px;">线段树从零开始</span></div>
-<div style="text-align:center;"><br></div>
-<div style="text-align:center;"><span style="font-size:18px;">By shaojintian</span></div>
-<div style="text-align:center;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:24px;">一：为什么需要线段树？</span></div>
-<div style="text-align:left;">
-<div class="table-box"><table width="800" cellspacing="1" cellpadding="1" border="1"><tbody><tr><td><span style="font-size:18px;">题目一：<br>
-10000个正整数，编号1到10000，用A[1],A[2],A[10000]表示。<br>
-修改：无<br>
-统计：1.编号从L到R的所有数之和为多少？ 其中1&lt;= L &lt;= R &lt;= 10000.</span></td>
-</tr></tbody></table></div><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">方法一：对于统计L,R ，需要求下标从L到R的所有数的和，从L到R的所有下标记做[L..R],问题就是对A[L..R]进行求和。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">这样求和，对于每个询问，需要将(R-L+1)个数相加。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">方法二：更快的方法是求前缀和,令 S[0]=0, S[k]=A[1..k] ，那么，A[L..R]的和就等于S[R]-S[L-1]，</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">这样，对于每个询问，就只需要做一次减法，大大提高效率。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;">
-<div class="table-box"><table width="800" cellspacing="1" cellpadding="1" border="1"><tbody><tr><td><span style="font-size:18px;">题目二：<br>
-10000个正整数，编号从1到10000，用A[1],A[2],A[10000]表示。<br>
-修改：1.将第L个数增加C （1 &lt;= L &lt;= 10000）<br>
-统计：1.编号从L到R的所有数之和为多少？ 其中1&lt;= L &lt;= R &lt;= 10000.</span></td>
-</tr></tbody></table></div><span style="font-size:18px;"><br>
-再使用方法二的话，假如A[L]+=C之后，S[L],S[L+1],,S[R]都需要增加C,全部都要修改，见下表。<br></span>
-<div style="text-align:center;"><span style="font-size:18px;"><br></span></div>
-</div>
-<div style="text-align:left;">
-<div class="table-box"><table width="800" cellspacing="1" cellpadding="1" border="1" style="text-align:center;"><tbody><tr><td><span style="font-size:18px;"><br></span></td>
-<td><span style="font-size:18px;">方法一</span></td>
-<td><span style="font-size:18px;">方法二</span></td>
-</tr><tr><td><span style="font-size:18px;">A[L]+=C</span></td>
-<td><span style="font-size:18px;">修改1个元素</span></td>
-<td><span style="font-size:18px;">修改R-L+1个元素</span></td>
-</tr><tr><td><span style="font-size:18px;">求和A[L..R]</span></td>
-<td><span style="font-size:18px;">计算R-L+1个元素之和</span></td>
-<td><span style="font-size:18px;">计算两个元素之差</span></td>
-</tr></tbody></table></div><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">从上表可以看出，方法一修改快，求和慢。 方法二求和快，修改慢。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">那有没有一种结构，修改和求和都比较快呢？答案当然是线段树。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:24px;">二：线段树的点修改</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">上面的问题二就是典型的线段树点修改。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">线段树先将区间[1..10000]分成不超过4*10000个子区间，对于每个子区间，记录一段连续数字的和。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">之后，任意给定区间[L,R]，线段树在上述子区间中选择约2*log2(R-L+1)个拼成区间[L,R]。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">如果A[L]+=C ，线段树的子区间中，约有log2(10000)个包含了L，所以需要修改log2(10000)个。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">于是，使用线段树的话，</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">A[L]+=C 需要修改log2(10000) 个元素</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">求和A[L...R]需要修改2*log2(R-L+1) &lt;= 2 * log2(10000) 个元素。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">log2(10000) &lt; 14 所以相对来说线段树的修改和求和都比较快。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><br></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong>问题一：开始的子区间是怎么分的？</strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">首先是讲原始子区间的分解，假定给定区间[L,R]，只要L &lt; R ，线段树就会把它继续分裂成两个区间。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">首先计算 M = (L+R)/2，左子区间为[L,M]，右子区间为[M+1,R]，然后如果子区间不满足条件就递归分解。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">以区间[1..13]的分解为例，分解结果见下图：</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822213352759?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><strong><br></strong></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong>问题二：给定区间【L,R】，如何分解成上述给定的区间？</strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">对于给定区间[2,12]要如何分解成上述区间呢？</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong>分解方法一：自下而上合并——利于理解</strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"></span>
-<div style="font-family:Arial;font-size:14px;line-height:26px;">先考虑树的最下层，将所有在区间[2,12]内的点选中，然后，若相邻的点的直接父节点是同一个，那么就用这个父节点代替这两个节点（父节点在上一层）。这样操作之后，本层最多剩下两个节点。若最左侧被选中的节点是它父节点的右子树，那么这个节点会被剩下。若最右侧被选中的节点是它的父节点的左子树，那么这个节点会被剩下。中间的所有节点都被父节点取代。对最下层处理完之后，考虑它的上一层，继续进行同样的处理。</div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;"><br></div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;">下图为n=13的线段树，区间[2,12]，按照上面的叙述进行操作的过程图：</div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20150909172342229?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><img src="https://img-blog.csdn.net/20150909172350036?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><img src="https://img-blog.csdn.net/20150909172354161?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><img src="https://img-blog.csdn.net/20150909172357585?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;"><br></div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;">由图可以看出：在n=13的线段树中，[2,12]=[2] + [3,4] + [5,7] + [8,10] + [11,12] 。</div>
-<div style="font-family:Arial;line-height:26px;"><strong><br></strong></div>
-<div style="font-family:Arial;line-height:26px;"><strong><span style="font-size:18px;">分解方法二：自上而下分解——利于计算</span></strong></div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20160822220027137?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;">首先对于区间[1,13]，计算(1+13)/2 = 7，于是将区间[2,12]“切割”成了[2,7]和[8,12]。</div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20160822220059591?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;">其中[2,7]处于节点[1,7]的位置，[2,7] &lt; [1,7] 所以继续分解，计算(1+7)/2 = 4, 于是将[2,7] 切割成[2,4]和[5,7]。</div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;"><img src="https://img-blog.csdn.net/20160822220118296?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
-<div style="font-family:Arial;font-size:14px;line-height:26px;">[5,7]处于节点[5,7]的位置，所以不用继续分解，[2,4]处于区间[1,4]的位置，所以继续分解成[2]和[3,4]。</div>
-<img src="https://img-blog.csdn.net/20160822220140874?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></div>
-<div style="text-align:left;">
-<div style="text-align:left;"><span style="font-size:18px;">最后【2】 &lt; 【1,2】，所以计算(1+2)/2=1 ，将【2】用1切割，左侧为空，右侧为【2】</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822220311424?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">当然程序是递归计算的，不是一层一层计算的，上图只表示计算方法，不代表计算顺序。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong>问题三：如何进行区间统计？</strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">假设这13个数为1,2,3,4,1,2,3,4,1,2,3,4,1. 在区间之后标上该区间的数字之和：</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822221733583?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">如果要计算[2,12]的和，按照之前的算法：</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><span style="font-family:Arial;font-size:14px;line-height:26px;">[2,12]=[2] + [3,4] + [5,7] + [8,10] + [11,12]</span></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><span style="font-family:Arial;font-size:14px;line-height:26px;">&nbsp; 29 &nbsp;= 2 + 7 + 6 + 7 + 7</span></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><span style="font-family:Arial;font-size:14px;line-height:26px;">计算5个数的和就可以算出[2,12]的值。</span></span></div>
-<div style="text-align:left;"><br></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong>问题四：如何进行点修改？</strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;">假设把A[6]+=7 ,看看哪些区间需要修改？[6],[5,6],[5,7],[1,7],[1,13]这些区间全部都需要+7.其余所有区间都不用动。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">于是，这颗线段树中，点修改最多修改5个线段树元素（每层一个）。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;">下图中，修改后的元素用蓝色表示。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><img src="https://img-blog.csdn.net/20160822222554087?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong>问题五：存储结构是怎样的？</strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-<div style="text-align:left;"><span style="font-size:14px;">线段树是一种二叉树，当然可以像一般的树那样写成结构体，指针什么的。</span></div>
-<div style="text-align:left;"><span style="font-size:14px;">但是它的优点是，它也可以用数组来实现树形结构，可以大大简化代码。</span></div>
-<div style="text-align:left;"><span style="font-size:14px;">数组形式适合在编程竞赛中使用，在已经知道线段树的最大规模的情况下，直接开足够空间的数组，然后在上面建立线段树。<br>
-简单的记法： 足够的空间 = 数组大小n的四倍。 <br>
-实际上足够的空间 =&nbsp; （n向上扩充到最近的2的某个次方）的两倍。<br>
-举例子：假设数组长度为5，就需要5先扩充成8，8*2=16.线段树需要16个元素。如果数组元素为8，那么也需要16个元素。<br>
-所以线段树需要的空间是n的两倍到四倍之间的某个数，一般就开4*n的空间就好，如果空间不够，可以自己算好最大值来省点空间。<br><br></span></div>
-<div style="text-align:left;"><span style="font-size:14px;">怎么用数组来表示一颗二叉树呢？假设某个节点的编号为v,那么它的左子节点编号为2*v，右子节点编号为2*v+1。</span></div>
-<div style="text-align:left;"><span style="font-size:14px;">然后规定根节点为1.这样一颗二叉树就构造完成了。通常2*v在代码中写成 v&lt;&lt;1 。 2*v+1写成 v&lt;&lt;1|1 。</span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong><br></strong></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><strong></strong></span></div>
-<div style="font-family:Arial;font-size:14px;"><span style="font-size:18px;"><strong>问题六：代码中如何实现？</strong></span></div>
-<div style="font-family:Arial;font-size:14px;"><span style="font-size:18px;"></span>
-<p style="line-height:26px;">
-</p>
-<p style="line-height:26px;">
-<strong>(0)定义：</strong></p>
-<div style="line-height:26px;">
-<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
-<div class="bar">
-<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
-<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
- plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
-<div style="width:27px;z-index:99;">
-</div>
-&nbsp;
-<div style="width:29px;z-index:99;">
-</div>
-&nbsp;<div style="position: absolute; left: 631px; top: 7638px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 7638px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_5" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_5" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=5&amp;width=16&amp;height=16" wmode="transparent"></div></div>
-</div>
-<ol start="1" class="dp-cpp" style="border:none;"><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;"><span class="preprocessor" style="color:#808080;border:none;">#define&nbsp;maxn&nbsp;100007&nbsp;&nbsp;//元素总个数</span><span style="border:none;">&nbsp;&nbsp;</span></span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="border:none;"><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;Sum[maxn&lt;&lt;2];<span>//Sum求和，开四倍空间</span></span><span style="border:none;"></span></span></li><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="border:none;"><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;A[maxn],n;//<span>存原数组下标[1，n]</span></span><span style="color:#000000;border:none;"><br></span></span></li></ol></div>
-</div>
-<p style="line-height:26px;">
-<strong>(1)建树：</strong></p>
-<div style="line-height:26px;">
-<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
-<div class="bar">
-<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
-<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
- plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
-<div style="width:27px;z-index:99;">
-</div>
-&nbsp;
-<div style="width:29px;z-index:99;">
-</div>
-&nbsp;<div style="position: absolute; left: 631px; top: 7807px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_2" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_2" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 7807px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_6" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_6" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=6&amp;width=16&amp;height=16" wmode="transparent"></div></div>
-</div>
-<ol start="1" class="dp-cpp" style="border:none;color:rgb(92,92,92);"><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;"><span style="border:none;">//PushUp函数更新节点信息，这里是求和</span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;"><span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">void</span><span style="border:none;">&nbsp;PushUp(</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){Sum[rt]=Sum[rt&lt;&lt;1]+Sum[rt&lt;&lt;1|1];}&nbsp;&nbsp;</span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;"><span style="border:none;">//Build函数建立线段树<br></span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;"><span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">void</span><span style="border:none;">&nbsp;Build(</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;l,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;r,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){
- //[l,r]表示当前节点区间，rt表示当前节点的实际存储位置</span><span style="border:none;">&nbsp;<br></span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(l==r)&nbsp;{</span><span>//<span>若到达叶节点</span></span><span style="border:none;">&nbsp;<br></span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sum[rt]=A[l];<span>//<span>存储A数组的值</span></span><span style="border:none;"><br></span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">;&nbsp;&nbsp;</span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;m=(l+r)&gt;&gt;1;&nbsp;&nbsp;</span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;<span style="border:none;">//左右递归<br></span></span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;Build(l,m,rt&lt;&lt;1);&nbsp;&nbsp;</span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;Build(m+1,r,rt&lt;&lt;1|1);&nbsp;&nbsp;</span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp; //更新信息<span style="border:none;"><br></span></span></li><li style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:rgb(85,85,85);line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;PushUp(rt);&nbsp;&nbsp;</span></li><li class="alt" style="border-top:none;border-right:none;border-bottom:none;border-left:3px solid rgb(153,153,153);list-style:outside;color:inherit;line-height:18px;">
-<span style="color:#000000;border:none;">}&nbsp;&nbsp;</span></li></ol></div>
-<br></div>
-<p style="line-height:26px;">
-<strong>(2)点修改：</strong></p>
-<div style="line-height:26px;">假设A[L]+=C:</div>
-<div style="line-height:26px;">
-<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
-<div class="bar">
-<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
-<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
- plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
-<div style="width:27px;z-index:99;">
-</div>
-&nbsp;
-<div style="width:29px;z-index:99;">
-</div>
-&nbsp;<div style="position: absolute; left: 631px; top: 8260px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_3" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_3" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 8260px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_7" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_7" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=7&amp;width=16&amp;height=16" wmode="transparent"></div></div>
-</div>
-<ol start="1" class="dp-cpp" style="border:none;"><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;"><span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">void</span><span style="border:none;">&nbsp;Update(</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;L,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;C,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;l,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;r,</span><span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){//[l,r]表示当前区间，rt是当前节点编号</span><span class="comment" style="border:none;">//l,r表示当前节点区间，rt表示当前节点编号</span><span style="border:none;">&nbsp;&nbsp;</span></span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(l==r){<span style="color:#000140;">//到达叶节点，修改叶节点的值</span></span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sum[rt]+=C;&nbsp;&nbsp;</span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">;&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;m=(l+r)&gt;&gt;1;&nbsp;&nbsp;</span></span></li><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp; &nbsp;</span><span style="border:none;"><span>//根据条件判断往左子树调用还是往右</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(L&nbsp;&lt;=&nbsp;m)&nbsp;Update(L,C,l,m,rt&lt;&lt;1);&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">else</span><span style="border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update(L,C,m+1,r,rt&lt;&lt;1|1);&nbsp;&nbsp;</span></span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;PushUp(rt);</span><span style="border:none;"><span>//子节点的信息更新了，所以本节点也要更新信息</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">} &nbsp;&nbsp;</span></li></ol></div>
-</div>
-<div style="line-height:26px;">
-<p>
-点修改其实可以写的更简单，只需要把一路经过的Sum都+=C就行了，不过上面的代码更加规范，在题目更加复杂的时候，按照格式写更不容易错。</p>
-<p>
-<strong><br></strong></p>
-<p>
-<strong>(3)区间查询（本题为求和）：</strong></p>
-</div>
-<div style="line-height:26px;">询问A[L..R]的和</div>
-<div style="line-height:26px;">注意到，整个函数的递归过程中，L,R是不变的。</div>
-<div style="line-height:26px;">首先如果当前区间[l,r]在[L,R]内部，就直接累加答案</div>
-<div style="line-height:26px;">如果左子区间与[L,R]有重叠，就递归左子树，右子树同理。</div>
-<div style="line-height:26px;">
-<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;">
-<div class="bar">
-<div class="tools" style="font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#C0C0C0;border-left:3px solid rgb(153,153,153);">
-<strong>[cpp]</strong>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="ViewSource" title="view plain" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">view
- plain</a>&nbsp;<a href="http://blog.csdn.net/zearot/article/details/48299459#" target="_blank" rel="nofollow noopener" class="CopyToClipboard" title="copy" style="color:rgb(160,160,160);text-decoration:none;border:none;font-size:9px;">copy</a>
-<div style="width:27px;z-index:99;">
-</div>
-&nbsp;
-<div style="width:29px;z-index:99;">
-</div>
-&nbsp;<div style="position: absolute; left: 631px; top: 8803px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_4" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_4" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=4&amp;width=16&amp;height=16" wmode="transparent"></div><div style="position: absolute; left: 631px; top: 8803px; width: 16px; height: 16px; z-index: 99;"><embed id="ZeroClipboardMovie_8" src="https://csdnimg.cn/public/highlighter/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="16" height="16" name="ZeroClipboardMovie_8" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=8&amp;width=16&amp;height=16" wmode="transparent"></div></div>
-</div>
-<ol start="1" class="dp-cpp" style="border:none;"><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="border:none;"><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;Query(</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;L,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;R,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;l,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="color:#000000;border:none;">&nbsp;r,</span><span class="datatypes" style="color:rgb(46,139,87);border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;rt){<span style="color:#000140;">//[L,R]表示操作区间，[l,r]表示当前区间，rt:当前节点编号</span></span><span style="color:#000000;border:none;"></span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(L&nbsp;&lt;=&nbsp;l&nbsp;&amp;&amp;&nbsp;r&nbsp;&lt;=&nbsp;R){&nbsp;&nbsp;</span></span></li><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="border:none;"><span>//在区间内直接返回</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">&nbsp;Sum[rt];&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;m=(l+r)&gt;&gt;1;
- &nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp; &nbsp; //左子区间:[l,m] 右子区间：[m+1,r] &nbsp;求和区间:[L,R]</span></li><li style="border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp; &nbsp;</span><span style="border:none;"><span style="color:#000140;">//累加答案</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="datatypes" style="color:#2e8b57;border:none;font-weight:bold;">int</span><span style="border:none;">&nbsp;ANS=0;&nbsp;&nbsp;</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(L&nbsp;&lt;=&nbsp;m)&nbsp;ANS+=Query(L,R,l,m,rt&lt;&lt;1);//左子区间与[L,R]有重叠，递归</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">if</span><span style="border:none;">(R&nbsp;&gt;&nbsp;&nbsp;m)&nbsp;ANS+=Query(L,R,m+1,r,rt&lt;&lt;1|1);
- //右子区间与[L,R]有重叠，递归</span></span></li><li style="color:rgb(85,85,85);border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="color:#0000FF;border:none;font-weight:bold;">return</span><span style="border:none;">&nbsp;ANS;&nbsp;&nbsp;</span></span></li><li class="alt" style="color:inherit;border-style:none none none solid;border-left-width:3px;border-left-color:rgb(153,153,153);list-style:outside;line-height:18px;">
-<span style="color:#000000;border:none;">} &nbsp;&nbsp;</span></li></ol></div>
-</div>
-</div>
-<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16">
-</div>
-<div style="text-align:left;"><span style="font-size:14px;"><br></span><br><br></div>
-<div style="text-align:left;"><span style="font-size:18px;"><span style="font-size:24px;">最后：<br><br><span style="font-size:14px;">线段树还有更多的用法，比如区间修改，扫描线，非递归写法等 </span><br></span></span></div>
-<div style="text-align:left;"><span style="font-size:18px;"><br></span></div>
-</div>
-<div style="text-align:left;"><br></div>
-                                    </div>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -2310,7 +2051,7 @@ UDP是无连接的协议，支持一对一，多对一，多对多的通信，�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
