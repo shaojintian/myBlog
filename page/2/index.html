@@ -221,6 +221,125 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shao Jintian">
+      <meta itemprop="description" content="only a geek">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="邵靳天的小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/23/Lab3A-%E5%9F%BA%E4%BA%8E-Raft-%E5%AE%9E%E7%8E%B0%E5%AE%B9%E9%94%99%E7%9A%84-kvDB/" class="post-title-link" itemprop="url">Lab3A. 基于 Raft 实现容错的 kvDB</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-23 22:20:00 / 修改时间：22:21:00" itemprop="dateCreated datePublished" datetime="2019-11-23T22:20:00+08:00">2019-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <div class="post-body" itemprop="articleBody">
+
+
+
+
+
+<pre><code>&lt;p&gt;总结 6.824 Lab3A Fault-Tolerant kvDB 的实验笔记。&lt;/p&gt;</code></pre><p><a id="more"></a></p>
+<h2 id="Lab3A"><a href="#Lab3A" class="headerlink" title="Lab3A"></a>Lab3A</h2><p>Lab3 的目标是基于 Raft 实现容错的 key-value DB 集群：3A 处理节点容错，3B 实现日志快照。</p>
+<h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p>阅读 <a href="https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html" target="_blank" rel="noopener">lecture</a> 可知，Clerk 是客户端，KVServers 即 kvDBs（状态机），每台 KVServer 即一个 Raft 节点，依靠 Raft 协议保证底层的日志一致性，流程交互图：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-002335.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-002335.png" width="80%"></a></p>
+<ul>
+<li>Client 将 <code>Put</code>/<code>Append</code>/<code>Get</code> 命令发送给集群 Leader 处理，并等待调用返回。</li>
+<li>KVServer1 底层的 Raft 模块会向 follower 发起命令日志的复制。</li>
+<li>当复制副本达到大多数后，KVServer1 执行该命令，并将结果响应给 Client</li>
+</ul>
+<p>Raft 模块在 Lab2 已实现，本节将用到以下开放的接口：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发起命令的复制</span></span><br><span class="line"><span class="comment">// idx 是命令复制成功后，其在各节点日志中的索引</span></span><br><span class="line"><span class="comment">// isLeader 表明当前节点是否为 leader</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rf *Raft)</span> <span class="title">Start</span><span class="params">(command <span class="keyword">interface</span>{})</span> <span class="params">(idx <span class="keyword">int</span>, term <span class="keyword">int</span>, isLeader <span class="keyword">bool</span>)</span></span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="线性一致性"><a href="#线性一致性" class="headerlink" title="线性一致性"></a>线性一致性</h3><p>linearizability 可理解为 CAP 理论中的 C(Consistency)，意为：</p>
+<blockquote>
+<p>A call must observe the effects of all calls that have completed before the call starts</p>
+</blockquote>
+<p>如下 4 个 Client 分别在不同时间向 KV 集群发起 4 个命令，蓝线是集群处理命令的时间点。如下 Get 命令的执行结果严格按时间受 Put 命令的影响，即系统满足线性一致性：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-010109.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-010109.png" width="70%"></a></p>
+<p>参考：<a href="https://www.anishathalye.com/2017/06/04/testing-distributed-systems-for-linearizability/" target="_blank" rel="noopener">anishathalye.com</a></p>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><ul>
+<li><strong>TestBasic3A</strong>：正常情况下，保证单个 Client 命令能执行成功，保证 5 台 KVServer 日志一致。</li>
+<li><strong>TestUnreliable3A</strong>：处理 RPC 调用超时，重试请求。</li>
+<li><strong>TestOnePartition3A</strong>：处理多台 Client 和多台 Server 都发生网络分区的情况。</li>
+<li><strong>TestPersistPartitionUnreliableLinearizable3A</strong>：在节点失效、网络不可靠的环境中保证线性一致性。</li>
+</ul>
+<p>测试均通过：</p>
+<p> <a href="https://images.yinzige.com/2019-06-03-004945.png" target="_blank" class="fancybox fancybox.image" rel="group noopener"><img src="https://images.yinzige.com/2019-06-03-004945.png" width="60%"></a></p>
+<h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><p>Client 需记录已知的 leader 位置，下次直接向该节点发起请求。Client 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Clerk <span class="keyword">struct</span> {</span><br><span class="line">    servers []*labrpc.ClientEnd <span class="comment">// kv servers / raft peers</span></span><br><span class="line">    leader  <span class="keyword">int</span>                 <span class="comment">// latest known leader</span></span><br><span class="line">    cid     <span class="keyword">int64</span>               <span class="comment">// client id</span></span><br><span class="line">    seq     <span class="keyword">int32</span>               <span class="comment">// latest request seq num</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>clientid 在初始化时调用 <code>nrand()</code> 随机生成即可，生产系统中可用 <code>ip:port</code> 来唯一标识。</p>
+<h3 id="检测重复请求"><a href="#检测重复请求" class="headerlink" title="检测重复请求"></a>检测重复请求</h3><p>Client 向 KVServer 发起 RPC 调用，当调用超时或被告知节点不是 Leader 后，需换个及诶点重试请求。因此，KVServer 要避免二次执行命令，或因网络延迟使执行过期命令。<br>参考论文第八节：为检测重复请求，可在每次请求中加入唯一 id，并随请求自增，再重试时使用同一 id，Server 只需<strong>对每个 Client 记录最大的请求 id</strong>，即可排除过期或重复请求。Request 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> PutAppendArgs <span class="keyword">struct</span> {</span><br><span class="line">    Cid   <span class="keyword">int64</span> <span class="comment">// client id</span></span><br><span class="line">    Seq   <span class="keyword">int32</span> <span class="comment">// request sequential number</span></span><br><span class="line">    Key   <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">    Op    <span class="keyword">string</span> <span class="comment">// Put/Append</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="发起请求"><a href="#发起请求" class="headerlink" title="发起请求"></a>发起请求</h3><p>对于 Get 请求本身是幂等的，无需加 id 标识。对于 Put/Append 操作则需唯一标识：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(ck *Clerk)</span> <span class="title">PutAppend</span><span class="params">(key <span class="keyword">string</span>, value <span class="keyword">string</span>, op <span class="keyword">string</span>)</span></span> {</span><br><span class="line">    curSeq := atomic.AddInt32(&amp;ck.seq, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        args := PutAppendArgs{</span><br><span class="line">            Cid:   ck.cid,</span><br><span class="line">            Seq:   curSeq,</span><br><span class="line">            Key:   key,</span><br><span class="line">            Value: value,</span><br><span class="line">            Op:    op,</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">var</span> reply PutAppendReply</span><br><span class="line">        ok := ck.servers[ck.leader].Call(<span class="string">"KVServer.PutAppend"</span>, &amp;args, &amp;reply)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> !ok || reply.WrongLeader { <span class="comment">// RPC call timeout, or ck.leader isn't current leader</span></span><br><span class="line">            ck.changeLeader()</span><br><span class="line">            <span class="keyword">continue</span> <span class="comment">// retry and re-use current sequential number</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="KVServer"><a href="#KVServer" class="headerlink" title="KVServer"></a>KVServer</h2><p>数据库的 key, value 都是 <code>string</code> 类型，可直接使用 <code>map[string]string</code> 存储，为避免并发读写还需加锁保护。KVServer 结构如下：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> KVServer <span class="keyword">struct</span> {</span><br><span class="line">    mu      sync.Mutex</span><br><span class="line">    me      <span class="keyword">int</span></span><br><span class="line">    rf      *raft.Raft</span><br><span class="line">    applyCh <span class="keyword">chan</span> raft.ApplyMsg</span><br><span class="line"></span><br><span class="line">    maxraftstate <span class="keyword">int</span>               <span class="comment">// snapshot if log grows this big</span></span><br><span class="line">    db           <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="comment">// kvDB</span></span><br><span class="line">    cid2seq      <span class="keyword">map</span>[<span class="keyword">int64</span>]<span class="keyword">int32</span>   <span class="comment">// client id to max request sequential number</span></span><br><span class="line">    agreeChs     <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">chan</span> Op   <span class="comment">// command index to op channel</span></span><br><span class="line">    killCh       <span class="keyword">chan</span> <span class="keyword">struct</span>{}     <span class="comment">// kill KVServer</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>Raft 复制的日志需记录具体的某次请求：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Op <span class="keyword">struct</span> {</span><br><span class="line">    Cid   <span class="keyword">int64</span>  <span class="comment">// client id</span></span><br><span class="line">    Seq   <span class="keyword">int32</span>  <span class="comment">// request sequence number</span></span><br><span class="line">    Cmd   <span class="keyword">string</span> <span class="comment">// command type, Put/Append/Get</span></span><br><span class="line">    Key   <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>由于日志可能被新 leader 覆盖，所以当 KVServer 发现统一索引上，自己发出的 Op 和 Raft 返回的 Op 不一致，就说明同步过程中，我已不再是 leader 且日志已被覆盖：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isSameOp</span><span class="params">(a, b Op)</span> <span class="title">bool</span></span> {</span><br><span class="line">    <span class="keyword">return</span> a.Cid == b.Cid &amp;&amp; a.Seq == b.Seq &amp;&amp; a.Cmd == b.Cmd &amp;&amp; a.Key == b.Key &amp;&amp; a.Value == b.Value</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="异步复制"><a href="#异步复制" class="headerlink" title="异步复制"></a>异步复制</h3><p>根据 <a href="https://thesquareplanet.com/blog/students-guide-to-raft/#applications-on-top-of-raft" target="_blank" rel="noopener">Guide</a> 提示，KVServer 调用 <code>Start(command)</code> 发起同步后，需<strong>异步等待</strong> Raft 模块从 <code>applyCh</code> 通知已复制成功的日志 <code>index</code>，再响应 index 对应的请求。在初始化时在后台开启 goroutine 监听：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// wait agreement from Raft</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">waitAgree</span><span class="params">()</span></span> {</span><br><span class="line">    <span class="keyword">for</span> {</span><br><span class="line">        <span class="keyword">select</span> {</span><br><span class="line">        <span class="keyword">case</span> &lt;-kv.killCh:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> msg := &lt;-kv.applyCh:</span><br><span class="line">            op := msg.Command.(Op)</span><br><span class="line">            kv.mu.Lock()</span><br><span class="line">            maxSeq, ok := kv.cid2seq[op.Cid]</span><br><span class="line">            <span class="keyword">if</span> !ok || op.Seq &gt; maxSeq { <span class="comment">// only handle new request from specific client</span></span><br><span class="line">                kv.cid2seq[op.Cid] = op.Seq</span><br><span class="line">                <span class="keyword">switch</span> op.Cmd {</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"Put"</span>:</span><br><span class="line">                    kv.db[op.Key] = op.Value</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"Append"</span>:</span><br><span class="line">                    kv.db[op.Key] += op.Value</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            kv.mu.Unlock()</span><br><span class="line"></span><br><span class="line">            kv.getAgreeCh(msg.CommandIndex) &lt;- op</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>注意：由于请求处理与 waitAgree 监听的执行顺序是不确定的，需有一个共用 agreeCh 的逻辑：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">getAgreeCh</span><span class="params">(idx <span class="keyword">int</span>)</span> <span class="title">chan</span> <span class="title">Op</span></span> {</span><br><span class="line">    kv.mu.Lock()</span><br><span class="line">    <span class="keyword">defer</span> kv.mu.Unlock()</span><br><span class="line"></span><br><span class="line">    ch, ok := kv.agreeChs[idx]</span><br><span class="line">    <span class="keyword">if</span> !ok {</span><br><span class="line">        ch = <span class="built_in">make</span>(<span class="keyword">chan</span> Op, <span class="number">1</span>) <span class="comment">// never block this</span></span><br><span class="line">        kv.agreeChs[idx] = ch</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> ch</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="处理-Get-请求"><a href="#处理-Get-请求" class="headerlink" title="处理 Get 请求"></a>处理 Get 请求</h3><p>为避免过期 leader 返回旧数据，在处理 Get 请求前，leader 必须与集群中大多数节点完成通信，确保自己的数据是最新的。论文第八节建议让 leader 主动发起一次心跳并统计正常节点数量，不过根据 lecture 提示：</p>
+<blockquote>
+<p>A kvserver should not complete a <code>Get()</code> RPC if it is not part of a majority (so that it does not serve stale data). A simple solution is to enter every <code>Get()</code> (as well as each <code>Put()</code> and <code>Append()</code>) in the Raft log</p>
+</blockquote>
+<p>可让 Get 请求像 Put/Append 请求一样走日志同步流程，就不必再修改 Lab2 的 Raft 实现。请求处理流程：</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">Get</span><span class="params">(args *GetArgs, reply *GetReply)</span></span> {</span><br><span class="line">    cmd := Op{Cmd: <span class="string">"Get"</span>, Key: args.Key,}</span><br><span class="line">    idx, _, isLeader := kv.rf.Start(cmd)</span><br><span class="line">    <span class="keyword">if</span> !isLeader {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ch := kv.getAgreeCh(idx)</span><br><span class="line">    <span class="keyword">var</span> op Op</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> op = &lt;-ch: <span class="comment">// current leader can communicate with majority</span></span><br><span class="line">        <span class="built_in">close</span>(ch)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(<span class="number">500</span> * time.Millisecond): <span class="comment">// agreement may be failed, treat as timeout and client will retry</span></span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// if old leader has in net partition, may it's log may be overwrited, then reply value will be different</span></span><br><span class="line">    <span class="keyword">if</span> !isSameOp(cmd, op) {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    kv.mu.Lock()</span><br><span class="line">    reply.Value = kv.db[args.Key] <span class="comment">// if key not exist, just return "" or return ErrNoKey</span></span><br><span class="line">    kv.mu.Unlock()</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="处理-Put-Append-请求"><a href="#处理-Put-Append-请求" class="headerlink" title="处理 Put/Append 请求"></a>处理 Put/Append 请求</h3><p>由于 Put/Append 请求会更新 <code>kv.db</code> 数据，要避免重复请求被二次执行，即 waitAgree 中的 Seq 对比逻辑。</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(kv *KVServer)</span> <span class="title">PutAppend</span><span class="params">(args *PutAppendArgs, reply *PutAppendReply)</span></span> {</span><br><span class="line">    cmd := Op{</span><br><span class="line">        Cid:   args.Cid,</span><br><span class="line">        Seq:   args.Seq,</span><br><span class="line">        Cmd:   args.Op,</span><br><span class="line">        Key:   args.Key,</span><br><span class="line">        Value: args.Value,</span><br><span class="line">    }</span><br><span class="line">    idx, _, isLeader := kv.rf.Start(cmd)</span><br><span class="line">    <span class="keyword">if</span> !isLeader {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ch := kv.getAgreeCh(idx) <span class="comment">// sequence of PutAppend() and &lt;-applyCh are uncertain</span></span><br><span class="line">    <span class="keyword">var</span> op Op</span><br><span class="line">    <span class="keyword">select</span> {</span><br><span class="line">    <span class="keyword">case</span> op = &lt;-ch:</span><br><span class="line">        <span class="built_in">close</span>(ch)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(<span class="number">500</span> * time.Millisecond):</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> !isSameOp(cmd, op) {</span><br><span class="line">        reply.WrongLeader = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>至此完成了基于 Raft 实现容错 kvDB 的搭建。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Lab2 中实现的 Raft 库开放了 <code>applyCh</code> 和 <code>Start(command)</code> 接口，本节在此基础上实现异步监听、超时重试、请求去重等机制，使上层的 kvDB 能在主机崩溃重启，请求发生延迟、失序、丢失甚至隔离的网络环境下，依旧能对客户端保证数据的线性一致性。</p>
+
+
+<pre><code>&lt;/div&gt;</code></pre>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Lab2A-Raft-%E9%80%89%E4%B8%BB%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1707,63 +1826,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%89-%EF%BC%9AConsumer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Shao Jintian">
-      <meta itemprop="description" content="only a geek">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="邵靳天的小站">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/23/RocketMQ-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-%E4%B8%89-%EF%BC%9AConsumer/" class="post-title-link" itemprop="url">RocketMQ 源码分析[三]：Consumer</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-23 01:00:38" itemprop="dateCreated datePublished" datetime="2019-11-23T01:00:38+08:00">2019-11-23</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1812,7 +1874,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">123</span>
+          <span class="site-state-item-count">124</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

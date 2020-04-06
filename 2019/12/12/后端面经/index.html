@@ -59,8 +59,10 @@
 <meta property="og:site_name" content="邵靳天的小站">
 <meta property="og:description" content="算法leetcode 123456789101112131415161718192021222324252627282930313233实现一个缓存队列二叉树的镜像区间覆盖 例 [1 3] [2 5] [3 6]能否覆盖[2 6]TOP K问题给定两个数组，求两个数组的交集，且重复多少次，就打印几次比如：[1,2,2,3,5,7]和[1,1,2,2,2,2,3,3,5,7,8]，结果[1,2,2,">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-30T08:15:29.963Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;hashmap.png">
+<meta property="og:updated_time" content="2020-04-06T08:58:29.289Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;hashmap.png">
 
 <link rel="canonical" href="http://yoursite.com/2019/12/12/%E5%90%8E%E7%AB%AF%E9%9D%A2%E7%BB%8F/">
 
@@ -252,7 +254,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-30 16:15:29" itemprop="dateModified" datetime="2020-03-30T16:15:29+08:00">2020-03-30</time>
+                <time title="修改时间：2020-04-06 16:58:29" itemprop="dateModified" datetime="2020-04-06T16:58:29+08:00">2020-04-06</time>
               </span>
 
           
@@ -268,7 +270,9 @@
       
         <h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><p><code>leetcode</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">实现一个缓存队列</span><br><span class="line">二叉树的镜像</span><br><span class="line">区间覆盖 例 [1 3] [2 5] [3 6]能否覆盖[2 6]</span><br><span class="line">TOP K问题</span><br><span class="line"></span><br><span class="line">给定两个数组，求两个数组的交集，且重复多少次，就打印几次</span><br><span class="line">比如：[1,2,2,3,5,7]和[1,1,2,2,2,2,3,3,5,7,8]，结果[1,2,2,3,5,7]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">区间躲避问题，要躲避的区间是[2,5][4,6]，如果插入1，可以直接插到1，如果插入3，只能插到7，因为要避开上面两个区间，要求不申请额外空间</span><br><span class="line"></span><br><span class="line">两个链表的第一个相交结点</span><br><span class="line"></span><br><span class="line">400万条帖子数据，一台机器能处理10万条帖子，找到最近发布的1000条帖子</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">算法题目1：随机链表复制（秒了）</span><br><span class="line"></span><br><span class="line">给定一个链表，节点数据结构如下，除了包含一个next指针，还包含一个rand指针，随机指向链表的某一元素，或者为空指针，实现一个函数，深复制这个链表，要求空间复杂度O(1)。</span><br><span class="line"></span><br><span class="line">struct Node &#123;</span><br><span class="line">  int val;</span><br><span class="line">  Node* next;</span><br><span class="line">  Node* rand;</span><br><span class="line">&#125;</span><br><span class="line">算法题目2：滑动窗口算法（卡了蛮久）</span><br><span class="line"></span><br><span class="line">给定m个不重复的字符[a,b,c,d], 以及一个长度为n的字符串tbcacbdata, 问能否在这个字符串中找到应该长度为m的连续子串，使得这个子串刚好由上面m个字符组成，顺序无所谓，返回任意满足条件的一个子串的起始位置，未找到返回-1。比如上面的这个例子，acbd，返回3。要求优化到O(N)。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">股票利润1，2，3leetcode</span><br><span class="line"></span><br><span class="line">快速排序的原理、时间复杂度、空间复杂度</span><br></pre></td></tr></table></figure>
-<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 红黑树是什么原理，为什么要用红黑树，不用其他树</span><br><span class="line">2. 实现hashmap-java</span><br><span class="line">https://blog.csdn.net/m0_37499059/article/details/80623438</span><br><span class="line">3. 平衡二叉树CRUD，时间复杂度</span><br></pre></td></tr></table></figure>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 红黑树是什么原理，为什么要用红黑树，不用其他树</span><br><span class="line">2. 实现hashmap-java</span><br><span class="line">https://blog.csdn.net/m0_37499059/article/details/80623438</span><br><span class="line">keyword:数组+链表，hashCode based on Key，hash冲突用链表解决</span><br></pre></td></tr></table></figure>
+<p><img src="/images/hashmap.png" alt="upload successful"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">代码实现：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">3. 平衡二叉树CRUD，时间复杂度</span><br></pre></td></tr></table></figure>
 <h1 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><p><code>go里面channel怎么实现？</code></br><br><code>go协程与java线程区别？</code></p>
 <h2 id="内存模型和调优"><a href="#内存模型和调优" class="headerlink" title="内存模型和调优"></a>内存模型和调优</h2><h1 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h1><p>其实多读几遍这个书《深入理解JVM》，JVM那一块就OK了</p>
 <h2 id="基础-1"><a href="#基础-1" class="headerlink" title="基础"></a>基础</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ConcurrentHashMap,HashMap，HashTable</span><br><span class="line"></span><br><span class="line">StringBuilder和StringBuffer有什么区别</span><br><span class="line"></span><br><span class="line">CAS  Compare And Swap</span><br><span class="line"></span><br><span class="line">HashMap的扩容机制？存储的方式？hash后码相同时怎么处理？</span><br><span class="line"></span><br><span class="line">volatile和synchronized关键字</span><br><span class="line"></span><br><span class="line">== 和equals的区别？类的hashcode是什么？如果两个对象的hash码相同，equals一定为true吗？</span><br><span class="line"></span><br><span class="line">Java的IO模型？BIO、NIO、AIO概念和区别？</span><br></pre></td></tr></table></figure>
@@ -400,7 +404,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">123</span>
+          <span class="site-state-item-count">124</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
