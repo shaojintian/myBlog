@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>设计模式14-建造者模式</title>
+    <url>/2020/04/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F14-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> builder;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadPoolConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> total;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> minSpare;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxSpare;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//constructor</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ThreadPoolConfig</span><span class="params">(Builder builder)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = builder.name;</span><br><span class="line">        <span class="keyword">this</span>.total =builder.total;</span><br><span class="line">        <span class="keyword">this</span>.minSpare =builder.minSpare;</span><br><span class="line">        <span class="keyword">this</span>.maxSpare = builder.maxSpare;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//static inner class</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_TOTAL = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span>  String name;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> total = DEFAULT_TOTAL;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> minSpare;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> maxSpare;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(name==<span class="keyword">null</span> || name.trim().length()==<span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"no name "</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.name = name;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setTotal</span><span class="params">(<span class="keyword">int</span> total)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.total = total;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setMinSpare</span><span class="params">(<span class="keyword">int</span> minSpare)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.minSpare = minSpare;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setMaxSpare</span><span class="params">(<span class="keyword">int</span> maxSpare)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.maxSpare = maxSpare;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//check illegal args and return pool</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> ThreadPoolConfig <span class="title">build</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(minSpare &gt; maxSpare || minSpare &gt;total || maxSpare &gt;total)&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span>  IllegalArgumentException(<span class="string">"illegal config args"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolConfig(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ThreadPoolConfig pc  = <span class="keyword">new</span> ThreadPoolConfig.Builder()</span><br><span class="line">                                    .setName(<span class="string">"pool1"</span>)</span><br><span class="line">                                    .setTotal(<span class="number">10</span>)</span><br><span class="line">                                    .setMinSpare(<span class="number">5</span>)</span><br><span class="line">                                    .setMaxSpare(<span class="number">2</span>)</span><br><span class="line">                                    .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
     <title>ConcurrentHashMap-java</title>
     <url>/2020/04/07/ConcurrentHashMap-java/</url>
     <content><![CDATA[<p>HashMap存在的问题：</p>
@@ -1675,11 +1680,6 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>设计模式14-建造者模式</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F14-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>设计模式13-外观（facade）模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F13-%E5%A4%96%E8%A7%82%EF%BC%88facade%EF%BC%89%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[]]></content>
@@ -1725,6 +1725,11 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
     <content><![CDATA[]]></content>
   </entry>
   <entry>
+    <title>设计模式4-单一职责原则</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F4-%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>设计模式3-策略模式</title>
     <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/strategy" target="_blank" rel="noopener">详细代码点此链接</a><br><br>介绍：相对于工厂模式，不将具体的类暴露给调用者，而是在工厂中判断需要哪个类，则提供调用该类的方法给调用者。</p>
@@ -1734,9 +1739,25 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
 ]]></content>
   </entry>
   <entry>
-    <title>设计模式4-单一职责原则</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F4-%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</url>
-    <content><![CDATA[]]></content>
+    <title>设计模式2-简单工厂模式</title>
+    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p>1、简单工厂模式</p>
+<p>简单工厂模式是属于创建型模式，又叫做静态工厂方法(static Factory Method)模式，简单工厂模式是由一个工厂对象决定创建出来哪一种产品类的实例.</p>
+<p>简单工厂模式的实质是由一个工厂类根据传入的参数，动态决定应该创建哪一类产品类(这些产品类继承自一个父类或接口)的实例。打个比方</p>
+<p>假设有一个工厂，他能生产出A、B两种产品。当客户需要产品的时候一定要告诉共产是哪种产品，是A还是B。当新增加一种新产品的时候，那么就要去修改工厂的类。　</p>
+<p>简单工厂模式的核心是，对于一个父类的多个继承子类，工厂对象的工厂函数根据用户输入，自动new出一个子类对象并返回其父类的指针，这样利用父类的指针执行父类的虚函数，就可以动态绑定子类的重写函数，从而实现多态。</p>
+<p>对于一个只拥有加减乘除运算的简单计算器，我们设计一个Operation的父类，并构造加减乘除四个类继承父类重写运算函数GetResult。然后定义工厂类中的工厂函数，其根据用户的输入new出相应的对象实例并返回其父类的指针。</p>
+<p><img src="/images/fac.sim.png" alt="upload successful"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> factory.simple;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Operation <span class="title">createOperate</span><span class="params">(String operate)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Operation ope ;</span><br><span class="line">        <span class="keyword">switch</span> (operate) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">"+"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationAdd();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"-"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationSub();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"*"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationMul();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"/"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationDiv();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"illegal operator"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ope;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/factory/simple" target="_blank" rel="noopener">代码详见此链接</a></p>
+]]></content>
+      <categories>
+        <category>design pattern</category>
+      </categories>
+      <tags>
+        <tag>大话设计模式</tag>
+      </tags>
   </entry>
   <entry>
     <title>设计模式1-单例模式</title>
@@ -1785,27 +1806,6 @@ err:unable to get URL "https://dl.k8s.io/release/stable-1.11.txt": Get https://d
 <p>[1]. <a href="https://blog.csdn.net/jason0539/article/details/44956775" target="_blank" rel="noopener">23种设计模式汇总整理</a> </p>
 <p>[2]. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html" target="_blank" rel="noopener">double-check method潜在问题解决-volatile修饰解决</a></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>设计模式2-简单工厂模式</title>
-    <url>/2019/11/21/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<p>1、简单工厂模式</p>
-<p>简单工厂模式是属于创建型模式，又叫做静态工厂方法(static Factory Method)模式，简单工厂模式是由一个工厂对象决定创建出来哪一种产品类的实例.</p>
-<p>简单工厂模式的实质是由一个工厂类根据传入的参数，动态决定应该创建哪一类产品类(这些产品类继承自一个父类或接口)的实例。打个比方</p>
-<p>假设有一个工厂，他能生产出A、B两种产品。当客户需要产品的时候一定要告诉共产是哪种产品，是A还是B。当新增加一种新产品的时候，那么就要去修改工厂的类。　</p>
-<p>简单工厂模式的核心是，对于一个父类的多个继承子类，工厂对象的工厂函数根据用户输入，自动new出一个子类对象并返回其父类的指针，这样利用父类的指针执行父类的虚函数，就可以动态绑定子类的重写函数，从而实现多态。</p>
-<p>对于一个只拥有加减乘除运算的简单计算器，我们设计一个Operation的父类，并构造加减乘除四个类继承父类重写运算函数GetResult。然后定义工厂类中的工厂函数，其根据用户的输入new出相应的对象实例并返回其父类的指针。</p>
-<p><img src="/images/fac.sim.png" alt="upload successful"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> factory.simple;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Operation <span class="title">createOperate</span><span class="params">(String operate)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Operation ope ;</span><br><span class="line">        <span class="keyword">switch</span> (operate) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">"+"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationAdd();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"-"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationSub();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"*"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationMul();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"/"</span>:</span><br><span class="line">                ope = <span class="keyword">new</span> OperationDiv();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"illegal operator"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ope;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://github.com/shaojintian/DesignPattern/tree/master/src/factory/simple" target="_blank" rel="noopener">代码详见此链接</a></p>
-]]></content>
-      <categories>
-        <category>design pattern</category>
-      </categories>
-      <tags>
-        <tag>大话设计模式</tag>
-      </tags>
   </entry>
   <entry>
     <title>第五周report</title>
